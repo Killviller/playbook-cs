@@ -1,13 +1,16 @@
 // Validação do site/data/playbook.json. Usada pelo build, pelos testes e por `npm run validar`.
-// Erros bloqueiam o build; avisos só chamam atenção (ex.: táticas marcadas para revisão).
+// Erros bloqueiam o build; avisos só chamam atenção (campos opcionais vazios, táticas marcadas para revisão).
 import { access } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const COR = /^#[0-9a-fA-F]{6}$/;
 const SITES = ['A', 'B'];
 
 const ehTexto = (v) => typeof v === 'string' && v.trim() !== '';
 const listaDeTextos = (v) => Array.isArray(v) && v.every(ehTexto);
+/** sobras de formatação de conversão: **negrito**, barras invertidas, marcador "•" ou "--" soltos */
+const temSobra = (s) => /\*\*|\\|^--$|^•/.test(s.trim());
 
 /**
  * @param {object} dados conteúdo do playbook.json
@@ -26,6 +29,17 @@ export async function validarPlaybook(dados, { siteDir = null } = {}) {
 
   if (!ehTexto(dados.meta?.titulo)) erro('meta.titulo é obrigatório.');
 
+  // ---------------------------------------------------------------- funções
+  const funcoes = new Set();
+  if (!Array.isArray(dados.funcoes) || !dados.funcoes.length) erro('"funcoes" precisa ter ao menos uma função (ex.: P1 Entry).');
+  (dados.funcoes ?? []).forEach((f, i) => {
+    if (!SLUG.test(f?.id ?? '')) erro(`funcoes[${i}]: "id" inválido (use minúsculas, números e hífen).`);
+    else if (funcoes.has(f.id)) erro(`funcoes: id repetido "${f.id}".`);
+    else funcoes.add(f.id);
+    if (!ehTexto(f?.sigla)) erro(`funcoes[${i}]: falta a "sigla" (ex.: "P1").`);
+    if (!ehTexto(f?.nome)) erro(`funcoes[${i}]: falta o "nome".`);
+  });
+
   // ------------------------------------------------------------------ tipos
   const tipos = new Set();
   if (!Array.isArray(dados.tipos) || !dados.tipos.length) erro('"tipos" precisa ter ao menos um tipo.');
@@ -34,6 +48,12 @@ export async function validarPlaybook(dados, { siteDir = null } = {}) {
     else if (tipos.has(t.id)) erro(`tipos: id repetido "${t.id}".`);
     else tipos.add(t.id);
     if (!ehTexto(t?.nome)) erro(`tipos[${i}]: falta o "nome".`);
+    if (t?.cor !== undefined && !COR.test(t.cor)) erro(`tipo "${t?.id}": "cor" precisa ser hexadecimal, como "#8e5bd0".`);
+  });
+
+  // ----------------------------------------------------------------- regras
+  (dados.regras ?? []).forEach((r, i) => {
+    if (!ehTexto(r?.titulo) || !ehTexto(r?.texto)) erro(`regras[${i}]: precisa de "titulo" e "texto".`);
   });
 
   // ------------------------------------------------------------------ mapas
@@ -48,6 +68,7 @@ export async function validarPlaybook(dados, { siteDir = null } = {}) {
       erro(`mapa "${m?.id}": "matiz" precisa ser um número de 0 a 360.`);
     }
     if (m?.ativo !== undefined && typeof m.ativo !== 'boolean') erro(`mapa "${m?.id}": "ativo" precisa ser true ou false.`);
+    if (m?.descricao !== undefined && !ehTexto(m.descricao)) erro(`mapa "${m?.id}": "descricao" precisa ser um texto.`);
   });
 
   // ---------------------------------------------------------------- táticas
@@ -73,15 +94,32 @@ export async function validarPlaybook(dados, { siteDir = null } = {}) {
     if (!ehTexto(t?.titulo)) erro(`${nome}: falta o "titulo".`);
     else if (/^\d+\.\s/.test(t.titulo)) erro(`${nome}: o título não deve começar com numeração ("${t.titulo}").`);
 
-    if (!Array.isArray(t?.tipos) || !t.tipos.length) aviso(`${nome}: sem "tipos" (não aparece nos filtros nem em "Qual tática chamar?").`);
+    if (!Array.isArray(t?.tipos) || !t.tipos.length) aviso(`${nome}: sem "tipos" (não aparece nos filtros nem em "Chamar").`);
     for (const tp of t?.tipos ?? []) if (!tipos.has(tp)) erro(`${nome}: tipo "${tp}" não existe em "tipos".`);
 
     for (const s of t?.alvo ?? []) if (!SITES.includes(s)) erro(`${nome}: "alvo" aceita só "A" e "B" (achei "${s}").`);
 
-    if (!Array.isArray(t?.linhas) || !t.linhas.length) erro(`${nome}: "linhas" precisa ter ao menos uma linha.`);
-    for (const l of t?.linhas ?? []) {
-      if (!ehTexto(l)) erro(`${nome}: há uma linha vazia ou que não é texto.`);
-      else if (/\*\*|\\|^--$|^•/.test(l.trim())) erro(`${nome}: sobra de formatação na linha "${l}".`);
+    if (!ehTexto(t?.objetivo)) erro(`${nome}: falta o "objetivo".`);
+    for (const campo of ['economia', 'posPlant', 'planoB']) {
+      if (t?.[campo] === undefined) aviso(`${nome}: sem "${campo}".`);
+      else if (!ehTexto(t[campo])) erro(`${nome}: "${campo}" precisa ser um texto.`);
+    }
+
+    // o que cada função faz: precisa ter todas as funções cadastradas, e nenhuma desconhecida
+    if (!t?.funcoes || typeof t.funcoes !== 'object' || Array.isArray(t.funcoes)) {
+      erro(`${nome}: "funcoes" precisa ser um objeto com o que cada função faz (ex.: "p1": "...").`);
+    } else {
+      for (const f of funcoes) if (!ehTexto(t.funcoes[f])) erro(`${nome}: falta o que a função "${f}" faz.`);
+      for (const f of Object.keys(t.funcoes)) if (!funcoes.has(f)) erro(`${nome}: a função "${f}" não existe em "funcoes".`);
+    }
+
+    // sobras de formatação em qualquer texto da tática
+    const textos = [
+      ['objetivo', t?.objetivo], ['economia', t?.economia], ['posPlant', t?.posPlant], ['planoB', t?.planoB],
+      ...Object.entries(t?.funcoes ?? {}).map(([k, v]) => [`funcoes.${k}`, v]),
+    ];
+    for (const [campo, txt] of textos) {
+      if (ehTexto(txt) && temSobra(txt)) erro(`${nome}: sobra de formatação em "${campo}": "${txt}".`);
     }
 
     for (const campo of ['granadas', 'ordem', 'radio']) {
@@ -109,28 +147,6 @@ export async function validarPlaybook(dados, { siteDir = null } = {}) {
   for (const [id, m] of mapas) {
     if (m.ativo !== false && porMapa.get(id) === 0) aviso(`mapa "${id}" está ativo mas não tem táticas.`);
   }
-
-  // -------------------------------------------------------------- situações
-  const sits = new Set();
-  (dados.situacoes ?? []).forEach((s, i) => {
-    const nome = s?.id ? `situação "${s.id}"` : `situacoes[${i}]`;
-    if (!SLUG.test(s?.id ?? '')) erro(`${nome}: "id" inválido.`);
-    else if (sits.has(s.id)) erro(`${nome}: id repetido.`);
-    else sits.add(s.id);
-    if (!ehTexto(s?.situacao)) erro(`${nome}: falta o texto da "situacao".`);
-    if (!ehTexto(s?.recomendacao)) erro(`${nome}: falta a "recomendacao".`);
-    if (!Array.isArray(s?.tipos) || !s.tipos.length) erro(`${nome}: "tipos" precisa ter ao menos um tipo.`);
-    for (const tp of s?.tipos ?? []) if (!tipos.has(tp)) erro(`${nome}: tipo "${tp}" não existe em "tipos".`);
-    if (s?.alvo !== undefined && !SITES.includes(s.alvo)) erro(`${nome}: "alvo" aceita só "A" ou "B".`);
-  });
-
-  // ------------------------------------------------------------------ calls
-  (dados.calls ?? []).forEach((c, i) => {
-    const nome = c?.termo ? `call "${c.termo}"` : `calls[${i}]`;
-    if (!ehTexto(c?.termo)) erro(`${nome}: falta o "termo".`);
-    if (!ehTexto(c?.significado)) erro(`${nome}: falta o "significado".`);
-    if (c?.tipo !== undefined && !tipos.has(c.tipo)) erro(`${nome}: tipo "${c.tipo}" não existe em "tipos".`);
-  });
 
   return { erros, avisos };
 }

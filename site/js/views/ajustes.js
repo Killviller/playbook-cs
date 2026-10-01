@@ -1,6 +1,6 @@
 import { html, raw, bool } from '../lib/html.js';
 import { store } from '../store.js';
-import { cartaoInstalar, icone } from '../ui.js';
+import { cartaoInstalar, icone, minhaFuncao, seletorDeFuncao } from '../ui.js';
 import { info, pwa, telaAcesa } from '../pwa.js';
 
 const TEMAS = [['escuro', 'Escuro'], ['claro', 'Claro'], ['sistema', 'Sistema']];
@@ -22,6 +22,8 @@ function dataBr(iso) {
 
 export function ajustes({ index }) {
   const meta = index.meta;
+  const minha = minhaFuncao(index);
+  const funcao = minha ? index.funcoesById.get(minha) : null;
   const build = info.build;
   const versao = build ? `Versão ${build.id} · gerada em ${dataBr(String(build.geradoEm).slice(0, 10))}` : 'Versão de desenvolvimento';
   const offline = info.offlinePronto
@@ -36,6 +38,13 @@ export function ajustes({ index }) {
         <h2 class="cartao__titulo">Aparência</h2>
         ${segmentado('Tema', 'tema', TEMAS, store.get('tema', 'escuro'))}
         ${segmentado('Tamanho do texto', 'texto', TEXTOS, store.get('texto', 'normal'))}
+      </section>
+
+      <section class="cartao">
+        <h2 class="cartao__titulo">Minha função</h2>
+        <p class="muted">Destaca o que você faz em cada tática e mostra o seu papel nas listas.</p>
+        ${seletorDeFuncao(index, minha)}
+        ${funcao ? html`<p><strong>${funcao.sigla} · ${funcao.nome}.</strong> <span class="muted">${funcao.descricao}</span></p>` : ''}
       </section>
 
       ${telaAcesa.suportado()
@@ -73,10 +82,9 @@ export function ajustes({ index }) {
       <section class="cartao">
         <h2 class="cartao__titulo">Sobre o playbook</h2>
         <p><strong>${meta.titulo}</strong> · ${meta.subtitulo}</p>
-        <p class="muted">${meta.objetivo}</p>
+        <p class="muted">${meta.descricao}</p>
         <p class="muted">Mapas: ${index.mapas.map((m) => m.nome).join(' · ')}</p>
-        <p class="muted">${meta.notaFonte}</p>
-        <p class="muted">${meta.notaPool}</p>
+        <p class="muted">${meta.pool}</p>
       </section>
 
       <section class="cartao">

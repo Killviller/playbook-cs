@@ -119,6 +119,14 @@ const acoes = {
     rerender();
   },
 
+  funcao(el) {
+    // data-alternar: tocar de novo na função já escolhida desmarca
+    const atual = store.get('funcao', null);
+    const novo = el.dataset.valor || null;
+    store.set('funcao', el.dataset.alternar && novo === atual ? null : novo);
+    rerender();
+  },
+
   sugestao(el) {
     const campo = document.getElementById('q');
     if (!campo) return;

@@ -1,8 +1,8 @@
 import { html, bool } from '../lib/html.js';
 import { favoritas } from '../store.js';
-import { vizinhas } from '../data.js';
+import { funcoesDaTatica, vizinhas } from '../data.js';
 import { pad2 } from '../lib/text.js';
-import { etiquetasTipo, icone, linhaDoPlaybook, selosSite } from '../ui.js';
+import { etiquetasTipo, icone, minhaFuncao, selosSite, seletorDeFuncao } from '../ui.js';
 
 /** Blocos opcionais: só aparecem quando a tática tem esses dados no JSON. */
 function extras(t) {
@@ -39,6 +39,11 @@ function pager(direcao, t) {
   </a>`;
 }
 
+function ficha(rotulo, texto, classe = '') {
+  if (!texto) return '';
+  return html`<div class="ficha__item ${classe}"><span class="ficha__rotulo">${rotulo}</span><p class="ficha__texto">${texto}</p></div>`;
+}
+
 export function tatica({ index, params }) {
   const t = index.taticasById.get(params.id);
   if (!t) return null; // main mostra "não encontrada"
@@ -46,6 +51,8 @@ export function tatica({ index, params }) {
   const mapa = index.mapasById.get(t.mapa);
   const viz = vizinhas(index, t);
   const fav = favoritas.tem(t.id);
+  const minha = minhaFuncao(index);
+  const funcoes = funcoesDaTatica(index, t, minha);
 
   return {
     titulo: mapa.nome,
@@ -61,12 +68,43 @@ export function tatica({ index, params }) {
         <header class="detalhe__cab">
           <p class="detalhe__contexto">
             <a class="tag tag--mapa" style="--h:${mapa.matiz ?? 210}" href="#/mapa/${mapa.id}">${mapa.nome}</a>
-            <span class="muted">Tática ${viz.pos} de ${viz.total}</span>
+            <span class="muted">Call <strong class="detalhe__call">${t.chamada}</strong> · ${viz.pos} de ${viz.total}</span>
           </p>
           <h1 class="detalhe__titulo"><span class="detalhe__num">${pad2(t.numero)}</span>${t.titulo}</h1>
           <p class="detalhe__tags">${etiquetasTipo(index, t)}${selosSite(t.alvo)}</p>
         </header>
-        <ul class="linhas">${t.linhas.map(linhaDoPlaybook)}</ul>
+
+        <div class="ficha">
+          ${ficha('Objetivo', t.objetivo, 'ficha__item--objetivo')}
+          ${ficha('Economia', t.economia)}
+        </div>
+
+        ${funcoes.length
+          ? html`<section class="secao-funcoes" aria-labelledby="titulo-funcoes">
+              <div class="secao-funcoes__cab">
+                <h2 class="secao" id="titulo-funcoes">O que cada um faz</h2>
+              </div>
+              ${seletorDeFuncao(index, minha)}
+              <ul class="funcoes">${funcoes.map(
+                (f) => html`<li class="funcao ${f.minha ? 'funcao--minha' : ''}">
+                  <div class="funcao__cab">
+                    <span class="funcao__sigla">${f.sigla}</span>
+                    <span class="funcao__nome">${f.nome}</span>
+                    ${f.minha ? html`<span class="funcao__voce">Você</span>` : ''}
+                  </div>
+                  <p class="funcao__texto">${f.texto}</p>
+                </li>`,
+              )}</ul>
+            </section>`
+          : ''}
+
+        ${t.posPlant || t.planoB
+          ? html`<div class="ficha ficha--saida">
+              ${ficha('Pós-plant', t.posPlant)}
+              ${ficha('Plano B', t.planoB)}
+            </div>`
+          : ''}
+
         ${extras(t)}
         <nav class="pager" aria-label="Outras táticas do mapa">
           ${pager('anterior', viz.anterior)}${pager('proxima', viz.proxima)}

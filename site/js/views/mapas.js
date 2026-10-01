@@ -23,7 +23,7 @@ export function mapas({ index }) {
     acoes: acoesPadrao(),
     corpo: html`
       ${cartaoInstalar({ dispensavel: true, compacto: true })}
-      <p class="intro">Escolha o mapa da partida. O app lembra dele na próxima vez que você abrir.</p>
+      <p class="intro">Escolha o mapa da partida. O app lembra dele na próxima vez que você abrir.${index.meta.pool ? html` <span class="muted">${index.meta.pool}.</span>` : ''}</p>
       <div class="tiles">${tiles}</div>`,
   };
 }

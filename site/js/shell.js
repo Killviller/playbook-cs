@@ -8,7 +8,7 @@ const $ = (id) => document.getElementById(id);
 const ABAS = [
   { id: 'taticas', rotulo: 'Táticas', icone: 'map', href: () => (store.get('mapa') ? `#/mapa/${store.get('mapa')}` : '#/mapas') },
   { id: 'chamar', rotulo: 'Chamar', icone: 'call', href: () => '#/chamar' },
-  { id: 'calls', rotulo: 'Calls', icone: 'list', href: () => '#/calls' },
+  { id: 'guia', rotulo: 'Guia', icone: 'book', href: () => '#/guia' },
   { id: 'favoritas', rotulo: 'Favoritas', icone: 'star', href: () => '#/favoritas' },
 ];
 

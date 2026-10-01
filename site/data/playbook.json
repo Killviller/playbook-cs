@@ -1,1018 +1,1377 @@
 {
   "meta": {
-    "titulo": "Livro de Táticas T",
-    "subtitulo": "CS2 — Playbook de 5 jogadores",
-    "objetivo": "Folha de consulta rápida para chamadas de IGL, com 10 táticas por mapa.",
+    "titulo": "PLAYBOOK T",
+    "subtitulo": "Counter-Strike 2",
+    "descricao": "70 táticas de lado TR | 10 por mapa | funções de cada jogador do início ao fim",
+    "pool": "Map pool Active Duty vigente em outubro de 2026",
+    "comoUsar": "Cada mapa tem 10 táticas de lado TR cobrindo os tipos de round que o time vai enfrentar: pistol, default, execução, split, fake, rápida, contato e force buy. Cada tática descreve o objetivo, a economia necessária, o que cada um dos cinco jogadores faz do começo ao plant, onde ficar no pós-plant e o plano B se algo der errado.",
     "lado": "T",
-    "atualizadoEm": "2026-10-01",
-    "notaFonte": "As táticas foram mantidas conforme o material fornecido, sem adicionar lineups específicas de granadas. A distribuição T1–T5 pode ser adaptada ao nível e às posições do time.",
-    "notaPool": "Como o pool mudou em julho de 2026, guias antigos que trazem Overpass no lugar de Cache estão desatualizados para o Premier atual. O pool atual é Ancient, Anubis, Cache, Dust II, Inferno, Mirage e Nuke."
+    "atualizadoEm": "2026-10-01"
   },
+  "funcoes": [
+    {"id": "p1", "sigla": "P1", "nome": "Entry", "curto": "Entry", "descricao": "Primeiro a entrar no site. Recebe as flashes e abre o espaço; sua morte precisa ser trocada na hora."},
+    {"id": "p2", "sigla": "P2", "nome": "Suporte 1 - Flash", "curto": "Flash", "descricao": "Joga as pop-flashes para o Entry e entra colado nele para fazer o trade."},
+    {"id": "p3", "sigla": "P3", "nome": "Suporte 2 - Smoke / IGL", "curto": "Smoke/IGL", "descricao": "Joga as smokes principais, lê o round e faz os calls. Se o IGL do time for outro jogador, troque as funções, mas mantenha as smokes com quem estiver em P3."},
+    {"id": "p4", "sigla": "P4", "nome": "AWP", "curto": "AWP", "descricao": "Ganha controle de mapa com picks seguros no início e segura a rotação durante a execução. Em force/eco joga de SMG ou Galil."},
+    {"id": "p5", "sigla": "P5", "nome": "Lurker", "curto": "Lurker", "descricao": "Joga separado do grupo: coleta informação, segura flanks e pune rotações. Em fakes, é quem fica para atrasar o retake."}
+  ],
   "tipos": [
-    {"id": "default", "nome": "Default"},
-    {"id": "controle", "nome": "Controle"},
-    {"id": "execute", "nome": "Execute"},
-    {"id": "split", "nome": "Split"},
-    {"id": "fake", "nome": "Fake"},
-    {"id": "lurk", "nome": "Lurk"},
-    {"id": "rush", "nome": "Rush"},
-    {"id": "lento", "nome": "Lento"},
-    {"id": "anti", "nome": "Anti-agressão"}
+    {"id": "pistol", "nome": "Pistol", "descricao": "Primeiro round de cada metade. Explosão em um site com números.", "cor": "#8e5bd0"},
+    {"id": "default", "nome": "Default", "descricao": "Espalhar pelo mapa, coletar informação e chamar a execução por volta de 0:45.", "cor": "#3c9a5f"},
+    {"id": "execucao", "nome": "Execução", "descricao": "Ataque coordenado com o pacote completo de utilitário em um site.", "cor": "#d14b3f"},
+    {"id": "split", "nome": "Split", "descricao": "Dois grupos entram no mesmo site por caminhos diferentes no mesmo segundo.", "cor": "#2f7dd1"},
+    {"id": "fake", "nome": "Fake", "descricao": "Vender um ataque em um site com barulho e utilitário e atacar o outro.", "cor": "#c27c0e"},
+    {"id": "rapida", "nome": "Rápida", "descricao": "Explosão cedo (0:20 a 0:30) para pegar a defesa ainda se posicionando.", "cor": "#d1306b"},
+    {"id": "contato", "nome": "Contato", "descricao": "Andar em silêncio e só usar utilitário no primeiro contato.", "cor": "#3a8c9a"},
+    {"id": "force", "nome": "Force", "descricao": "Round com economia baixa: armas baratas, poucas granadas e entrada com números.", "cor": "#6b6b6b"}
+  ],
+  "regras": [
+    {"titulo": "Timings", "texto": "os tempos citados (0:45, 0:25 etc.) são o relógio do round. Combinem um call curto para cada tática (ex.: 'Mirage 2') e um call de execução ('vai', 'agora')."},
+    {"titulo": "Trade sempre", "texto": "ninguém entra sozinho no site. O segundo jogador da fila está a no máximo 1 segundo do primeiro."},
+    {"titulo": "Utilitário treinado", "texto": "as smokes e molotovs citadas são as posições padrão de cada mapa. Treinem os lineups num servidor próprio antes de usar em jogo e ajustem se o time preferir outra variação."},
+    {"titulo": "Plano B", "texto": "toda tática tem uma saída. Quando o IGL chamar o plano B, ninguém continua a tática original."},
+    {"titulo": "Pós-plant", "texto": "espalhem-se para olhar as entradas do retake e não fiquem todos no mesmo ângulo. Joguem pelo tempo e pelo som do defuse."},
+    {"titulo": "Economia", "texto": "se o time não tem full buy, use a tática de Force do mapa ou faça eco completo. Evitem meio-buy sem plano."}
   ],
   "mapas": [
-    {"id": "ancient", "nome": "Ancient", "sigla": "ANC", "matiz": 140, "ativo": true},
-    {"id": "anubis", "nome": "Anubis", "sigla": "ANU", "matiz": 52, "ativo": true},
-    {"id": "cache", "nome": "Cache", "sigla": "CCH", "matiz": 215, "ativo": true},
-    {"id": "dust2", "nome": "Dust II", "sigla": "D2", "matiz": 28, "ativo": true},
-    {"id": "inferno", "nome": "Inferno", "sigla": "INF", "matiz": 5, "ativo": true},
-    {"id": "mirage", "nome": "Mirage", "sigla": "MIR", "matiz": 285, "ativo": true},
-    {"id": "nuke", "nome": "Nuke", "sigla": "NUK", "matiz": 180, "ativo": true}
+    {"id": "ancient", "nome": "Ancient", "sigla": "ANC", "matiz": 140, "ativo": true, "descricao": "Mapa de controle de Mid. Quem domina Mid e Donut abre A; Cave liga Mid com B. Nomes de posição variam entre times, então ajustem os callouts ao que vocês usam. Utilitário base: smokes CT/Elbow e fundo de A para A; smokes CT de B e Cave e molotov Pillar para B."},
+    {"id": "anubis", "nome": "Anubis", "sigla": "ANU", "matiz": 52, "ativo": true, "descricao": "Mapa que favorece o lado T, com Mid e o Canal (água) ligando os dois sites. Nomes de posição variam entre times, então ajustem os callouts ao que vocês usam. Utilitário base: smokes CT de A e saída de Mid para A; smokes CT de B e Connector e molotov Pillar para B."},
+    {"id": "cache", "nome": "Cache", "sigla": "CCH", "matiz": 215, "ativo": true, "descricao": "Mapa que voltou ao Active Duty em julho de 2026 numa versão reconstruída. Os callouts abaixo seguem os nomes clássicos (A Main, Squeaky, Quad, Highway, Z, White Box, Vent, B Main, Headshot, Checkers, Sunroom, Heaven); confiram no mapa novo se alguma posição mudou e ajustem as smokes ao layout atual."},
+    {"id": "dust2", "nome": "Dust2", "sigla": "D2", "matiz": 28, "ativo": true, "descricao": "Mapa de linhas longas e duelos de mira. O controle de Mid (Xbox, Mid Doors, Lower) liga os dois sites. Utilitário base: smokes CT Cross, Xbox e Long Corner/Cross para A; smokes CT/Doors e Window e flash de Tunnels para B."},
+    {"id": "inferno", "nome": "Inferno", "sigla": "INF", "matiz": 5, "ativo": true, "descricao": "Mapa de utilitário e paciência. Para atacar B é preciso ganhar Banana primeiro; para A, combine Apps (Apartamentos), Short e Mid. Utilitário base: molotov Car, molotov Sandbags e smokes CT e Coffins para B; smokes CT, Library e Arch e molotov Pit para A."},
+    {"id": "mirage", "nome": "Mirage", "sigla": "MIR", "matiz": 285, "ativo": true, "descricao": "Mapa equilibrado em que o meio decide o round: quem controla Top Mid e Connector dita para onde a defesa precisa girar. Utilitário base para treinar: smokes CT, Jungle e Stairs para A; Window e Connector para o meio; Kitchen e Market Window para B."},
+    {"id": "nuke", "nome": "Nuke", "sigla": "NUK", "matiz": 180, "ativo": true, "descricao": "Mapa vertical e muito favorável ao CT. Os sites ficam um em cima do outro, então a rotação é rápida. Para T, o controle de Outside (Yard) e de Lobby/Squeaky é o que abre opções. Utilitário base: smokes Heaven e CT/Mini para A; smokes de Cross (Outside) para Secret; smokes Ramp e molotovs no fundo de Ramp para B."}
   ],
   "taticas": [
     {
       "id": "ancient-01",
       "mapa": "ancient",
       "numero": 1,
-      "titulo": "Default com pressão no Mid",
-      "tipos": ["default", "controle"],
-      "alvo": [],
-      "linhas": [
-        "2 jogadores pressionam Mid.",
-        "1 fica preparado para B Main.",
-        "2 trabalham A Main/Donut.",
-        "Objetivo: descobrir onde estão os CTs antes de escolher o bombsite."
-      ]
+      "titulo": "Pistol - Rush A Main",
+      "tipos": ["pistol"],
+      "alvo": ["A"],
+      "objetivo": "Chegar em A pelo Main com cinco jogadores antes de a rotação de Mid/Donut chegar.",
+      "economia": "Pistolas, 1 smoke e flashes",
+      "funcoes": {
+        "p1": "Primeiro em A Main. No estouro da flash, entra limpando o canto próximo e depois Tree/Default.",
+        "p2": "Pop-flash por cima do fim de A Main e entra colado no Entry limpando o fundo do site.",
+        "p3": "Joga smoke em CT/Elbow do fim de Main para cortar a rotação; entra em terceiro limpando Donut.",
+        "p4": "Fica atrás segurando Donut por 5s para ninguém flanquear, depois entra olhando CT.",
+        "p5": "Fecha a fila em A Main vigiando as costas; entra por último."
+      },
+      "posPlant": "Plant em Default A. Posições: Main, Donut, site, CT/Elbow e um jogador perto da bomba.",
+      "planoB": "Se perderem 2 antes da entrada, recuem para Main e esperem até ter números."
     },
     {
       "id": "ancient-02",
       "mapa": "ancient",
       "numero": 2,
-      "titulo": "Explosão B",
-      "tipos": ["execute"],
-      "alvo": ["B"],
-      "linhas": [
-        "3 jogadores B Main.",
-        "1 segura Mid para impedir avanço/rotação.",
-        "1 fica A fazendo barulho.",
-        "Utilitárias para expulsar posições defensivas.",
-        "Entrada rápida em B."
-      ]
+      "titulo": "Controle de Mid para A (Donut + Main)",
+      "tipos": ["execucao"],
+      "alvo": ["A"],
+      "objetivo": "Ganhar Mid e Donut com utilitário e entrar em A por Main e Donut ao mesmo tempo.",
+      "economia": "Full buy: 3 smokes, 1 molotov, 4 flashes",
+      "funcoes": {
+        "p1": "Em A Main. No call, entra limpando o canto próximo e Tree.",
+        "p2": "Em Mid com o AWP. Joga flash em Donut para ganhar Temple e entra por Donut no call.",
+        "p3": "IGL, em A Main. Joga smoke CT/Elbow e smoke no fundo do site; molotov no canto de Default.",
+        "p4": "Ganha Top Mid e segura Elbow/CT com a AWP; depois do plant gira para Donut.",
+        "p5": "Em B Ramp/Cave fazendo barulho para segurar a rotação de B."
+      },
+      "posPlant": "Plant em Default A; posições Main, Donut, Temple, Elbow e CT.",
+      "planoB": "Se Donut for bloqueado, o grupo de Mid segura e o Main entra sozinho com o utilitário."
     },
     {
       "id": "ancient-03",
       "mapa": "ancient",
       "numero": 3,
-      "titulo": "Split B pelo Mid",
-      "tipos": ["split"],
+      "titulo": "Execução B (Ramp + Cave)",
+      "tipos": ["execucao"],
       "alvo": ["B"],
-      "linhas": [
-        "2 B Main.",
-        "2 Mid.",
-        "1 fica atrasado para punir avanço CT.",
-        "Quando Mid estiver controlado, os dois grupos entram simultaneamente."
-      ]
+      "objetivo": "Ganhar B Ramp e Cave e entrar em B pelos dois lados com o site isolado.",
+      "economia": "Full buy: 3 smokes, 2 molotovs, 4 flashes",
+      "funcoes": {
+        "p1": "Em B Ramp. Na queda das smokes, desce limpando Pillar e depois o fundo do site.",
+        "p2": "Em Cave. Flash por cima de Cave e entra limpando o lado de CT.",
+        "p3": "IGL, em B Ramp. Joga smokes no CT de B e em Short/Long de B; molotov no Pillar.",
+        "p4": "Segura Mid/Elbow durante a entrada para cortar a rotação; depois do plant segura Cave.",
+        "p5": "Em A Main fazendo barulho no início e segurando a rotação de A."
+      },
+      "posPlant": "Plant em Default B; posições Ramp, Cave, Pillar, CT e fundo do site.",
+      "planoB": "Se Cave for bloqueada, o grupo entra só por Ramp com flashes seguidas."
     },
     {
       "id": "ancient-04",
       "mapa": "ancient",
       "numero": 4,
-      "titulo": "Split A Main + Donut",
+      "titulo": "Split B (Mid/Cave + Ramp)",
       "tipos": ["split"],
-      "alvo": ["A"],
-      "linhas": [
-        "2 A Main.",
-        "2 Donut/Mid.",
-        "1 lurker em B.",
-        "Ataque sincronizado para impedir que os CTs simplesmente recuem para o site."
-      ]
+      "alvo": ["B"],
+      "objetivo": "Dividir a defesa de B com um grupo vindo de Mid por Cave e outro por Ramp.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Em B Ramp. Entra no call limpando Pillar.",
+        "p2": "Em Mid com o AWP. Joga flash em Cave e entra limpando o lado de CT.",
+        "p3": "IGL, em B Ramp. Smoke em CT de B; molotov no Pillar; entra em segundo pela Ramp.",
+        "p4": "Ganha Mid no início e segura Elbow durante o call; entra por Cave por último.",
+        "p5": "Em A Main segurando a rotação de A."
+      },
+      "posPlant": "Plant em Default B; posições Ramp, Cave, Pillar, CT e Mid.",
+      "planoB": "Se Mid for contestado, o grupo de Mid recua e todos entram por Ramp."
     },
     {
       "id": "ancient-05",
       "mapa": "ancient",
       "numero": 5,
-      "titulo": "Fake B → A",
+      "titulo": "Fake A, Hit B",
       "tipos": ["fake"],
-      "alvo": ["A"],
-      "linhas": [
-        "Faça presença forte em B.",
-        "Utilize granadas e passos para convencer os CTs de uma entrada.",
-        "Recuar parcialmente.",
-        "Rotacionar para A enquanto o lurker mantém pressão."
-      ]
+      "alvo": ["B"],
+      "objetivo": "Vender execução em A com utilitário e atacar B com quatro jogadores.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Em B Ramp desde o início, em silêncio. No call, desce com flash limpando Pillar.",
+        "p2": "Em A Main: aos 0:50 joga flash e molotov para dentro de A e faz barulho; depois corre por Mid para Cave.",
+        "p3": "IGL. Joga smoke CT/Elbow para vender o fake; corre para B Ramp e joga smoke CT de B no call.",
+        "p4": "Segura Mid durante o fake; entra em B por Cave após o call.",
+        "p5": "Fica em A Main segurando o fake até o fim do round e atrasando o retake."
+      },
+      "posPlant": "Plant em B; posições Ramp, Cave, Pillar, CT e A Main (Lurker).",
+      "planoB": "Se o CT não girar, o IGL transforma o fake em Execução A com o Lurker."
     },
     {
       "id": "ancient-06",
       "mapa": "ancient",
       "numero": 6,
-      "titulo": "Fake A → B",
-      "tipos": ["fake"],
-      "alvo": ["B"],
-      "linhas": [
-        "Mostrar jogadores em A Main.",
-        "Utilizar algumas granadas.",
-        "Recuar antes do contato decisivo.",
-        "B explode depois que os CTs começarem a rotacionar."
-      ]
+      "titulo": "Default lenta + Lurk B",
+      "tipos": ["default"],
+      "alvo": [],
+      "objetivo": "Coletar informação nos primeiros 40s com presença em A e Mid e deixar o Lurker punir a rotação em B.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Em A Main fazendo presença (barulho, sem se expor), avisando se o CT empurrar.",
+        "p2": "Em Mid jogando flash para ganhar Top Mid com o AWP; guarda o resto do utilitário para a execução.",
+        "p3": "IGL, em Mid. Lê o round (quantos em A, onde está o AWP do CT) e chama o site aos 0:45.",
+        "p4": "Em Top Mid procurando pick em Elbow e Donut; não fica exposto sem smoke.",
+        "p5": "Em B Ramp em silêncio. Se ouvir rotação de B para A/Mid, avisa e decide entre entrar sozinho ou esperar o grupo."
+      },
+      "posPlant": "Depende do site chamado: posições do Controle de Mid para A ou da Execução B.",
+      "planoB": "Se nada acontecer até 0:40, o IGL chama Execução B imediatamente."
     },
     {
       "id": "ancient-07",
       "mapa": "ancient",
       "numero": 7,
-      "titulo": "Controle lento de Mid",
-      "tipos": ["controle", "lento"],
-      "alvo": [],
-      "linhas": [
-        "Não buscar entrada imediata.",
-        "Ganhar espaço aos poucos.",
-        "Forçar os CTs a gastar utilidade.",
-        "Depois decidir entre A e B."
-      ]
+      "titulo": "Rápida Donut (A)",
+      "tipos": ["rapida"],
+      "alvo": ["A"],
+      "objetivo": "Explodir em A por Donut aos 0:25, quando o CT ainda espera ataque pelo Main.",
+      "economia": "Full buy ou force com SMGs",
+      "funcoes": {
+        "p1": "Primeiro em Donut. Após a flash, entra limpando Temple e o canto de Default.",
+        "p2": "Pop-flash por cima de Donut e entra logo atrás limpando o fundo do site.",
+        "p3": "IGL. Joga smoke CT/Elbow no início e entra por A Main limpando Tree.",
+        "p4": "Segura Elbow/CT de Mid para cortar a rotação; depois do plant segura Donut.",
+        "p5": "Em B Ramp segurando a rotação de B."
+      },
+      "posPlant": "Plant em Default A; posições Donut, Main, Temple, Elbow e CT.",
+      "planoB": "Se o Entry cair na entrada, trocar imediatamente; não recuar com 4 já no Donut."
     },
     {
       "id": "ancient-08",
       "mapa": "ancient",
       "numero": 8,
-      "titulo": "Rush B",
-      "tipos": ["rush"],
+      "titulo": "Contato B (Ramp)",
+      "tipos": ["contato"],
       "alvo": ["B"],
-      "linhas": [
-        "4–5 jogadores B Main.",
-        "Utilidade inicial para reduzir posições defensivas.",
-        "Entrada rápida.",
-        "Excelente para quebrar um adversário que esteja jogando muito recuado."
-      ]
+      "objetivo": "Andar em silêncio até B e explodir só no primeiro contato.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Anda em silêncio (Shift) pela B Ramp; no contato entra limpando Pillar.",
+        "p2": "Atrás do Entry; no contato joga flash por cima da Ramp e entra limpando o fundo.",
+        "p3": "IGL. No contato joga smoke no CT de B e molotov no Pillar; entra em seguida.",
+        "p4": "Em Mid segurando Elbow e Cave contra a rotação.",
+        "p5": "Em A Main em silêncio, avisando a rotação de A."
+      },
+      "posPlant": "Plant em B; posições Ramp, Cave, Pillar, CT e fundo do site.",
+      "planoB": "Se a rotação vier rápida, segurem a parte de cima da Ramp e joguem pelo trade."
     },
     {
       "id": "ancient-09",
       "mapa": "ancient",
       "numero": 9,
-      "titulo": "A com lurker B",
-      "tipos": ["lurk"],
-      "alvo": ["A"],
-      "linhas": [
-        "4 jogadores trabalham A.",
-        "1 permanece B.",
-        "O lurker pode eliminar rotação ou pegar CTs desprevenidos."
-      ]
+      "titulo": "Force buy - Rush B Ramp",
+      "tipos": ["force"],
+      "alvo": ["B"],
+      "objetivo": "Ganhar um force round com números e explosão em B pela Ramp.",
+      "economia": "SMG/pistola forte + kevlar, 2 smokes, 3 flashes",
+      "funcoes": {
+        "p1": "Primeiro na Ramp; a prioridade é ganhar o primeiro duelo com flash.",
+        "p2": "Duas flashes seguidas por cima da Ramp e entra limpando o fundo.",
+        "p3": "IGL. Smoke no CT de B e smoke em Cave; entra em terceiro.",
+        "p4": "Sem AWP: SMG ou Galil; entra pela Ramp limpando Pillar.",
+        "p5": "Segura a entrada da Ramp contra o flank e entra por último."
+      },
+      "posPlant": "Plant em B e joguem perto da bomba, prontos para um retake curto.",
+      "planoB": "Se perderem a entrada, guardem as armas e salvem."
     },
     {
       "id": "ancient-10",
       "mapa": "ancient",
       "numero": 10,
-      "titulo": "Round de punição",
-      "tipos": ["anti"],
-      "alvo": [],
-      "linhas": [
-        "Se o CT estiver sempre agressivo em Mid, prepare uma armadilha.",
-        "Deixe um jogador aparentemente sozinho.",
-        "Quando o CT avançar, dois jogadores fecham o cerco.",
-        "Depois transforme a vantagem num ataque ao site oposto."
-      ]
+      "titulo": "Mid para Cave, B tardio",
+      "tipos": ["default", "execucao"],
+      "alvo": ["B"],
+      "objetivo": "Ganhar Mid com o grupo, segurar a defesa em A e invadir B por Cave tarde.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Em Mid com o grupo; no call entra por Cave limpando o lado de CT.",
+        "p2": "Em Mid; joga flash em Cave no call e entra em seguida.",
+        "p3": "IGL. Joga smoke CT/Elbow para ganhar Mid; no call joga smoke no CT de B.",
+        "p4": "Segura Mid/Elbow; depois do plant segura Cave contra a rotação.",
+        "p5": "Em B Ramp em silêncio; entra junto no call limpando Pillar."
+      },
+      "posPlant": "Plant em B; posições Cave, Ramp, Pillar, CT e Mid.",
+      "planoB": "Se Mid for perdido, o grupo recua e o IGL chama Execução B pela Ramp."
     },
     {
       "id": "anubis-01",
       "mapa": "anubis",
       "numero": 1,
-      "titulo": "Default 2-1-2",
-      "tipos": ["default"],
-      "alvo": [],
-      "linhas": [
-        "2 A.",
-        "1 Mid.",
-        "2 B.",
-        "O jogador Mid decide onde reforçar.",
-        "Evite entregar jogadores gratuitamente no início."
-      ]
+      "titulo": "Pistol - Rush B Main",
+      "tipos": ["pistol"],
+      "alvo": ["B"],
+      "objetivo": "Chegar em B pelo Main com cinco jogadores antes de a rotação vinda de Mid chegar.",
+      "economia": "Pistolas, 1-2 smokes e flashes",
+      "funcoes": {
+        "p1": "Primeiro em B Main. No estouro da flash, entra limpando o canto próximo e depois Pillar.",
+        "p2": "Pop-flash por cima do fim de B Main e entra colado no Entry limpando o fundo do site.",
+        "p3": "Joga smoke em CT de B a partir do Main; entra em terceiro segurando a saída de Connector.",
+        "p4": "Segura a saída de Mid/Canal por 5s para ninguém flanquear, depois entra olhando CT.",
+        "p5": "Fecha a fila em B Main vigiando as costas; entra por último."
+      },
+      "posPlant": "Plant em Default B. Posições: Main, Pillar, fundo do site, Connector e CT.",
+      "planoB": "Se perderem 2 antes da entrada, recuem para o Main e esperem até ter números."
     },
     {
       "id": "anubis-02",
       "mapa": "anubis",
       "numero": 2,
-      "titulo": "Explosão A",
-      "tipos": ["execute"],
+      "titulo": "Execução A padrão (Main)",
+      "tipos": ["execucao"],
       "alvo": ["A"],
-      "linhas": [
-        "3–4 jogadores preparados para A.",
-        "1 controla Mid.",
-        "1 lurka B.",
-        "Entrada sincronizada depois da utilização de granadas."
-      ],
-      "revisar": "O PDF indica 3–4 jogadores no grupo principal, mas os outros papéis já completam 5 jogadores com 3. Confirmar o número correto."
+      "objetivo": "Tomar A pelo Main com smokes que isolem CT e a saída de Mid.",
+      "economia": "Full buy: 3 smokes, 1 molotov, 4 flashes",
+      "funcoes": {
+        "p1": "Primeiro em A Main. Na queda das smokes, entra limpando o canto próximo e depois Default.",
+        "p2": "Flash por cima do fim do Main e entra logo atrás limpando o fundo do site.",
+        "p3": "IGL. Smoke em CT de A e smoke na saída de Mid/Bridge; molotov no canto de Default.",
+        "p4": "Ganha Mid no início e segura Bridge/Connector com a AWP; depois do plant gira para o site.",
+        "p5": "Em B Main fazendo barulho no início e segurando a rotação de B."
+      },
+      "posPlant": "Plant em Default A; posições Main, site, Bridge, CT e Mid.",
+      "planoB": "Se a entrada for punida, recuem para o Main e o IGL chama Mid para B."
     },
     {
       "id": "anubis-03",
       "mapa": "anubis",
       "numero": 3,
-      "titulo": "Split A pelo Mid",
+      "titulo": "Controle de Canal para A",
       "tipos": ["split"],
       "alvo": ["A"],
-      "linhas": [
-        "2 A Main.",
-        "2 Mid.",
-        "1 lurker B.",
-        "Entrada pelos dois lados do bombsite."
-      ]
+      "objetivo": "Ganhar o Canal (água) de Mid e atacar A por Main e por Mid ao mesmo tempo.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Em A Main. Entra no call limpando o canto próximo.",
+        "p2": "Em Mid/Canal com o Suporte 2. Flash para fora do Canal e entra pelo lado de Mid limpando o fundo de A.",
+        "p3": "IGL, em Mid. Joga smoke em CT de A e smoke em Connector; entra pelo Canal em segundo.",
+        "p4": "Segura Mid durante o call; depois do plant segura a volta por Connector.",
+        "p5": "Em B Main segurando a rotação de B."
+      },
+      "posPlant": "Plant em Default A; posições Main, site, Canal, CT e Connector.",
+      "planoB": "Se o Canal for bloqueado, o grupo de Mid recua e todos entram pelo Main."
     },
     {
       "id": "anubis-04",
       "mapa": "anubis",
       "numero": 4,
-      "titulo": "Split B",
-      "tipos": ["split"],
+      "titulo": "Execução B padrão",
+      "tipos": ["execucao"],
       "alvo": ["B"],
-      "linhas": [
-        "2 B Main.",
-        "2 Mid/Water.",
-        "1 lurker A.",
-        "O objetivo é impedir que os CTs defendam B de apenas uma posição."
-      ]
+      "objetivo": "Entrar em B pelo Main com smokes em CT e Connector.",
+      "economia": "Full buy: 3 smokes, 1 molotov, 4 flashes",
+      "funcoes": {
+        "p1": "Primeiro em B Main; entra limpando o canto próximo e Pillar.",
+        "p2": "Flash por cima do Main e entra limpando o fundo do site.",
+        "p3": "IGL. Smokes em CT de B e Connector; molotov no Pillar.",
+        "p4": "Segura Mid durante a entrada para cortar a rotação; depois do plant segura Connector.",
+        "p5": "Em A Main segurando a rotação de A."
+      },
+      "posPlant": "Plant em Default B; posições Main, Pillar, fundo do site, Connector e CT.",
+      "planoB": "Se perderem 2 na entrada, recuem e esperem até ter números."
     },
     {
       "id": "anubis-05",
       "mapa": "anubis",
       "numero": 5,
-      "titulo": "Fake A → B",
-      "tipos": ["fake"],
+      "titulo": "Split B (Main + Connector)",
+      "tipos": ["split"],
       "alvo": ["B"],
-      "linhas": [
-        "Faça barulho e use utilidade em A.",
-        "O lurker pode permanecer próximo de A.",
-        "Grupo principal atravessa rapidamente para B."
-      ]
+      "objetivo": "Dividir a defesa de B com um grupo por Main e outro vindo de Mid por Connector.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Em B Main; entra no call limpando Pillar.",
+        "p2": "Em Mid; flash para Connector e entra limpando o lado de CT.",
+        "p3": "IGL, em B Main. Smoke em CT de B; molotov no Pillar.",
+        "p4": "Ganha Mid no início e segura a volta de A; entra por Connector por último.",
+        "p5": "Em A Main segurando a rotação de A."
+      },
+      "posPlant": "Plant em Default B; posições Main, Connector, Pillar, CT e Mid.",
+      "planoB": "Se Connector for bloqueado, todos entram pelo Main."
     },
     {
       "id": "anubis-06",
       "mapa": "anubis",
       "numero": 6,
-      "titulo": "Fake B → A",
+      "titulo": "Fake A, Hit B",
       "tipos": ["fake"],
-      "alvo": ["A"],
-      "linhas": [
-        "3 jogadores demonstram intenção em B.",
-        "2 permanecem preparados para A.",
-        "Depois da rotação CT, ataque A."
-      ]
+      "alvo": ["B"],
+      "objetivo": "Vender execução em A e atacar B com quatro jogadores.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Em B Main desde o início, em silêncio. No call, entra com flash limpando Pillar.",
+        "p2": "Em A Main: aos 0:50 joga flash e molotov para dentro de A; depois corre por Mid para B.",
+        "p3": "IGL. Joga smoke em CT de A para vender o fake; corre para B Main e joga smoke CT de B no call.",
+        "p4": "Segura Mid durante o fake; entra em B por Connector após o call.",
+        "p5": "Fica em A Main segurando o fake até o fim do round e atrasando o retake."
+      },
+      "posPlant": "Plant em B; posições Main, Pillar, Connector, CT e A Main (Lurker).",
+      "planoB": "Se o CT não girar, o IGL transforma o fake em Execução A com o Lurker."
     },
     {
       "id": "anubis-07",
       "mapa": "anubis",
       "numero": 7,
-      "titulo": "Controle de Water",
-      "tipos": ["controle"],
-      "alvo": ["B"],
-      "linhas": [
-        "2 jogadores buscam Water.",
-        "2 trabalham B Main.",
-        "1 fica Mid.",
-        "Water vira uma terceira direção de ataque."
-      ]
+      "titulo": "Default com controle de Mid",
+      "tipos": ["default"],
+      "alvo": [],
+      "objetivo": "Ganhar Mid e Canal nos primeiros 30s, coletar informação e chamar a execução aos 0:45.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Em B Main fazendo presença sem se expor, avisando se o CT empurrar.",
+        "p2": "Em Mid jogando flash para ganhar o Canal; guarda o restante do utilitário.",
+        "p3": "IGL, em Mid. Lê o round (quantos em cada site, onde está o AWP) e chama o site aos 0:45.",
+        "p4": "Em Mid procurando pick em Bridge e Connector; não fica exposto sem smoke.",
+        "p5": "Em A Main em silêncio, avisando a rotação de A."
+      },
+      "posPlant": "Depende do site chamado: posições da Execução A padrão ou da Execução B padrão.",
+      "planoB": "Se nada acontecer até 0:40, o IGL chama Execução B imediatamente."
     },
     {
       "id": "anubis-08",
       "mapa": "anubis",
       "numero": 8,
-      "titulo": "Rush B",
-      "tipos": ["rush"],
-      "alvo": ["B"],
-      "linhas": [
-        "Entrada com 4–5.",
-        "Evitar ficar parado no choke.",
-        "Primeiro objetivo é eliminar as posições capazes de travar a entrada."
-      ]
+      "titulo": "Rápida A (Main + Canal)",
+      "tipos": ["rapida"],
+      "alvo": ["A"],
+      "objetivo": "Explodir em A aos 0:25 por Main e Canal ao mesmo tempo.",
+      "economia": "Full buy ou force com SMGs",
+      "funcoes": {
+        "p1": "Primeiro em A Main; entra limpando o canto próximo após a flash.",
+        "p2": "Pop-flash por cima do Main e entra limpando o fundo do site.",
+        "p3": "IGL. Smoke em CT de A do spawn; entra pelo Canal limpando o lado de Mid.",
+        "p4": "Segura Connector para cortar a rotação de B.",
+        "p5": "Entra pelo Canal com o IGL."
+      },
+      "posPlant": "Plant em Default A; posições Main, Canal, site, CT e Connector.",
+      "planoB": "Se o Entry cair na entrada, trocar imediatamente; não recuar com 4 já no site."
     },
     {
       "id": "anubis-09",
       "mapa": "anubis",
       "numero": 9,
-      "titulo": "Lurk A enquanto B ataca",
-      "tipos": ["lurk"],
+      "titulo": "Contato B (Main)",
+      "tipos": ["contato"],
       "alvo": ["B"],
-      "linhas": [
-        "4 atacam B.",
-        "1 jogador fica A.",
-        "Se os CTs rotacionarem, o lurker pode pegar as costas."
-      ]
+      "objetivo": "Andar em silêncio até B e explodir só no primeiro contato.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Anda em silêncio (Shift) pelo B Main; no contato entra limpando Pillar.",
+        "p2": "Atrás do Entry; no contato joga flash e entra limpando o fundo do site.",
+        "p3": "IGL. No contato joga smokes em CT e Connector e entra em seguida.",
+        "p4": "Em Mid segurando Connector contra a rotação.",
+        "p5": "Em A Main em silêncio, avisando a rotação de A."
+      },
+      "posPlant": "Plant em B; posições Main, Pillar, Connector, CT e fundo do site.",
+      "planoB": "Se a rotação vier rápida, segurem o Main e joguem pelo trade."
     },
     {
       "id": "anubis-10",
       "mapa": "anubis",
       "numero": 10,
-      "titulo": "Default de 40 segundos",
-      "tipos": ["default", "lento"],
-      "alvo": [],
-      "linhas": [
-        "Jogar lentamente durante os primeiros 30–40 segundos.",
-        "Buscar informação.",
-        "Fazer os CTs gastarem utilidade.",
-        "Ataque final apenas quando houver informação suficiente."
-      ]
+      "titulo": "Force buy - Rush A Main",
+      "tipos": ["force"],
+      "alvo": ["A"],
+      "objetivo": "Ganhar um force round com números e explosão em A pelo Main.",
+      "economia": "SMG/pistola forte + kevlar, 2 smokes, 3 flashes",
+      "funcoes": {
+        "p1": "Primeiro em A Main; a prioridade é ganhar o primeiro duelo com flash.",
+        "p2": "Duas flashes seguidas por cima do Main e entra limpando o fundo.",
+        "p3": "IGL. Smoke em CT de A e na saída de Mid; entra em terceiro.",
+        "p4": "Sem AWP: SMG ou Galil; entra pelo Main limpando o canto de Default.",
+        "p5": "Segura o Main contra o flank e entra por último."
+      },
+      "posPlant": "Plant em A e joguem perto da bomba, prontos para um retake curto.",
+      "planoB": "Se perderem a entrada, guardem as armas e salvem."
     },
     {
       "id": "cache-01",
       "mapa": "cache",
       "numero": 1,
-      "titulo": "Controle de Mid",
-      "tipos": ["controle"],
-      "alvo": [],
-      "linhas": [
-        "2 jogadores Mid.",
-        "1 A Main.",
-        "1 B Main.",
-        "1 lurker.",
-        "O objetivo é conquistar espaço antes do execute."
-      ]
+      "titulo": "Pistol - Rush B Main",
+      "tipos": ["pistol"],
+      "alvo": ["B"],
+      "objetivo": "Chegar em B com cinco jogadores antes de a rotação por Mid/Z chegar.",
+      "economia": "Pistolas, 1-2 smokes e flashes",
+      "funcoes": {
+        "p1": "Primeiro em B Main. No estouro da flash, entra limpando Headshot e depois Checkers.",
+        "p2": "Pop-flash por cima do fim de B Main e entra colado no Entry limpando o fundo do site.",
+        "p3": "Joga smoke em Heaven/CT de B a partir do Main; entra em terceiro limpando Sunroom.",
+        "p4": "Segura Garage por 5s contra flank, depois entra olhando Checkers.",
+        "p5": "Fecha a fila em B Main vigiando as costas e entra por último."
+      },
+      "posPlant": "Plant em Default B. Posições: Main, Headshot, Checkers, Sunroom e CT.",
+      "planoB": "Se perderem 2 antes da entrada, recuem e esperem até ter números."
     },
     {
       "id": "cache-02",
       "mapa": "cache",
       "numero": 2,
-      "titulo": "Split A",
-      "tipos": ["split"],
+      "titulo": "Execução A padrão (Main + Squeaky)",
+      "tipos": ["execucao"],
       "alvo": ["A"],
-      "linhas": [
-        "2 A Main.",
-        "2 Mid/Highway.",
-        "1 lurker B.",
-        "Ataque simultâneo."
-      ]
+      "objetivo": "Tomar A por Main e Squeaky com o site isolado de Highway e CT.",
+      "economia": "Full buy: 3 smokes, 1 molotov, 4 flashes",
+      "funcoes": {
+        "p1": "Primeiro em A Main. Na queda das smokes, entra limpando Quad e Default.",
+        "p2": "Em Squeaky. Flash por cima de Squeaky e entra limpando o fundo do site.",
+        "p3": "IGL, em A Main. Smokes em Highway, CT e Truck; molotov em Quad.",
+        "p4": "Em Mid segurando Z/White Box com a AWP; depois do plant gira para Highway.",
+        "p5": "Em B Main fazendo barulho no início e segurando a rotação de B."
+      },
+      "posPlant": "Plant em Default A; posições Main, Quad, Squeaky, Highway e Truck.",
+      "planoB": "Se Squeaky for contestado, todos entram pelo Main com o utilitário restante."
     },
     {
       "id": "cache-03",
       "mapa": "cache",
       "numero": 3,
-      "titulo": "Explosão A Main",
-      "tipos": ["execute"],
+      "titulo": "Controle de Mid para A (Z + Main)",
+      "tipos": ["split"],
       "alvo": ["A"],
-      "linhas": [
-        "4 jogadores A.",
-        "1 segura B.",
-        "Executar rapidamente depois das granadas.",
-        "Não deixar os CTs reorganizarem a defesa."
-      ]
+      "objetivo": "Ganhar Mid e atacar A por Main e pelo meio (Z/Highway) ao mesmo tempo.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Em A Main. Entra no call limpando Quad.",
+        "p2": "Em Mid com o AWP. Flash em Z e entra pelo Highway limpando o fundo de A.",
+        "p3": "IGL, em A Main. Smoke CT e Truck; molotov em Quad.",
+        "p4": "Ganha Mid no início e segura Z e White Box; depois do plant segura Highway.",
+        "p5": "Em B Main segurando a rotação de B."
+      },
+      "posPlant": "Plant em Default A; posições Main, Quad, Highway, Truck e Z.",
+      "planoB": "Se Mid for contestado, o grupo de Mid recua e todos entram pelo Main."
     },
     {
       "id": "cache-04",
       "mapa": "cache",
       "numero": 4,
-      "titulo": "Split B",
-      "tipos": ["split"],
+      "titulo": "Execução B padrão",
+      "tipos": ["execucao"],
       "alvo": ["B"],
-      "linhas": [
-        "2 B Main.",
-        "2 Mid.",
-        "1 A lurker.",
-        "Mid serve como segunda porta de entrada."
-      ]
+      "objetivo": "Entrar em B pelo Main com smokes em Heaven, CT e Sunroom.",
+      "economia": "Full buy: 3 smokes, 1 molotov, 4 flashes",
+      "funcoes": {
+        "p1": "Primeiro em B Main. Na queda das smokes, entra limpando Headshot e Checkers.",
+        "p2": "Flash por cima do Main e entra limpando o fundo do site.",
+        "p3": "IGL. Smokes em Heaven, CT e Sunroom; molotov em Headshot.",
+        "p4": "Segura Mid/Vent durante a entrada para cortar a rotação; depois do plant segura Checkers.",
+        "p5": "Em A Main segurando a rotação de A."
+      },
+      "posPlant": "Plant em Default B; posições Main, Headshot, Checkers, Sunroom e CT.",
+      "planoB": "Se perderem 2 na entrada, recuem e esperem até ter números."
     },
     {
       "id": "cache-05",
       "mapa": "cache",
       "numero": 5,
-      "titulo": "Fake A → B",
-      "tipos": ["fake"],
+      "titulo": "Split B (Main + Mid/Vent)",
+      "tipos": ["split"],
       "alvo": ["B"],
-      "linhas": [
-        "3 jogadores mostram presença A.",
-        "Fazer barulho e gastar algumas granadas.",
-        "Recuar.",
-        "B executa quando a defesa sair da posição."
-      ]
+      "objetivo": "Dividir a defesa de B com um grupo por Main e outro vindo de Mid.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Em B Main; entra no call limpando Headshot.",
+        "p2": "Em Mid; flash para Checkers e entra pelo lado de Mid.",
+        "p3": "IGL, em B Main. Smoke em Heaven e CT; molotov em Headshot.",
+        "p4": "Ganha Mid no início e segura Z; entra pelo lado de Mid por último.",
+        "p5": "Em A Main segurando a rotação de A."
+      },
+      "posPlant": "Plant em Default B; posições Main, Checkers, Headshot, Sunroom e Mid.",
+      "planoB": "Se Mid for contestado, todos entram pelo Main."
     },
     {
       "id": "cache-06",
       "mapa": "cache",
       "numero": 6,
-      "titulo": "Fake B → A",
+      "titulo": "Fake A, Hit B",
       "tipos": ["fake"],
-      "alvo": ["A"],
-      "linhas": [
-        "Pressão inicial B.",
-        "2 jogadores mantêm Mid.",
-        "A entra depois que os CTs começarem a rotacionar."
-      ]
+      "alvo": ["B"],
+      "objetivo": "Vender execução em A e atacar B com quatro jogadores.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Em B Main desde o início, em silêncio. No call, entra com flash limpando Headshot.",
+        "p2": "Em A Main: aos 0:50 joga flash e molotov em Quad; depois corre por Mid para B.",
+        "p3": "IGL. Smoke em Highway para vender o fake; corre para B Main e joga smokes de B no call.",
+        "p4": "Segura Mid durante o fake; entra em B pelo lado de Mid após o call.",
+        "p5": "Fica em A Main segurando o fake até o fim do round e atrasando o retake."
+      },
+      "posPlant": "Plant em B; posições Main, Headshot, Checkers, Sunroom e A Main (Lurker).",
+      "planoB": "Se o CT não girar, o IGL transforma o fake em Execução A com o Lurker."
     },
     {
       "id": "cache-07",
       "mapa": "cache",
       "numero": 7,
-      "titulo": "Lurk Mid",
-      "tipos": ["lurk"],
+      "titulo": "Default com controle de Mid",
+      "tipos": ["default"],
       "alvo": [],
-      "linhas": [
-        "4 jogadores trabalham um site.",
-        "1 fica escondido em Mid.",
-        "O lurker pune rotações."
-      ]
+      "objetivo": "Ganhar Mid e Garage nos primeiros 30s, coletar informação e chamar a execução aos 0:45.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Em A Main fazendo presença sem se expor, avisando se o CT empurrar.",
+        "p2": "Em Mid jogando flash para ganhar White Box; guarda o restante do utilitário.",
+        "p3": "IGL, em Mid. Lê o round (quantos em cada site, onde está o AWP) e chama o site aos 0:45.",
+        "p4": "Em Mid procurando pick em Z e Vent; não fica exposto sem smoke.",
+        "p5": "Em B Main/Garage em silêncio, avisando a rotação de B."
+      },
+      "posPlant": "Depende do site chamado: posições da Execução A padrão ou da Execução B padrão.",
+      "planoB": "Se nada acontecer até 0:40, o IGL chama Execução A imediatamente."
     },
     {
       "id": "cache-08",
       "mapa": "cache",
       "numero": 8,
-      "titulo": "Rush B",
-      "tipos": ["rush"],
-      "alvo": ["B"],
-      "linhas": [
-        "Grupo completo B Main.",
-        "Entrada rápida.",
-        "Ideal para rounds anti-eco ou quando a defesa B está previsível."
-      ]
+      "titulo": "Rápida A (Main + Squeaky)",
+      "tipos": ["rapida"],
+      "alvo": ["A"],
+      "objetivo": "Explodir em A aos 0:25 por Main e Squeaky ao mesmo tempo.",
+      "economia": "Full buy ou force com SMGs",
+      "funcoes": {
+        "p1": "Primeiro em A Main; entra limpando Quad após a flash.",
+        "p2": "Pop-flash de Squeaky e entra limpando o fundo do site.",
+        "p3": "IGL. Smoke em Highway do spawn; entra pelo Main em seguida.",
+        "p4": "Segura Mid/Z para cortar a rotação de B.",
+        "p5": "Entra por Squeaky com o Suporte 1."
+      },
+      "posPlant": "Plant em Default A; posições Main, Squeaky, Quad, Highway e Truck.",
+      "planoB": "Se o Entry cair na entrada, trocar imediatamente; não recuar com 4 já no site."
     },
     {
       "id": "cache-09",
       "mapa": "cache",
       "numero": 9,
-      "titulo": "Default agressivo",
-      "tipos": ["default"],
-      "alvo": [],
-      "linhas": [
-        "Buscar duelos controlados em Mid.",
-        "Não comprometer todos os jogadores.",
-        "Se conseguir uma kill, acelerar imediatamente."
-      ]
+      "titulo": "Contato B (Main)",
+      "tipos": ["contato"],
+      "alvo": ["B"],
+      "objetivo": "Andar em silêncio até B e explodir só no primeiro contato.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Anda em silêncio (Shift) pelo B Main; no contato entra limpando Headshot.",
+        "p2": "Atrás do Entry; no contato joga flash e entra limpando Checkers.",
+        "p3": "IGL. No contato joga smokes em Heaven e CT e entra em seguida.",
+        "p4": "Em Mid segurando Vent e Z contra a rotação.",
+        "p5": "Em A Main em silêncio, avisando a rotação de A."
+      },
+      "posPlant": "Plant em B; posições Main, Headshot, Checkers, Sunroom e CT.",
+      "planoB": "Se a rotação vier rápida, segurem o Main e joguem pelo trade."
     },
     {
       "id": "cache-10",
       "mapa": "cache",
       "numero": 10,
-      "titulo": "Ataque tardio",
-      "tipos": ["lento"],
-      "alvo": [],
-      "linhas": [
-        "Não executar até ~30 segundos.",
-        "Forçar o CT a manter posições durante muito tempo.",
-        "Depois, trocar rapidamente de lado e atacar o site mais fraco."
-      ]
+      "titulo": "Force buy - Rush A Main",
+      "tipos": ["force"],
+      "alvo": ["A"],
+      "objetivo": "Ganhar um force round com números e explosão em A pelo Main.",
+      "economia": "SMG/pistola forte + kevlar, 2 smokes, 3 flashes",
+      "funcoes": {
+        "p1": "Primeiro em A Main; a prioridade é ganhar o primeiro duelo com flash.",
+        "p2": "Duas flashes seguidas por cima do Main e entra limpando Quad.",
+        "p3": "IGL. Smoke em Highway e CT; entra em terceiro.",
+        "p4": "Sem AWP: SMG ou Galil; entra pelo Main limpando Truck.",
+        "p5": "Segura o Main contra o flank e entra por último."
+      },
+      "posPlant": "Plant em A e joguem perto da bomba, prontos para um retake curto.",
+      "planoB": "Se perderem a entrada, guardem as armas e salvem."
     },
     {
       "id": "dust2-01",
       "mapa": "dust2",
       "numero": 1,
-      "titulo": "Controle de Long",
-      "tipos": ["controle"],
-      "alvo": [],
-      "linhas": [
-        "3 jogadores Long.",
-        "1 Short.",
-        "1 Mid/Tunnels.",
-        "Objetivo: conquistar Long e decidir entre A e split."
-      ]
+      "titulo": "Pistol - Rush B por Tunnels",
+      "tipos": ["pistol"],
+      "alvo": ["B"],
+      "objetivo": "Chegar em B com cinco jogadores antes de o CT de Mid girar.",
+      "economia": "Pistolas, 1-2 smokes e flashes",
+      "funcoes": {
+        "p1": "Primeiro a sair de Upper Tunnels. No estouro da flash, entra limpando Car e Close Corner, depois Back Plat.",
+        "p2": "Pop-flash por cima da saída de Tunnels e entra em seguida limpando Big Box e Back Site.",
+        "p3": "Joga smoke em B Doors e outra em Window (se tiver); entra em terceiro segurando Doors.",
+        "p4": "Fica em Upper Tunnels segurando Lower por 5s, depois entra checando Fence e Platô.",
+        "p5": "Fecha a fila em Tunnels vigiando a rotação por Lower/Mid; entra por último."
+      },
+      "posPlant": "Plant em Default B. Posições: Back Plat, Car, Big Box, Doors e um jogador em Tunnels.",
+      "planoB": "Se perderem 2 na saída de Tunnels, segurem Upper e joguem pelo tempo até ter números."
     },
     {
       "id": "dust2-02",
       "mapa": "dust2",
       "numero": 2,
-      "titulo": "A Long execute",
-      "tipos": ["execute"],
+      "titulo": "Execução A Long padrão",
+      "tipos": ["execucao"],
       "alvo": ["A"],
-      "linhas": [
-        "3–4 jogadores Long.",
-        "1 Short.",
-        "1 lurker.",
-        "Entrar A depois de retirar posições defensivas."
-      ],
-      "revisar": "O PDF indica 3–4 jogadores no grupo principal, mas os outros papéis já completam 5 jogadores com 3. Confirmar o número correto."
+      "objetivo": "Ganhar Long Doors cedo e entrar em A pelo Long com o site isolado de CT e Short.",
+      "economia": "Full buy: 2 smokes, 1 molotov, 4 flashes",
+      "funcoes": {
+        "p1": "Abre Long Doors com flash e limpa Blue e Pit. Na execução, entra limpando Long Corner e Car.",
+        "p2": "Flash para Long Doors no início e outra por cima de Long Corner na execução; entra limpando Goose.",
+        "p3": "IGL. Smoke em CT Cross e smoke em Short (Cat). Entra pelo Long segurando CT.",
+        "p4": "Segura Long após o controle das portas. Durante a entrada, olha Short/Cat e Goose.",
+        "p5": "Em Mid/Lower fazendo barulho e segurando a rotação vinda de B pelo Mid."
+      },
+      "posPlant": "Plant em Default ou Goose. Posições: Car, Long Corner, Goose, Ramp e Pit.",
+      "planoB": "Se Long Doors forem contestadas com sucesso, o grupo de Long recua e o IGL chama Execução B ou Mid para B."
     },
     {
       "id": "dust2-03",
       "mapa": "dust2",
       "numero": 3,
-      "titulo": "A split Long + Short",
-      "tipos": ["split"],
+      "titulo": "Execução A Short (Cat)",
+      "tipos": ["execucao"],
       "alvo": ["A"],
-      "linhas": [
-        "2 Long.",
-        "2 Short.",
-        "1 Mid.",
-        "Ataque simultâneo em A."
-      ]
+      "objetivo": "Tomar Short com controle de Mid e entrar em A por Cat e Long ao mesmo tempo.",
+      "economia": "Full buy: 3 smokes, 3 flashes",
+      "funcoes": {
+        "p1": "Sobe Cat após a smoke de Xbox e entra em A limpando Elevator e Goose.",
+        "p2": "Flash por cima de Cat no call e entra em seguida limpando Site.",
+        "p3": "IGL. Smoke Xbox para subir Cat com segurança; smoke CT Cross no call.",
+        "p4": "Segura Long Doors durante a subida, depois entra pelo Long limpando Car.",
+        "p5": "Em Mid/Lower segurando a rotação de B."
+      },
+      "posPlant": "Plant em Default A; posições Goose, Car, Elevator, Short e Long Corner.",
+      "planoB": "Se o CT segurar Short com força, o grupo de Cat segura e o Long entra sozinho com o utilitário restante."
     },
     {
       "id": "dust2-04",
       "mapa": "dust2",
       "numero": 4,
-      "titulo": "Controle de Mid",
-      "tipos": ["controle"],
-      "alvo": [],
-      "linhas": [
-        "2 jogadores Mid.",
-        "Buscar espaço sem entregar kills.",
-        "Depois escolher Short ou B."
-      ]
+      "titulo": "Split A (Long + Short)",
+      "tipos": ["split"],
+      "alvo": ["A"],
+      "objetivo": "Dividir a defesa de A com dois grupos atacando de Long e de Short no mesmo segundo.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Em Long. Entra limpando Long Corner e Car no call.",
+        "p2": "Em Short. Flash por cima de Cat e entra limpando Goose e Elevator.",
+        "p3": "IGL, em Short. Smoke Xbox para subir e smoke CT Cross no call; entra limpando Site.",
+        "p4": "Em Long segurando Long Corner; entra por último limpando Car e Pit.",
+        "p5": "Em Lower Tunnels/Mid segurando a rotação de B."
+      },
+      "posPlant": "Plant em Default A; posições Goose, Long Corner, Car, Short e Ramp.",
+      "planoB": "Se um dos lados for travado, o outro segura e espera o lado travado conseguir entrar."
     },
     {
       "id": "dust2-05",
       "mapa": "dust2",
       "numero": 5,
-      "titulo": "Split B Mid + Tunnels",
-      "tipos": ["split"],
+      "titulo": "Execução B padrão",
+      "tipos": ["execucao"],
       "alvo": ["B"],
-      "linhas": [
-        "2 Mid.",
-        "3 Tunnels.",
-        "Os grupos entram B por direções diferentes."
-      ]
+      "objetivo": "Entrar em B por Upper Tunnels com smokes Doors e Window e flash de Tunnels.",
+      "economia": "Full buy: 2 smokes, 1 molotov, 4 flashes",
+      "funcoes": {
+        "p1": "Primeiro a sair de Tunnels; limpa Car e Close Corner.",
+        "p2": "Flash por cima de Tunnels e entra limpando Big Box e Back Plat.",
+        "p3": "IGL. Smokes em B Doors e Window; molotov em Back Plat se o CT costuma ficar lá.",
+        "p4": "Segura Lower Tunnels/Mid durante a entrada; depois entra olhando Window.",
+        "p5": "Em Lower Tunnels, segurando a rotação por Mid."
+      },
+      "posPlant": "Plant em Default B; posições Back Plat, Car, Big Box, Doors e Tunnels.",
+      "planoB": "Se perderem 2 na saída de Tunnels, segurem Upper e joguem pelo tempo."
     },
     {
       "id": "dust2-06",
       "mapa": "dust2",
       "numero": 6,
-      "titulo": "Rush B",
-      "tipos": ["rush"],
+      "titulo": "Mid para B (Split Lower + Upper)",
+      "tipos": ["split"],
       "alvo": ["B"],
-      "linhas": [
-        "4–5 jogadores Tunnels.",
-        "Entrada imediata.",
-        "Excelente para pegar uma defesa sem preparação."
-      ]
+      "objetivo": "Atacar B pelo Upper Tunnels e por Mid Doors/CT ao mesmo tempo.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Em Upper Tunnels; entra limpando Car e Close Corner.",
+        "p2": "Em Mid; flash por cima de Mid Doors e entra pelo lado de CT limpando B Doors.",
+        "p3": "IGL, em Upper. Smoke em Window; entra limpando Big Box.",
+        "p4": "Em Mid segurando Mid Doors; depois entra pelo CT limpando Back Plat.",
+        "p5": "Em Lower Tunnels segurando a volta de Mid."
+      },
+      "posPlant": "Plant em Default B; posições Back Plat, Car, Big Box, Doors e Window.",
+      "planoB": "Se Mid for bloqueado, virem Execução B padrão por Upper."
     },
     {
       "id": "dust2-07",
       "mapa": "dust2",
       "numero": 7,
-      "titulo": "Fake B → A",
+      "titulo": "Fake B, Hit A Long",
       "tipos": ["fake"],
       "alvo": ["A"],
-      "linhas": [
-        "Pressão forte em Tunnels.",
-        "Fazer os CTs rotacionarem.",
-        "Grupo A entra posteriormente."
-      ]
+      "objetivo": "Vender uma execução em B com utilitário e barulho e atacar A Long com quatro jogadores.",
+      "economia": "Full buy: 3 smokes, 1 molotov, 4 flashes",
+      "funcoes": {
+        "p1": "Em Long Doors desde o início, em silêncio. No call do IGL (0:35), abre as portas com flash e limpa Blue e Pit.",
+        "p2": "Em Upper Tunnels: aos 0:50 joga flash por cima de Tunnels e corre até a saída fazendo barulho; depois volta por Lower e Mid para Long.",
+        "p3": "IGL. Começa em Upper e joga smoke em B Doors para vender o fake; corre para Long e joga smoke CT Cross no call.",
+        "p4": "Em Long segurando Long Corner e Pit até o grupo entrar; depois do plant fica olhando Long para a volta.",
+        "p5": "Fica sozinho em Upper Tunnels até o fim do round, segurando quem tentar voltar de B e atrasando o retake."
+      },
+      "posPlant": "Plant em Default A ou Goose; posições Goose, Car, Long Corner, Ramp e Pit.",
+      "planoB": "Se ninguém girar de B para A, o IGL cancela e o grupo de Long vira Execução B pelo Tunnels com o Lurker."
     },
     {
       "id": "dust2-08",
       "mapa": "dust2",
       "numero": 8,
-      "titulo": "Fake A → B",
-      "tipos": ["fake"],
-      "alvo": ["B"],
-      "linhas": [
-        "Mostrar presença Long/Short.",
-        "Manter 2 jogadores Tunnels.",
-        "Depois atacar B."
-      ]
+      "titulo": "Default com controle de Mid",
+      "tipos": ["default"],
+      "alvo": [],
+      "objetivo": "Ganhar Mid e Xbox nos primeiros 30s, coletar informação e chamar a execução aos 0:45.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Em Long Doors fazendo presença sem se expor, avisando se o CT empurrar Long.",
+        "p2": "Em Mid. Joga smoke Xbox e ajuda o AWP a ganhar Top Mid; guarda as flashes para a execução.",
+        "p3": "IGL, em Mid/Lower. Lê o round (quantos em A, quantos em B, onde está o AWP do CT) e chama o site aos 0:45.",
+        "p4": "Em Mid procurando pick em Mid Doors e Short. Não fica exposto ao AWP de Mid Doors sem smoke.",
+        "p5": "Em Upper Tunnels em silêncio, só avisando passos de B."
+      },
+      "posPlant": "Depende do site chamado: posições da Execução A Long ou da Execução B padrão.",
+      "planoB": "Se nada acontecer até 0:40, o IGL chama Execução A Long imediatamente."
     },
     {
       "id": "dust2-09",
       "mapa": "dust2",
       "numero": 9,
-      "titulo": "Lurk Mid",
-      "tipos": ["lurk"],
-      "alvo": [],
-      "linhas": [
-        "4 jogadores atacam um site.",
-        "1 permanece Mid.",
-        "O lurker pode cortar rotação."
-      ]
+      "titulo": "Force buy - Rush Long",
+      "tipos": ["force"],
+      "alvo": ["A"],
+      "objetivo": "Ganhar um force round explodindo pelo Long com números antes de o CT montar o crossfire.",
+      "economia": "SMG/pistola forte + kevlar, 1 smoke, 3 flashes",
+      "funcoes": {
+        "p1": "Primeiro em Long Doors. Atravessa com flash limpando Blue e Pit; corre direto para o site limpando Car.",
+        "p2": "Duas flashes por cima de Long Doors e Long Corner; entra limpando Long Corner.",
+        "p3": "IGL. Smoke em CT Cross no meio da corrida para cortar a rotação de B.",
+        "p4": "Sem AWP: SMG ou Galil; entra pelo Long limpando Goose e Ramp.",
+        "p5": "Segura Long Doors contra o flank por Outside Long e entra por último."
+      },
+      "posPlant": "Plant em A e joguem perto da bomba para um retake curto.",
+      "planoB": "Se perderem a entrada, guardem as armas e salvem para o próximo round."
     },
     {
       "id": "dust2-10",
       "mapa": "dust2",
       "numero": 10,
-      "titulo": "Controle de Long lento",
-      "tipos": ["controle", "lento"],
-      "alvo": [],
-      "linhas": [
-        "Não fazer rush.",
-        "Conquistar Long progressivamente.",
-        "Depois de obter controle, esperar a reação CT antes de executar."
-      ]
+      "titulo": "Contato B (Tunnels)",
+      "tipos": ["contato"],
+      "alvo": ["B"],
+      "objetivo": "Andar em silêncio por Tunnels e explodir só no contato, sem dar informação antecipada.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Anda em silêncio (Shift) por Upper Tunnels até a saída. No contato, entra limpando Car e Close Corner.",
+        "p2": "Atrás do Entry; no contato joga flash por cima de Tunnels e entra limpando Big Box e Back Plat.",
+        "p3": "IGL. No contato joga smokes em B Doors e Window e entra segurando Doors.",
+        "p4": "Em Lower Tunnels segurando a rotação por Mid; entra depois do plant olhando Window.",
+        "p5": "Em Mid em silêncio, ouvindo a rotação de A; avisa se os CTs passarem por Mid Doors."
+      },
+      "posPlant": "Plant em B; posições Car, Back Plat, Big Box, Doors e Tunnels.",
+      "planoB": "Se a rotação vier rápida, segurem Upper Tunnels e joguem pelo trade."
     },
     {
       "id": "inferno-01",
       "mapa": "inferno",
       "numero": 1,
-      "titulo": "Banana Default",
-      "tipos": ["default"],
-      "alvo": [],
-      "linhas": [
-        "2 Banana.",
-        "2 Apartments.",
-        "1 Mid.",
-        "Objetivo: descobrir a distribuição CT."
-      ]
+      "titulo": "Pistol - Rush Banana",
+      "tipos": ["pistol"],
+      "alvo": ["B"],
+      "objetivo": "Tomar Banana nos primeiros 15s e entrar em B antes da defesa se organizar.",
+      "economia": "Pistolas, 2 smokes, flashes e 1 molotov se sobrar",
+      "funcoes": {
+        "p1": "Primeiro em Banana. Limpa Car e Logs correndo pelo lado esquerdo e entra no site checando New Box e Sandbags.",
+        "p2": "Pop-flash por cima de Banana no topo da subida e entra logo atrás limpando Sandbags e 1st Orange.",
+        "p3": "Joga smokes CT e Coffins quando o grupo chega em Logs; entra em terceiro limpando Fountain e Dark.",
+        "p4": "Segura Car a partir de Banana baixa e cobre o Entry até a entrada; entra por último checando Construction.",
+        "p5": "Fica em Mid/Second Mid em silêncio. Se ouvir CTs de A girando para B, avisa e tenta pegar alguém pelas costas via Arch."
+      },
+      "posPlant": "Plant em Default B. Posições: Banana, Construction, Fountain, Dark e um jogador perto da bomba atrás de New Box.",
+      "planoB": "Se perderem 2 em Banana, recuem para Banana baixa, segurem a posição e ataquem só com vantagem numérica."
     },
     {
       "id": "inferno-02",
       "mapa": "inferno",
       "numero": 2,
-      "titulo": "Controle completo de Banana",
-      "tipos": ["controle"],
+      "titulo": "Controle de Banana (Default)",
+      "tipos": ["default"],
       "alvo": [],
-      "linhas": [
-        "3 jogadores Banana.",
-        "Forçar os CTs para trás.",
-        "Depois escolher entre B ou retornar para A."
-      ]
+      "objetivo": "Ganhar Banana com utilitário nos primeiros 30s para deixar B e A abertos como opções.",
+      "economia": "Full buy: 2 molotovs, 2 smokes, 3 flashes",
+      "funcoes": {
+        "p1": "Avança Banana logo depois do molotov em Car. Limpa Logs, depois Sandbags pela subida, sempre com flash.",
+        "p2": "Molotov em Car e flash curta por cima de Banana para o Entry subir sem tomar tiro gratuito.",
+        "p3": "IGL. Smoke em Logs/topo de Banana para cortar o AWP do CT, depois segura Banana média lendo o que a defesa fez.",
+        "p4": "Segura Banana baixa olhando Car e Logs; troca qualquer CT que empurrar Banana.",
+        "p5": "Em Apps fazendo barulho (passos, porta da varanda) para prender os CTs de A no site."
+      },
+      "posPlant": "Não há plant nesta fase; a default termina em uma das execuções (geralmente Execução B após controle).",
+      "planoB": "Se a defesa empurrar Banana com utilitário, segurem posições defensivas e não entreguem mortes de graça."
     },
     {
       "id": "inferno-03",
       "mapa": "inferno",
       "numero": 3,
-      "titulo": "B Execute",
-      "tipos": ["execute"],
+      "titulo": "Execução B após controle",
+      "tipos": ["execucao"],
       "alvo": ["B"],
-      "linhas": [
-        "3–4 Banana.",
-        "1 Mid.",
-        "1 lurker Apartments.",
-        "Entrada após gastar a utilidade defensiva."
-      ],
-      "revisar": "O PDF indica 3–4 jogadores no grupo principal, mas os outros papéis já completam 5 jogadores com 3. Confirmar o número correto."
+      "objetivo": "Entrar em B depois de ganhar Banana, cortando CT e Coffins com smoke.",
+      "economia": "Full buy: 2 smokes, 2 molotovs, 4 flashes",
+      "funcoes": {
+        "p1": "Entra pelo topo de Banana limpando New Box, depois Coffins e Dark.",
+        "p2": "Pop-flash por cima de Banana no momento da entrada e molotov em New Box ou 1st Orange.",
+        "p3": "IGL. Smokes CT e Coffins; entra limpando Fountain e Construction.",
+        "p4": "Segura Banana enquanto o site cai; entra por último olhando Fountain/Coffins.",
+        "p5": "Em Mid/Apps segurando a rotação de A e ouvindo CTs passando por Arch."
+      },
+      "posPlant": "Plant em Default. Posições: Fountain, Coffins, New Box, topo de Banana e Car.",
+      "planoB": "Se Banana for perdida antes da execução, recuem e o IGL chama a Execução A."
     },
     {
       "id": "inferno-04",
       "mapa": "inferno",
       "numero": 4,
-      "titulo": "A Apartments",
-      "tipos": ["execute"],
+      "titulo": "Execução A (Apps + Short + Mid)",
+      "tipos": ["execucao"],
       "alvo": ["A"],
-      "linhas": [
-        "3 Apartments.",
-        "1 Mid.",
-        "1 Banana.",
-        "Ataque A pelo Short/Apps."
-      ]
+      "objetivo": "Atacar A pelos três caminhos ao mesmo tempo com smokes CT, Library e Arch.",
+      "economia": "Full buy: 3 smokes, 2 molotovs, 4 flashes",
+      "funcoes": {
+        "p1": "Em Apps. Na queda das smokes, desce pela varanda limpando Pit e Boiler.",
+        "p2": "Em Short. Flash por cima de Short e entra limpando Graveyard e Truck.",
+        "p3": "IGL. Smokes CT, Library e Arch; entra por Mid/Second Mid limpando Library e Moto.",
+        "p4": "Em Mid segurando Arch com a AWP. Entra no site depois que Short e Apps limparem.",
+        "p5": "Em Banana segurando a rotação de B."
+      },
+      "posPlant": "Plant em Default A. Posições: Pit, Library, Arch, Short e Truck.",
+      "planoB": "Se Apps cair, o grupo vira ataque por Mid e Short usando o utilitário restante."
     },
     {
       "id": "inferno-05",
       "mapa": "inferno",
       "numero": 5,
-      "titulo": "A Split",
-      "tipos": ["split"],
+      "titulo": "Fake Banana, Hit A",
+      "tipos": ["fake"],
       "alvo": ["A"],
-      "linhas": [
-        "2 Apartments.",
-        "2 Mid.",
-        "1 Banana.",
-        "Entradas simultâneas."
-      ]
+      "objetivo": "Vender uma execução em Banana com utilitário e barulho e atacar A com quatro jogadores.",
+      "economia": "Full buy: 3 smokes, 2 molotovs, 4 flashes",
+      "funcoes": {
+        "p1": "Em Apps desde o início, em silêncio. No call (0:35), desce pela varanda limpando Pit e Boiler.",
+        "p2": "Em Banana: aos 0:50 joga molotov em Car e flash por cima de Banana para soar como execução B; depois corre por Mid para Short.",
+        "p3": "IGL. Começa em Banana ajudando no fake; corre para Mid e joga smokes CT, Library e Arch no call.",
+        "p4": "Em Mid segurando Arch durante todo o round; depois do plant gira para Library.",
+        "p5": "Fica sozinho em Banana até o fim do round, segurando o fake e atrasando o retake vindo de B."
+      },
+      "posPlant": "Plant em Default A; posições Pit, Library, Arch, Short e Truck.",
+      "planoB": "Se ninguém girar de A para B, o IGL cancela e o grupo vira Execução B com o Lurker em Banana."
     },
     {
       "id": "inferno-06",
       "mapa": "inferno",
       "numero": 6,
-      "titulo": "Fake B → A",
-      "tipos": ["fake"],
+      "titulo": "Split A (Apps + Short)",
+      "tipos": ["split"],
       "alvo": ["A"],
-      "linhas": [
-        "Gastar utilidade pesada em Banana.",
-        "Simular entrada.",
-        "Recuar.",
-        "A ataca enquanto os CTs ainda estão preocupados com B."
-      ]
+      "objetivo": "Dois grupos entram em A no mesmo segundo, forçando o CT a escolher entre Apps e Short.",
+      "economia": "Full buy: 3 smokes, 1 molotov, 4 flashes",
+      "funcoes": {
+        "p1": "Em Apps. Ao ouvir o call do IGL (0:40), desce pela varanda limpando Pit e depois Boiler; nunca fica parado na porta.",
+        "p2": "Em Short com o AWP. Flash por cima de Short no call e entra limpando Graveyard, depois Truck.",
+        "p3": "IGL, vai por Apps. Antes do call joga smokes CT e Library; entra pela varanda em segundo limpando Balcony e Site.",
+        "p4": "Em Short/Mid. Segura Arch durante a entrada; depois do plant gira para Library para travar a rotação.",
+        "p5": "Em Banana fazendo barulho no começo do round e, depois, segurando a rotação de B em Banana baixa."
+      },
+      "posPlant": "Plant em Default A. Posições: Pit, Library, Short, Truck e Arch.",
+      "planoB": "Se Short estiver bloqueado, o Suporte 1 joga a flash e o grupo de Short vira para Apps; todos entram juntos pela varanda."
     },
     {
       "id": "inferno-07",
       "mapa": "inferno",
       "numero": 7,
-      "titulo": "Fake A → B",
-      "tipos": ["fake"],
+      "titulo": "Rápida B (Banana + Coffins)",
+      "tipos": ["rapida"],
       "alvo": ["B"],
-      "linhas": [
-        "Pressão Apartments/Mid.",
-        "CTs podem abandonar B.",
-        "Banana explode depois."
-      ]
+      "objetivo": "Explosão em B aos 0:25, antes que a defesa reforce Banana com utilitário.",
+      "economia": "Full buy: 2 smokes, 2 molotovs, 3 flashes",
+      "funcoes": {
+        "p1": "Primeiro em Banana. Corre até Logs após o molotov em Car e entra no site checando New Box e Sandbags.",
+        "p2": "Molotov em Car no início e pop-flash por cima de Banana quando o Entry chegar ao topo; entra limpando 1st Orange.",
+        "p3": "IGL. Smokes CT e Coffins quando o grupo chega em Logs; entra limpando Fountain e Dark.",
+        "p4": "Segura Banana pelo lado de baixo e entra por último olhando Construction e Coffins.",
+        "p5": "Em Mid ouvindo a rotação de A. Se os CTs passarem por Arch, avisa e segura Mid para cortar a volta."
+      },
+      "posPlant": "Plant em Default B; posições Banana, Construction, Fountain, Coffins e New Box.",
+      "planoB": "Se o Entry cair antes de chegar em Logs, recuem para Banana baixa, segurem e o IGL decide entre execução lenta B ou virar A."
     },
     {
       "id": "inferno-08",
       "mapa": "inferno",
       "numero": 8,
-      "titulo": "Lurk Banana",
-      "tipos": ["lurk"],
+      "titulo": "Contato A (Apps)",
+      "tipos": ["contato"],
       "alvo": ["A"],
-      "linhas": [
-        "4 trabalham A.",
-        "1 permanece Banana.",
-        "O lurker pode pegar rotações ou impedir retake."
-      ]
+      "objetivo": "Andar em silêncio por Apps e explodir só quando houver contato, sem dar informação antecipada.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Anda em silêncio (Shift) por Apps até a varanda. No primeiro contato, entra limpando Pit e Boiler.",
+        "p2": "Atrás do Entry. No contato joga flash por cima da varanda e entra limpando Graveyard.",
+        "p3": "IGL, terceiro da fila. No contato joga smokes CT e Library; entra pela varanda limpando Site.",
+        "p4": "Em Mid segurando Arch durante todo o contato; depois do plant, segura Library.",
+        "p5": "Em Banana em silêncio, segurando a rotação de B e avisando quem passar."
+      },
+      "posPlant": "Plant em A; posições Pit, Library, Arch, Short e Truck.",
+      "planoB": "Se a rotação vier rápida, segurem a parte de cima de Apps e joguem pelo trade, sem entrar no site."
     },
     {
       "id": "inferno-09",
       "mapa": "inferno",
       "numero": 9,
-      "titulo": "Anti-agressão",
-      "tipos": ["anti"],
-      "alvo": [],
-      "linhas": [
-        "Deixar um jogador avançado em posição segura.",
-        "Se o CT avançar Banana ou Mid, o segundo jogador fecha o ângulo.",
-        "Transformar a agressividade adversária em vantagem numérica."
-      ]
+      "titulo": "Force buy - Rush Apps",
+      "tipos": ["force"],
+      "alvo": ["A"],
+      "objetivo": "Ganhar um round de force com explosão em A por Apps, evitando duelos longos de rifle.",
+      "economia": "SMG/pistola forte + kevlar, 2 smokes, 3 flashes",
+      "funcoes": {
+        "p1": "Primeiro em Apps. Desce pela varanda limpando Pit; a prioridade é o primeiro duelo com flash.",
+        "p2": "Duas flashes seguidas por cima da varanda e entra limpando Boiler.",
+        "p3": "IGL. Smokes CT e Library na entrada; entra limpando Site e Balcony.",
+        "p4": "Sem AWP: entra pela varanda com SMG limpando Graveyard e Truck.",
+        "p5": "Segura Apps contra flank e entra por último olhando Short."
+      },
+      "posPlant": "Plant em A e joguem perto da bomba, prontos para um retake curto.",
+      "planoB": "Se perderem a entrada, guardem as armas e salvem para o próximo round."
     },
     {
       "id": "inferno-10",
       "mapa": "inferno",
       "numero": 10,
-      "titulo": "Execute tardio",
-      "tipos": ["execute", "lento"],
-      "alvo": [],
-      "linhas": [
-        "Jogar default por 45–50 segundos.",
-        "Forçar CTs a gastar utilidade.",
-        "Ataque A ou B somente quando as principais defesas estiverem sem recursos."
-      ]
+      "titulo": "Lurk Banana tardio",
+      "tipos": ["default"],
+      "alvo": ["B"],
+      "objetivo": "Prender a defesa em A com barulho e utilitário e invadir B tarde com o Lurker e um apoio.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Em Apps fazendo barulho (passos, porta da varanda) para atrair a defesa durante os primeiros 45s.",
+        "p2": "Em Mid segurando Arch; quando o IGL chamar, gira para Banana para apoiar o Lurker.",
+        "p3": "IGL. Joga smokes de A para simular execução e atrair a rotação; depois corre para Banana.",
+        "p4": "Em Mid segurando Arch; após o plant em B gira para segurar a volta por Mid.",
+        "p5": "Em Banana em silêncio. Quando o CT girar para A, entra em B tarde limpando New Box e Coffins."
+      },
+      "posPlant": "Plant em B; segurem Banana, CT, Coffins e Construction.",
+      "planoB": "Se o CT não girar, o IGL chama Execução A com o utilitário restante."
     },
     {
       "id": "mirage-01",
       "mapa": "mirage",
       "numero": 1,
-      "titulo": "Default Mirage",
-      "tipos": ["default"],
-      "alvo": [],
-      "linhas": [
-        "2 A.",
-        "2 B Apps.",
-        "1 Mid.",
-        "O Mid player coleta informação e decide o lado."
-      ]
+      "titulo": "Pistol - Rush B por Apps",
+      "tipos": ["pistol"],
+      "alvo": ["B"],
+      "objetivo": "Chegar em B com cinco jogadores antes de a rotação do meio chegar.",
+      "economia": "Entry e Suporte 1 com kevlar; demais com flash e 1 smoke",
+      "funcoes": {
+        "p1": "Primeiro da fila em Apps. No estouro da flash (0:22), entra limpando Bench e em seguida Van. Nunca para no meio do site.",
+        "p2": "Duas pop-flashes por cima de Apps para dentro do site. Entra colado no Entry limpando Arch e Back site.",
+        "p3": "Smoke Kitchen saindo de Apps antes da entrada. Entra em terceiro e segura Short/Catwalk.",
+        "p4": "Segura a saída do Underpass por 5s para impedir um flank precoce, depois corre e entra limpando Market.",
+        "p5": "Fecha a fila em Apps vigiando as costas; entra por último segurando Kitchen."
+      },
+      "posPlant": "Bomba em Default perto do Van. Dois no site (Van e Bench), um em Apps, um em Short, um olhando Market.",
+      "planoB": "Se morrerem 2 antes da entrada, recuem para Apps, guardem o utilitário e joguem pelo tempo em vez de forçar."
     },
     {
       "id": "mirage-02",
       "mapa": "mirage",
       "numero": 2,
-      "titulo": "Controle de Mid",
-      "tipos": ["controle"],
-      "alvo": [],
-      "linhas": [
-        "2–3 jogadores Mid.",
-        "Objetivo: controlar Connector e Short.",
-        "Depois escolher A ou B."
-      ]
+      "titulo": "Execução A padrão",
+      "tipos": ["execucao"],
+      "alvo": ["A"],
+      "objetivo": "Tomar A com as três smokes clássicas e trocar as duas primeiras mortes.",
+      "economia": "Full buy: 3 smokes, 2 molotovs, 4 flashes",
+      "funcoes": {
+        "p1": "Espera no fim de Ramp. Na queda das smokes, entra checando Tetris, depois Triple e Default.",
+        "p2": "Em Palace: molotov em Firebox e pop-flash para fora de Palace. Sai limpando Default e Sandwich.",
+        "p3": "IGL. Do T spawn/Ramp joga smoke CT e smoke Stairs. Entra por Ramp atrás do Entry segurando Ticket Booth.",
+        "p4": "Joga smoke Jungle de Top Mid e segura Connector com a AWP até o site cair. Só gira para Jungle após o plant.",
+        "p5": "Fica em Top Mid/Short ouvindo a rotação do B. Avisa e segura; se ninguém vier, junta-se depois do plant."
+      },
+      "posPlant": "Plant em Default ou atrás de Triple. Posições: Palace, Firebox, Triple, Ramp e AWP olhando Jungle/Connector.",
+      "planoB": "Se houver 3 CTs em A, o IGL chama 'Mid-B': o grupo volta pelo Underpass e conecta com o Lurker em Short."
     },
     {
       "id": "mirage-03",
       "mapa": "mirage",
       "numero": 3,
-      "titulo": "A Split",
+      "titulo": "Split A (Ramp + Palace + Connector)",
       "tipos": ["split"],
       "alvo": ["A"],
-      "linhas": [
-        "2 A Ramp.",
-        "2 Mid.",
-        "1 Palace.",
-        "Entrada simultânea em A."
-      ]
+      "objetivo": "Atacar A de três ângulos ao mesmo tempo para que nenhum CT consiga olhar tudo.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Em Ramp. Entra no timing da flash, limpando Tetris e depois Triple/Firebox.",
+        "p2": "Em Palace: flash para fora de Palace e sai limpando Default e Sandwich.",
+        "p3": "Vai pelo meio. Joga smoke Window e smoke CT de Top Mid; entra por Connector junto do Lurker.",
+        "p4": "Em Top Mid segurando Short. Quando o site cair, gira para Jungle e trava a rotação de B.",
+        "p5": "Entra com o Suporte 2 por Connector, limpando Jungle e Stairs no mesmo segundo em que Palace e Ramp entram."
+      },
+      "posPlant": "Plant protegido atrás de Triple ou Firebox; AWP em Jungle para a rotação vinda de B/Connector.",
+      "planoB": "Se o meio estiver muito defendido, Suporte 2 e Lurker viram fake e o resto executa A padrão."
     },
     {
       "id": "mirage-04",
       "mapa": "mirage",
       "numero": 4,
-      "titulo": "A execute clássico",
-      "tipos": ["execute"],
-      "alvo": ["A"],
-      "linhas": [
-        "3 Ramp.",
-        "1 Palace.",
-        "1 Mid.",
-        "Utilidade sincronizada.",
-        "Entrada em conjunto."
-      ]
+      "titulo": "Controle de Mid para B",
+      "tipos": ["execucao"],
+      "alvo": ["B"],
+      "objetivo": "Tirar o controle de Short com utilitário e executar B por Short e Apps ao mesmo tempo.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Em Apps com o Suporte 1. No call, entra limpando Bench e Van.",
+        "p2": "Em Apps: smoke Kitchen e flash por cima de Apps no call. Entra atrás do Entry limpando Arch e Back site.",
+        "p3": "Em Top Mid: smoke Window no início. No call, smoke Market Window e flash por cima de Short; entra limpando Bench pelo lado de Short.",
+        "p4": "Pega pick em Top Mid no começo e segura Connector durante a execução. Após o plant, avança para Short.",
+        "p5": "Desce o Underpass em silêncio e sai junto do Suporte 2 por Short."
+      },
+      "posPlant": "Plant em Default B. Posições: Van, Bench, Short, Market e Apps.",
+      "planoB": "Se perderem uma pessoa em Short, viram rápido pelo Apps com o utilitário restante."
     },
     {
       "id": "mirage-05",
       "mapa": "mirage",
       "numero": 5,
-      "titulo": "Explosão B",
-      "tipos": ["execute"],
-      "alvo": ["B"],
-      "linhas": [
-        "3–4 B Apps.",
-        "1 Mid.",
-        "1 lurker A.",
-        "Entrada rápida em B."
-      ],
-      "revisar": "O PDF indica 3–4 jogadores no grupo principal, mas os outros papéis já completam 5 jogadores com 3. Confirmar o número correto."
+      "titulo": "Default lenta + Lurk em Palace",
+      "tipos": ["default"],
+      "alvo": [],
+      "objetivo": "Coletar informação nos primeiros 40s e punir rotações exageradas.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Faz presença em Apps (barulho, sem se expor) e avisa se o CT avançar.",
+        "p2": "Joga smoke Window de Top Mid e controla Top Mid com o AWP. Guarda as flashes para a execução final.",
+        "p3": "IGL em Top Mid lendo o round. Aos 0:45 chama a execução para onde houver menos gente.",
+        "p4": "Pega Top Mid e procura pick em Short e Connector. Não arrisca pick em Window sem smoke.",
+        "p5": "Parado em Palace. Se ouvir rotação de A para Mid/B, avisa e decide entre entrar sozinho ou esperar o grupo."
+      },
+      "posPlant": "Depende do site chamado; reaplica as posições da Execução A ou do Controle de Mid para B.",
+      "planoB": "Se nada acontecer até 0:40, chamar Execução A padrão imediatamente com tudo que sobrou."
     },
     {
       "id": "mirage-06",
       "mapa": "mirage",
       "numero": 6,
-      "titulo": "Split B pelo Short",
-      "tipos": ["split"],
+      "titulo": "Fake A, Hit B",
+      "tipos": ["fake"],
       "alvo": ["B"],
-      "linhas": [
-        "2 Apps.",
-        "2 Mid/Short.",
-        "1 lurker.",
-        "O objetivo é impedir que o B anchor tenha todos os ângulos cobertos."
-      ]
+      "objetivo": "Fazer a defesa girar para A e atacar B com quatro jogadores.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Vai para Apps desde o começo, em silêncio, aguardando o call.",
+        "p2": "Em Ramp: molotov Firebox e flash para simular a entrada. Depois corre pelo Underpass para B.",
+        "p3": "Em Ramp: smoke Stairs e CT para vender o fake; corre para o Underpass e sai por Short.",
+        "p4": "Fica em Ramp por 10s após o fake segurando quem empurrar, depois cobre a retaguarda do B.",
+        "p5": "Em Palace faz barulho e joga uma flash. Fica lá até o fim do round para atrasar o retake de A."
+      },
+      "posPlant": "Plant em Default B; Lurker segura a rotação de A a partir de Palace.",
+      "planoB": "Se ninguém girar, o IGL transforma o fake em execução A real com o utilitário restante."
     },
     {
       "id": "mirage-07",
       "mapa": "mirage",
       "numero": 7,
-      "titulo": "Fake A → B",
-      "tipos": ["fake"],
-      "alvo": ["B"],
-      "linhas": [
-        "Forte presença em A.",
-        "Fazer barulho.",
-        "Rotacionar rapidamente para B."
-      ]
+      "titulo": "Rápida A por Palace e Ramp",
+      "tipos": ["rapida"],
+      "alvo": ["A"],
+      "objetivo": "Explosão em A aos 0:25, quando o CT ainda espera uma default.",
+      "economia": "Full buy ou force com SMGs",
+      "funcoes": {
+        "p1": "Entra por Ramp limpando Tetris e Firebox com uma flash curta do Suporte 2.",
+        "p2": "Pop-flash de Palace e sai imediatamente atrás dela.",
+        "p3": "Smokes CT e Jungle do T spawn; corre para Ramp e flash curta para o Entry.",
+        "p4": "Segura Top Mid para matar a rotação que vier por Connector.",
+        "p5": "Entra por Palace atrás do Suporte 1 limpando Sandwich e Default."
+      },
+      "posPlant": "Plant rápido em Default; o time se espalha para olhar CT, Jungle e Ticket.",
+      "planoB": "Se o Entry cair na entrada, trocar na hora; com 4 dentro não se recua."
     },
     {
       "id": "mirage-08",
       "mapa": "mirage",
       "numero": 8,
-      "titulo": "Fake B → A",
-      "tipos": ["fake"],
-      "alvo": ["A"],
-      "linhas": [
-        "Pressão Apps.",
-        "CTs podem rotacionar.",
-        "A explode posteriormente."
-      ]
+      "titulo": "Contato B (silencioso)",
+      "tipos": ["contato"],
+      "alvo": ["B"],
+      "objetivo": "Chegar em B andando sem barulho e só explodir quando o CT perceber.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Anda em silêncio por Apps até a borda do site. No primeiro contato, entra limpando Bench.",
+        "p2": "Anda atrás do Entry e solta flash assim que houver contato.",
+        "p3": "No meio da fila; no primeiro contato joga smoke Kitchen e Market Window.",
+        "p4": "No fundo de Apps segurando as costas; entra por último limpando Van.",
+        "p5": "Anda em silêncio pelo Underpass até Short e entra no mesmo instante do contato."
+      },
+      "posPlant": "Plant em Default; posições Van, Bench, Short, Apps e Market.",
+      "planoB": "Se a rotação vier rápida, segurem Apps e troquem pelo topo."
     },
     {
       "id": "mirage-09",
       "mapa": "mirage",
       "numero": 9,
-      "titulo": "Palace lurk",
-      "tipos": ["lurk"],
-      "alvo": ["A"],
-      "linhas": [
-        "4 jogadores executam A por outras rotas.",
-        "1 permanece Palace.",
-        "Entrar no momento em que a defesa esteja distraída."
-      ]
+      "titulo": "Force buy - Stack B",
+      "tipos": ["force"],
+      "alvo": ["B"],
+      "objetivo": "Ganhar um round de force com números e explosão em B, evitando os duelos longos de A.",
+      "economia": "SMG/pistola forte + kevlar, 2 smokes, 3 flashes",
+      "funcoes": {
+        "p1": "Primeiro em Apps. Sai com a flash do Suporte 1 limpando Bench e Van; a prioridade é ganhar o primeiro duelo.",
+        "p2": "Joga duas flashes seguidas por cima de Apps (a segunda 1s depois da primeira) e entra limpando Arch e Back site.",
+        "p3": "IGL. Smokes em Kitchen e Market Window saindo de Apps; entra em terceiro segurando Short.",
+        "p4": "Sem AWP: SMG ou Galil. Entra em quarto limpando Market e segurando a porta de CT.",
+        "p5": "Fecha a fila em Apps vigiando o Underpass e entra por último limpando Kitchen."
+      },
+      "posPlant": "Plant em Default e joguem perto da bomba (Van, Bench, Apps), prontos para um retake curto.",
+      "planoB": "Se perderem a entrada sem trade, guardem as armas e salvem para o próximo round."
     },
     {
       "id": "mirage-10",
       "mapa": "mirage",
       "numero": 10,
-      "titulo": "Mid split tardio",
-      "tipos": ["split", "lento"],
-      "alvo": ["A"],
-      "linhas": [
-        "Não revelar Mid imediatamente.",
-        "Default A/B.",
-        "Quando os CTs gastarem utilidade, conquistar Mid.",
-        "Converter o controle em split A."
-      ]
+      "titulo": "Split B (Underpass + Apps)",
+      "tipos": ["split"],
+      "alvo": ["B"],
+      "objetivo": "Combinar Short e Apps para dividir a atenção dos CTs de B no mesmo segundo.",
+      "economia": "Full buy: 3 smokes, 4 flashes",
+      "funcoes": {
+        "p1": "Em Apps. No call (0:40), sai limpando Bench e Van; entra no mesmo segundo do grupo de Short.",
+        "p2": "No Underpass com o Lurker. No call, flash por cima de Short e sai limpando Bench pelo lado de Short.",
+        "p3": "IGL, em Apps. Antes do call joga smokes em Kitchen e Market Window; entra em segundo limpando Arch.",
+        "p4": "Em Top Mid segurando Connector e Window por 10s após o call, depois gira para Short para cobrir a rotação.",
+        "p5": "No Underpass com o Suporte 1; sai em Short em segundo limpando Market e a porta de CT."
+      },
+      "posPlant": "Plant protegido em Default; posições Short, Market, Apps, Van e Bench.",
+      "planoB": "Se o Underpass for contestado, o grupo de Short segura e todos entram por Apps."
     },
     {
       "id": "nuke-01",
       "mapa": "nuke",
       "numero": 1,
-      "titulo": "Outside Default",
-      "tipos": ["default"],
-      "alvo": [],
-      "linhas": [
-        "2 Outside.",
-        "1 Ramp.",
-        "1 Lobby.",
-        "1 Secret/controle de informação.",
-        "Objetivo: descobrir a configuração CT."
-      ]
+      "titulo": "Pistol - Rush A (Hut + Squeaky)",
+      "tipos": ["pistol"],
+      "alvo": ["A"],
+      "objetivo": "Explodir em A por Hut e Squeaky antes de o CT de Ramp girar.",
+      "economia": "Pistolas, 2 smokes e flashes",
+      "funcoes": {
+        "p1": "Primeiro em Hut. No estouro da flash, entra limpando Mini e depois Rafters/Heaven.",
+        "p2": "Pop-flash por cima de Hut para dentro do site e entra limpando Default e Rafters.",
+        "p3": "Abre Squeaky com flash e entra limpando Vents e Mini.",
+        "p4": "Joga smoke em Heaven do Lobby e entra pelo Hut em terceiro olhando o Heaven pela smoke.",
+        "p5": "Segura Ramp a partir de Lobby por 10s, depois entra no site pelo Hut."
+      },
+      "posPlant": "Plant em Default perto do Vent; posições Hut, Squeaky, Mini, Rafters e um olhando Heaven.",
+      "planoB": "Se o Entry cair no Hut sem trade, recuem para Lobby e segurem Ramp e Squeaky."
     },
     {
       "id": "nuke-02",
       "mapa": "nuke",
       "numero": 2,
-      "titulo": "Outside → Secret",
-      "tipos": ["controle"],
-      "alvo": ["B"],
-      "linhas": [
-        "2–3 jogadores Outside.",
-        "Conquistar Secret.",
-        "Descer para Lower.",
-        "Pressionar B."
-      ]
+      "titulo": "Execução A padrão (Hut + Squeaky + Main)",
+      "tipos": ["execucao"],
+      "alvo": ["A"],
+      "objetivo": "Tomar A com as smokes de Heaven e CT/Mini e entrar por três portas ao mesmo tempo.",
+      "economia": "Full buy: 3 smokes, 1 molotov, 4 flashes",
+      "funcoes": {
+        "p1": "No Hut. Na queda das smokes, entra limpando Mini e Default.",
+        "p2": "Em Squeaky. Flash por cima de Squeaky e entra limpando Vents e Mini.",
+        "p3": "IGL, em Lobby. Joga smoke Heaven e smoke CT/Main; entra pelo Main (porta grande) limpando Rafters.",
+        "p4": "Segura Ramp a partir de Lobby durante a execução; depois do plant entra pelo Hut para segurar Heaven.",
+        "p5": "Em Outside fazendo barulho no início e, durante a execução, segurando a rotação de Secret."
+      },
+      "posPlant": "Plant em Default ou na frente de Silo; posições Hut, Squeaky, Mini, Rafters e Main.",
+      "planoB": "Se Squeaky for contestado, o grupo entra só por Hut e Main com o utilitário restante."
     },
     {
       "id": "nuke-03",
       "mapa": "nuke",
       "numero": 3,
-      "titulo": "Split B",
-      "tipos": ["split"],
+      "titulo": "Outside - Toma Outside e Secret",
+      "tipos": ["execucao"],
       "alvo": ["B"],
-      "linhas": [
-        "2 Ramp.",
-        "2 Secret.",
-        "1 Lobby lurker.",
-        "Entrada em Lower por múltiplas direções."
-      ]
+      "objetivo": "Ganhar Outside com smokes de Cross e entrar em B pelo Secret.",
+      "economia": "Full buy: 3 smokes, 4 flashes",
+      "funcoes": {
+        "p1": "Primeiro em Outside. Corre até Silo após as smokes e entra no Secret limpando o fundo.",
+        "p2": "Flash por cima de Outside para a corrida até Silo e entra no Secret em seguida.",
+        "p3": "IGL. Joga as duas smokes de Cross (Outside) do T spawn para cortar Garage e Mini.",
+        "p4": "Segura Garage e Mini da linha de Outside durante a corrida; entra por último no Secret.",
+        "p5": "Em Lobby segurando Ramp e Squeaky para cortar a rotação de A."
+      },
+      "posPlant": "Plant em B Default; posições Secret, Double Doors, Toxic, Vents e Dark.",
+      "planoB": "Se a corrida for punida, recuam para Outside e o IGL chama Execução A."
     },
     {
       "id": "nuke-04",
       "mapa": "nuke",
       "numero": 4,
-      "titulo": "Ramp Execute",
-      "tipos": ["execute"],
+      "titulo": "Execução Ramp (B)",
+      "tipos": ["execucao"],
       "alvo": ["B"],
-      "linhas": [
-        "3 jogadores Ramp.",
-        "1 Lobby.",
-        "1 Outside.",
-        "Ataque Lower depois de conquistar Ramp."
-      ]
+      "objetivo": "Ganhar Ramp e entrar em B pelos dois lados com o site isolado.",
+      "economia": "Full buy: 2 smokes, 2 molotovs, 4 flashes",
+      "funcoes": {
+        "p1": "Primeiro em Ramp. Após o molotov no fundo, desce limpando Toxic e Double Doors.",
+        "p2": "Flash por cima de Ramp e entra em seguida limpando Decon.",
+        "p3": "IGL. Smoke em Ramp para cortar o AWP e molotov no fundo; entra limpando Site.",
+        "p4": "Segura Lobby e Squeaky durante a descida de Ramp.",
+        "p5": "Em Outside segurando Secret e cortando a rotação por Garage."
+      },
+      "posPlant": "Plant em B Default; posições Ramp, Toxic, Double Doors, Decon e Vents.",
+      "planoB": "Se Ramp for contestada com utilitário, segurem a parte de cima e esperem."
     },
     {
       "id": "nuke-05",
       "mapa": "nuke",
       "numero": 5,
-      "titulo": "A Execute",
-      "tipos": ["execute"],
-      "alvo": ["A"],
-      "linhas": [
-        "3 Lobby.",
-        "1 Outside.",
-        "1 Ramp.",
-        "Pressão rápida em Upper."
-      ]
+      "titulo": "Split B (Ramp + Secret)",
+      "tipos": ["split"],
+      "alvo": ["B"],
+      "objetivo": "Atacar B por Ramp e por Secret no mesmo segundo para que o CT não consiga cobrir as duas entradas.",
+      "economia": "Full buy: 4 smokes, 1 molotov, 4 flashes",
+      "funcoes": {
+        "p1": "Em Ramp com o Suporte 2. No call (0:40), desce limpando Toxic e Double Doors.",
+        "p2": "Em Outside com o AWP. Após as smokes de Cross, corre até Secret; flash para dentro e entra limpando o fundo de Secret e Decon.",
+        "p3": "IGL, em Ramp. Smoke em Ramp para cortar o AWP e molotov no fundo; entra em segundo limpando Site.",
+        "p4": "Joga as smokes de Cross do T spawn e segura Garage/Mini durante a corrida; entra no Secret por último.",
+        "p5": "Em Lobby segurando Squeaky e Hut, avisando a rotação de A e atrasando quem descer pelo Vent."
+      },
+      "posPlant": "Plant em B Default; posições Ramp, Secret, Decon, Toxic e Double Doors.",
+      "planoB": "Se um lado for travado, ele segura a posição e espera; o lado livre só entra quando o IGL chamar."
     },
     {
       "id": "nuke-06",
       "mapa": "nuke",
       "numero": 6,
-      "titulo": "Fake Outside → Ramp",
+      "titulo": "Fake A, Hit Ramp",
       "tipos": ["fake"],
       "alvo": ["B"],
-      "linhas": [
-        "Fazer pressão Outside.",
-        "CTs podem deslocar jogadores.",
-        "Ramp entra posteriormente."
-      ]
+      "objetivo": "Vender execução em A com barulho e utilitário e atacar B por Ramp com quatro jogadores.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Em Ramp desde o início, em silêncio. No call, desce com flash limpando Toxic e Double Doors.",
+        "p2": "No Hut: aos 0:50 joga flash para dentro de A e faz barulho; depois corre por Lobby para Ramp.",
+        "p3": "IGL. Joga smoke Heaven para vender o fake; corre para Ramp e joga smoke em Ramp e molotov no fundo no call.",
+        "p4": "Segura Lobby e Squeaky durante o fake; desce Ramp por último depois do call.",
+        "p5": "Fica em Squeaky segurando o fake até o fim do round e atrasando o retake vindo de A."
+      },
+      "posPlant": "Plant em B Default; posições Ramp, Toxic, Double Doors, Decon e Vents.",
+      "planoB": "Se o CT não girar, o IGL cancela e o grupo vira Execução A com o Lurker em Squeaky."
     },
     {
       "id": "nuke-07",
       "mapa": "nuke",
       "numero": 7,
-      "titulo": "Fake Ramp → A",
-      "tipos": ["fake"],
-      "alvo": ["A"],
-      "linhas": [
-        "Mostrar presença Ramp.",
-        "Fazer os CTs respeitarem Lower.",
-        "Depois atacar Upper."
-      ]
+      "titulo": "Vents Drop (A para B)",
+      "tipos": ["execucao"],
+      "alvo": ["B"],
+      "objetivo": "Tomar A e descer pelo Vent para B, pegando a defesa de B de cima.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Toma A pelo Hut com a Execução A padrão; depois do site limpo, desce pelo Vent em primeiro limpando Vents e Decon.",
+        "p2": "Flash para A na entrada; depois flash por cima do Vent para o Entry descer.",
+        "p3": "IGL. Smokes de A (Heaven e CT/Main) na entrada; desce o Vent em terceiro.",
+        "p4": "Segura Ramp a partir de Lobby durante toda a tática; desce Ramp junto com a descida do Vent.",
+        "p5": "Desce pelo Vent com o Entry e segura o fundo de Secret."
+      },
+      "posPlant": "Plant em B; posições Vents, Decon, Toxic, Ramp e Secret.",
+      "planoB": "Se o Vent for contestado, plantem em A e joguem o pós-plant em cima."
     },
     {
       "id": "nuke-08",
       "mapa": "nuke",
       "numero": 8,
-      "titulo": "Rush Ramp",
-      "tipos": ["rush"],
-      "alvo": ["B"],
-      "linhas": [
-        "4 jogadores Ramp.",
-        "1 controla Lobby.",
-        "Entrada rápida no Lower."
-      ]
+      "titulo": "Default Lobby",
+      "tipos": ["default"],
+      "alvo": [],
+      "objetivo": "Ganhar Lobby, Squeaky e Outside nos primeiros 30s, coletar informação e chamar a execução aos 0:45.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Em Lobby perto do Hut, ouvindo o site A e avisando contato.",
+        "p2": "Em Squeaky fazendo barulho e segurando quem empurrar.",
+        "p3": "IGL, em Lobby. Lê o round (quantos em A, onde está o AWP) e chama o site aos 0:45.",
+        "p4": "Em Lobby segurando Ramp; pega pick se o CT empurrar.",
+        "p5": "Em Outside, segurando Garage e Secret e avisando a rotação de B."
+      },
+      "posPlant": "Depende do site chamado: posições da Execução A ou da Execução Ramp.",
+      "planoB": "Se nada acontecer até 0:40, o IGL chama Execução A padrão."
     },
     {
       "id": "nuke-09",
       "mapa": "nuke",
       "numero": 9,
-      "titulo": "Outside lurker",
-      "tipos": ["lurk"],
-      "alvo": [],
-      "linhas": [
-        "4 jogadores trabalham Lobby/Ramp.",
-        "1 permanece Outside.",
-        "Pode cortar rotações e criar uma segunda ameaça."
-      ]
+      "titulo": "Force buy - Rush Outside",
+      "tipos": ["force"],
+      "alvo": ["B"],
+      "objetivo": "Ganhar um force round explodindo pelo Outside e entrando em B pelo Secret.",
+      "economia": "SMG/pistola forte + kevlar, 2 smokes, 3 flashes",
+      "funcoes": {
+        "p1": "Primeiro em Outside. Corre até Silo após as smokes e entra no Secret limpando o fundo.",
+        "p2": "Duas flashes por cima de Outside para a corrida; entra no Secret em seguida.",
+        "p3": "IGL. Joga as duas smokes de Cross para cortar Garage e Mini; entra no Secret em terceiro.",
+        "p4": "Sem AWP: SMG ou Galil; entra por Secret limpando Decon.",
+        "p5": "Segura Lobby e Ramp contra o flank; entra por último."
+      },
+      "posPlant": "Plant em B e joguem perto da bomba.",
+      "planoB": "Se perderem a entrada, guardem as armas e salvem."
     },
     {
       "id": "nuke-10",
       "mapa": "nuke",
       "numero": 10,
-      "titulo": "Default lento",
-      "tipos": ["default", "lento"],
-      "alvo": [],
-      "linhas": [
-        "Não revelar o plano cedo.",
-        "Manter jogadores em diferentes níveis.",
-        "Fazer os CTs tomarem decisões.",
-        "Executar somente depois de identificar a distribuição defensiva."
-      ]
+      "titulo": "Contato A (Lobby)",
+      "tipos": ["contato"],
+      "alvo": ["A"],
+      "objetivo": "Andar em silêncio até A e explodir só no primeiro contato.",
+      "economia": "Full buy",
+      "funcoes": {
+        "p1": "Anda em silêncio pelo Hut; no contato entra limpando Mini e Default.",
+        "p2": "Atrás do Entry; no contato joga flash por cima do Hut e entra limpando Rafters.",
+        "p3": "IGL. No contato joga smoke Heaven e smoke CT/Main; entra pelo Main.",
+        "p4": "Segura Ramp a partir de Lobby; depois do plant entra pelo Hut olhando Heaven.",
+        "p5": "Em Outside segurando a rotação de Secret."
+      },
+      "posPlant": "Plant em A; posições Hut, Squeaky, Mini, Rafters e Main.",
+      "planoB": "Se a rotação vier rápida, segurem Lobby e Hut."
     }
-  ],
-  "situacoes": [
-    {"id": "cts-agressivos", "situacao": "CTs muito agressivos", "recomendacao": "Default + armadilha anti-agressão", "tipos": ["default", "anti"]},
-    {"id": "cts-recuados", "situacao": "CTs muito recuados", "recomendacao": "Controle de espaço + execute tardio", "tipos": ["controle", "lento"]},
-    {"id": "cts-rotacionam", "situacao": "CTs rotacionam rápido", "recomendacao": "Fake + lurker", "tipos": ["fake", "lurk"]},
-    {"id": "b-fraco", "situacao": "B está fraco", "recomendacao": "Explosão B", "alvo": "B", "tipos": ["execute", "rush"]},
-    {"id": "a-fraco", "situacao": "A está fraco", "recomendacao": "Split A", "alvo": "A", "tipos": ["split"]},
-    {"id": "cts-gastam-utilidade", "situacao": "CTs gastam muita utilidade cedo", "recomendacao": "Ataque tardio", "tipos": ["lento"]},
-    {"id": "time-inimigo-stack", "situacao": "Time inimigo faz stack", "recomendacao": "Fake + troca de bombsite", "tipos": ["fake"]},
-    {"id": "vantagem-numerica", "situacao": "Vocês têm vantagem numérica", "recomendacao": "Não acelerar sem necessidade; jogar pela informação", "tipos": ["default", "controle"]},
-    {"id": "desvantagem-numerica", "situacao": "Vocês estão em desvantagem", "recomendacao": "Criar splits e buscar duelos isolados", "tipos": ["split", "lurk"]},
-    {"id": "anti-eco", "situacao": "Round anti-eco", "recomendacao": "Rush/explosão com controle de espaço", "tipos": ["rush", "execute", "controle"]},
-    {"id": "pouca-utilidade", "situacao": "Pouca utilidade", "recomendacao": "Default simples + execução baseada em picks", "tipos": ["default"]},
-    {"id": "ultimos-20s", "situacao": "Últimos 20 segundos", "recomendacao": "Commitar rapidamente em um site", "tipos": ["rush", "execute"]}
-  ],
-  "calls": [
-    {"termo": "Default", "significado": "Cada jogador ocupa sua posição.", "tipo": "default"},
-    {"termo": "Control", "significado": "Ganhar espaço antes de executar.", "tipo": "controle"},
-    {"termo": "Explode A/B", "significado": "Todos entram juntos.", "tipo": "execute"},
-    {"termo": "Split", "significado": "Duas entradas simultâneas.", "tipo": "split"},
-    {"termo": "Fake", "significado": "Criar pressão sem necessariamente entrar.", "tipo": "fake"},
-    {"termo": "Lurk", "significado": "Um jogador fica atrasado para pegar rotação.", "tipo": "lurk"},
-    {"termo": "Slow", "significado": "Gastar tempo e utilidade antes do ataque.", "tipo": "lento"},
-    {"termo": "Go", "significado": "Execução imediata."},
-    {"termo": "Abort", "significado": "Cancelar o plano."},
-    {"termo": "Save", "significado": "Preservar armas/economia quando o round estiver praticamente perdido."}
   ]
 }

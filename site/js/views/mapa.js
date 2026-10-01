@@ -16,7 +16,7 @@ export function mapa({ index, params, query }) {
   const contagem = tipoAtivo ? `${lista.length} de ${todas.length} táticas` : `${todas.length} táticas`;
 
   const filtros = tiposDoMapa(index, m.id).map(
-    (t) => html`<button type="button" class="chip chip--tipo" data-action="filtro" data-mapa="${m.id}" data-tipo="${t.id}" aria-pressed="${bool(t.id === tipoAtivo)}">${t.nome}</button>`,
+    (t) => html`<button type="button" class="chip chip--tipo" style="--tc:${t.cor ?? '#6b6b6b'}" data-action="filtro" data-mapa="${m.id}" data-tipo="${t.id}" aria-pressed="${bool(t.id === tipoAtivo)}"><span class="ponto"></span>${t.nome}</button>`,
   );
 
   return {
@@ -29,6 +29,9 @@ export function mapa({ index, params, query }) {
         <p class="cabecalho-lista__info">${contagem}</p>
         <a class="link" href="#/mapas">Trocar mapa</a>
       </div>
+      ${m.descricao
+        ? html`<details class="sobre"><summary>Sobre o ${m.nome}</summary><p>${m.descricao}</p></details>`
+        : ''}
       <div class="chips chips--tipos" role="group" aria-label="Filtrar por tipo">
         <button type="button" class="chip chip--tipo" data-action="filtro" data-mapa="${m.id}" data-tipo="" aria-pressed="${bool(!tipoAtivo)}">Todas</button>
         ${filtros}

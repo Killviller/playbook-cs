@@ -1,6 +1,6 @@
 // Componentes de interface compartilhados pelas telas.
 import { html, raw, bool } from './lib/html.js';
-import { pad2, separarContagem, ehObjetivo } from './lib/text.js';
+import { pad2 } from './lib/text.js';
 import { store } from './store.js';
 import { pwa } from './pwa.js';
 
@@ -8,14 +8,13 @@ import { pwa } from './pwa.js';
 const ICONES = {
   map: '<path d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/>',
   call: '<path d="M3 10v4a1 1 0 0 0 1 1h2.5L12 19V5L6.5 9H4a1 1 0 0 0-1 1z"/><path d="M15.5 9a4 4 0 0 1 0 6M18.5 6a8 8 0 0 1 0 12"/>',
-  list: '<path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/>',
+  book: '<path d="M6 3h12a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M8 3v18M12 8h4M12 12h4"/>',
   star: '<path d="m12 3.2 2.7 5.5 6 .9-4.4 4.2 1 6-5.3-2.8-5.3 2.8 1-6-4.4-4.2 6-.9z"/>',
   search: '<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>',
   sliders: '<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>',
   chevR: '<path d="m9 6 6 6-6 6"/>',
   chevL: '<path d="m15 6-6 6 6 6"/>',
   share: '<path d="M12 15V3.5M8 7l4-4 4 4"/><path d="M5 12v6.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V12"/>',
-  flag: '<path d="M5 21V4"/><path d="M5 4.5h11l-2 3.5 2 3.5H5"/>',
   download: '<path d="M12 4v11M8 11.5l4 4 4-4M5 20h14"/>',
   refresh: '<path d="M20 11a8 8 0 1 0-2.2 5.6"/><path d="M20 5v6h-6"/>',
   check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
@@ -36,6 +35,12 @@ export function mapaAtual(index) {
   return index.mapasById.has(id) ? id : (index.mapas[0]?.id ?? null);
 }
 
+/** Função (P1–P5) que a pessoa escolheu como a dela, ou null para ver todas por igual. */
+export function minhaFuncao(index) {
+  const id = store.get('funcao');
+  return index.funcoesById.has(id) ? id : null;
+}
+
 export const acoesPadrao = () => html`
   <a class="icon-btn" href="#/buscar" aria-label="Buscar">${icone('search')}</a>
   <a class="icon-btn" href="#/ajustes" aria-label="Ajustes">${icone('sliders')}</a>`;
@@ -46,21 +51,34 @@ export const selosSite = (alvo) =>
     (s) => html`<span class="site site--${s}" title="Ataque ao site ${s}"><span class="sr-only">Site </span>${s}</span>`,
   );
 
-export const etiquetasTipo = (index, tatica) =>
-  tatica.tipos.map((id) => html`<span class="tag">${index.tiposById.get(id)?.nome ?? id}</span>`);
+/** Etiqueta colorida do tipo; a cor vem do cadastro de tipos (as mesmas cores do PDF). */
+export const etiquetaTipo = (tipo) =>
+  html`<span class="tipo" style="--tc:${tipo.cor ?? '#6b6b6b'}">${tipo.nome}</span>`;
+
+export const etiquetasTipo = (index, tatica, { ocultar = null } = {}) =>
+  tatica.tipos.filter((id) => id !== ocultar).map((id) => etiquetaTipo(index.tiposById.get(id) ?? { nome: id }));
 
 // -------------------------------------------------------------------- listas
-export function linhaTatica(index, t, { mostrarMapa = false, favorita = false } = {}) {
+export function linhaTatica(index, t, { mostrarMapa = false, favorita = false, ocultarTipo = null } = {}) {
   const mapa = index.mapasById.get(t.mapa);
+  const tipos = etiquetasTipo(index, t, { ocultar: ocultarTipo });
+  const funcaoId = minhaFuncao(index);
+  const funcao = funcaoId ? index.funcoesById.get(funcaoId) : null;
+  const papel = funcao && t.funcoes[funcaoId]
+    ? html`<span class="row__papel"><b>${funcao.sigla}</b>${t.funcoes[funcaoId]}</span>`
+    : '';
   return html`
     <a class="row" href="#/tatica/${t.id}">
       <span class="row__num" aria-hidden="true">${pad2(t.numero)}</span>
       <span class="row__main">
         <span class="row__title"><span class="sr-only">Tática ${t.numero}: </span>${t.titulo}</span>
-        <span class="row__meta">
-          ${mostrarMapa ? html`<span class="tag tag--mapa" style="--h:${mapa.matiz ?? 210}">${mapa.nome}</span>` : ''}
-          ${etiquetasTipo(index, t)}
-        </span>
+        ${mostrarMapa || tipos.length
+          ? html`<span class="row__meta">
+              ${mostrarMapa ? html`<span class="tag tag--mapa" style="--h:${mapa.matiz ?? 210}">${mapa.nome}</span>` : ''}
+              ${tipos}
+            </span>`
+          : ''}
+        ${papel}
       </span>
       <span class="row__end">
         ${favorita ? html`<span class="row__fav" role="img" aria-label="Favorita">${icone('star')}</span>` : ''}
@@ -73,7 +91,7 @@ export function linhaTatica(index, t, { mostrarMapa = false, favorita = false } 
 export function listaTaticas(index, taticas, opcoes = {}) {
   const favs = opcoes.favs ?? new Set();
   return html`<ul class="rows">${taticas.map(
-    (t) => html`<li>${linhaTatica(index, t, { mostrarMapa: opcoes.mostrarMapa, favorita: favs.has(t.id) })}</li>`,
+    (t) => html`<li>${linhaTatica(index, t, { mostrarMapa: opcoes.mostrarMapa, favorita: favs.has(t.id), ocultarTipo: opcoes.ocultarTipo })}</li>`,
   )}</ul>`;
 }
 
@@ -88,17 +106,15 @@ export function chipsDeMapas(index, ativoId, modo = 'link') {
   return html`<div class="chips" role="group" aria-label="Mapa">${chips}</div>`;
 }
 
-// ------------------------------------------------------------- linha da tática
-/** Uma linha do playbook; a contagem de jogadores no começo vira um selo destacado. */
-export function linhaDoPlaybook(texto) {
-  const { count, rest } = separarContagem(texto);
-  if (count) {
-    return html`<li class="linha"><span class="linha__qtd">${count}</span><span class="linha__txt">${rest}</span></li>`;
-  }
-  if (ehObjetivo(texto)) {
-    return html`<li class="linha linha--objetivo"><span class="linha__icone">${icone('flag')}</span><span class="linha__txt">${texto}</span></li>`;
-  }
-  return html`<li class="linha"><span class="linha__ponto" aria-hidden="true"></span><span class="linha__txt">${texto}</span></li>`;
+// ------------------------------------------------------------------- funções
+/** Seletor segmentado "Minha função": Todas, P1…P5. */
+export function seletorDeFuncao(index, atual) {
+  const op = (valor, texto, ativo, rotulo) =>
+    html`<button type="button" role="radio" class="seg__op" data-action="funcao" data-valor="${valor}" aria-checked="${bool(ativo)}" aria-label="${rotulo}">${texto}</button>`;
+  return html`<div class="seg seg--funcoes" role="radiogroup" aria-label="Minha função">
+    ${op('', 'Todas', !atual, 'Todas as funções')}
+    ${index.funcoes.map((f) => op(f.id, f.sigla, f.id === atual, `${f.sigla}, ${f.curto ?? f.nome}`))}
+  </div>`;
 }
 
 // ------------------------------------------------------------ instalar o app
