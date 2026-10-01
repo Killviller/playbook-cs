@@ -1,0 +1,25 @@
+{
+  "id": "./",
+  "name": "Playbook CS2 — Táticas T",
+  "short_name": "Playbook T",
+  "description": "Playbook de táticas do lado T para CS2: consulta rápida para o IGL e estudo do time.",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0d1117",
+  "theme_color": "#0d1117",
+  "categories": ["games", "sports"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Qual tática chamar?", "short_name": "Chamar", "url": "./#/chamar" },
+    { "name": "Calls do IGL", "short_name": "Calls", "url": "./#/calls" },
+    { "name": "Favoritas", "short_name": "Favoritas", "url": "./#/favoritas" }
+  ]
+}

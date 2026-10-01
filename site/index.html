@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR" data-tema="escuro" data-texto="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Playbook T</title>
+  <meta name="description" content="Playbook de táticas do lado T para CS2: consulta rápida para o IGL e estudo do time.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0d1117">
+  <meta name="color-scheme" content="dark light">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Playbook T">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/app.css">
+  <script>
+    /* aplica tema e tamanho do texto antes da primeira pintura (evita piscar) */
+    (function () {
+      try {
+        var raiz = document.documentElement;
+        var tema = JSON.parse(localStorage.getItem('pb.tema'));
+        var texto = JSON.parse(localStorage.getItem('pb.texto'));
+        if (tema === 'claro' || tema === 'sistema') raiz.setAttribute('data-tema', tema);
+        if (texto === 'grande' || texto === 'extra') raiz.setAttribute('data-texto', texto);
+      } catch (e) { /* sem armazenamento: segue com o padrão */ }
+    })();
+  </script>
+</head>
+<body>
+  <header class="appbar" id="appbar"></header>
+  <main id="main" tabindex="-1">
+    <div class="splash" role="status" aria-label="Carregando"><span class="spinner"></span></div>
+    <noscript><p class="intro">Ative o JavaScript do navegador para usar o playbook.</p></noscript>
+  </main>
+  <nav class="tabbar" id="tabbar" aria-label="Seções"></nav>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
