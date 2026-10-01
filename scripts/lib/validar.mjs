@@ -74,7 +74,8 @@ export async function validarPlaybook(dados, { siteDir = null } = {}) {
         try {
           await access(join(siteDir, m[campo]));
         } catch {
-          erro(`mapa "${m.id}": a imagem "${m[campo]}" não existe dentro de site/.`);
+          // capa ainda não enviada: só avisa (o card cai no fundo em gradiente)
+          (campo === 'capa' ? aviso : erro)(`mapa "${m.id}": a imagem "${m[campo]}" não existe dentro de site/.`);
         }
       }
     }
