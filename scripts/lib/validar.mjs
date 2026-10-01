@@ -1,7 +1,8 @@
 // Validação do site/data/playbook.json. Usada pelo build, pelos testes e por `npm run validar`.
 // Erros bloqueiam o build; avisos só chamam atenção (campos opcionais vazios, táticas marcadas para revisão).
-import { access } from 'node:fs/promises';
+import { access, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { caminhoRelativo, validarRadares } from '../../site/js/lib/radar.js';
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const COR = /^#[0-9a-fA-F]{6}$/;
@@ -149,6 +150,45 @@ export async function validarPlaybook(dados, { siteDir = null } = {}) {
   }
 
   return { erros, avisos };
+}
+
+/**
+ * Confere site/data/radares.json (os radares feitos no editor). Arquivo ausente é normal: ainda não há radares.
+ * Imagem de radar que não está em site/ vira só aviso (o radar aparece sem fundo até o arquivo ser enviado).
+ * @param {object} playbook conteúdo já lido do playbook.json
+ * @param {{siteDir: string}} opcoes
+ */
+export async function validarRadaresDoSite(playbook, { siteDir }) {
+  let texto;
+  try {
+    texto = await readFile(join(siteDir, 'data/radares.json'), 'utf8');
+  } catch {
+    return { erros: [], avisos: [] };
+  }
+
+  let dados;
+  try {
+    dados = JSON.parse(texto);
+  } catch (e) {
+    return { erros: [`radares.json: JSON inválido (${e.message}). Confira vírgulas e aspas.`], avisos: [] };
+  }
+
+  const contexto = {
+    taticas: new Set((playbook?.taticas ?? []).map((t) => t.id)),
+    funcoes: new Set((playbook?.funcoes ?? []).map((f) => f.id)),
+    mapas: new Set((playbook?.mapas ?? []).map((m) => m.id)),
+  };
+  const { erros, avisos } = validarRadares(dados, contexto);
+
+  for (const [mapa, caminho] of Object.entries(dados?.imagens && typeof dados.imagens === 'object' ? dados.imagens : {})) {
+    if (!caminhoRelativo(caminho)) continue; // já reportado como erro
+    try {
+      await access(join(siteDir, caminho));
+    } catch {
+      avisos.push(`imagens.${mapa}: a imagem "${caminho}" ainda não está em site/ (o radar aparece sem o fundo até você enviar o arquivo).`);
+    }
+  }
+  return { erros: erros.map((e) => (e.startsWith('radares.json') ? e : `radares.json: ${e}`)), avisos };
 }
 
 export function formatarRelatorio({ erros, avisos }) {

@@ -88,8 +88,26 @@ export function ajustes({ index }) {
       </section>
 
       <section class="cartao">
+        <h2 class="cartao__titulo">Editor de radar</h2>
+        <p class="muted">Monte o radar das táticas arrastando os jogadores e desenhando as rotas. É para quem mantém o playbook do time.</p>
+        <label class="ajuste">
+          <span class="ajuste__texto">
+            <span class="ajuste__titulo">Atalho de edição nas táticas</span>
+            <span class="ajuste__desc">Mostra "Editar" e "Criar radar" na tela de cada tática.</span>
+          </span>
+          <span class="switch">
+            <input type="checkbox" role="switch" data-action="atalho-editor" ${store.get('editor', false) ? raw('checked') : ''}>
+            <span class="switch__trilho" aria-hidden="true"></span>
+          </span>
+        </label>
+        <div class="botoes">
+          <a class="btn" href="#/editor">${icone('radar')} Abrir o editor de radar</a>
+        </div>
+      </section>
+
+      <section class="cartao">
         <h2 class="cartao__titulo">Dados deste aparelho</h2>
-        <p class="muted">Favoritas, mapa da partida e preferências ficam só aqui, no seu celular.</p>
+        <p class="muted">Favoritas, mapa da partida e preferências ficam só aqui, no seu celular. Os radares que você salvou não são apagados por este botão (eles têm o botão deles no editor).</p>
         <div class="botoes">
           <button type="button" class="btn btn--perigo" data-action="limpar">${icone('trash')} Apagar dados</button>
         </div>

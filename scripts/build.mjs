@@ -7,7 +7,7 @@ import { createHash } from 'node:crypto';
 import { cp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { formatarRelatorio, validarPlaybook } from './lib/validar.mjs';
+import { formatarRelatorio, validarPlaybook, validarRadaresDoSite } from './lib/validar.mjs';
 
 const raiz = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -40,6 +40,9 @@ function trocar(texto, antigo, novo) {
 export async function construir({ origem = join(raiz, 'site'), destino = join(raiz, 'dist') } = {}) {
   const dados = JSON.parse(await readFile(join(origem, 'data/playbook.json'), 'utf8'));
   const relatorio = await validarPlaybook(dados, { siteDir: origem });
+  const radares = await validarRadaresDoSite(dados, { siteDir: origem });
+  relatorio.erros.push(...radares.erros);
+  relatorio.avisos.push(...radares.avisos);
   if (relatorio.erros.length) throw new Error(`Dados inválidos:\n${formatarRelatorio(relatorio)}`);
 
   await rm(destino, { recursive: true, force: true });

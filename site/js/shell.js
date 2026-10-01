@@ -15,9 +15,10 @@ const ABAS = [
 const NOME_APP = 'Playbook T';
 
 /**
- * tela = { titulo, tituloDocumento?, tituloNoCorpo?, voltar?, aba?, acoes?, corpo }
+ * tela = { titulo, tituloDocumento?, tituloNoCorpo?, voltar?, aba?, semAbas?, acoes?, corpo }
  *  - voltar: caminho-pai usado quando não há histórico (link aberto direto)
  *  - tituloNoCorpo: a tela traz o próprio <h1>; senão um <h1> invisível é inserido
+ *  - semAbas: esconde a barra de abas (editor de radar)
  */
 export function pintar(tela) {
   const titulo = tela.titulo ?? NOME_APP;
@@ -35,7 +36,12 @@ export function pintar(tela) {
       <div class="appbar__acoes">${tela.acoes ?? ''}</div>
     </div>`);
 
-  $('tabbar').innerHTML = String(html`
+  // telas de trabalho (editor de radar) escondem as abas para ganhar espaço
+  $('tabbar').hidden = !!tela.semAbas;
+  document.body.classList.toggle('sem-abas', !!tela.semAbas);
+  $('tabbar').innerHTML = tela.semAbas
+    ? ''
+    : String(html`
     <div class="tabbar__inner">${ABAS.map(
       (a) => html`<a class="tab" href="${a.href()}" data-replace ${a.id === tela.aba ? raw('aria-current="page"') : ''}>
         ${icone(a.icone)}<span>${a.rotulo}</span></a>`,

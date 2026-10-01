@@ -3,6 +3,7 @@ import { favoritas } from '../store.js';
 import { funcoesDaTatica, vizinhas } from '../data.js';
 import { pad2 } from '../lib/text.js';
 import { etiquetasTipo, icone, minhaFuncao, selosSite, seletorDeFuncao } from '../ui.js';
+import { blocoRadar, montarRadar } from './radar-leitor.js';
 
 /** Blocos opcionais: só aparecem quando a tática tem esses dados no JSON. */
 function extras(t) {
@@ -63,6 +64,7 @@ export function tatica({ index, params }) {
     acoes: html`
       <button type="button" class="icon-btn icon-btn--fav ${fav ? 'is-on' : ''}" data-action="fav" data-id="${t.id}" aria-pressed="${bool(fav)}" aria-label="Favorita">${icone('star')}</button>
       <button type="button" class="icon-btn" data-action="compartilhar" data-id="${t.id}" aria-label="Compartilhar">${icone('share')}</button>`,
+    montar: (main) => montarRadar(main, index, t),
     corpo: html`
       <article class="detalhe">
         <header class="detalhe__cab">
@@ -78,6 +80,8 @@ export function tatica({ index, params }) {
           ${ficha('Objetivo', t.objetivo, 'ficha__item--objetivo')}
           ${ficha('Economia', t.economia)}
         </div>
+
+        ${blocoRadar(index, t)}
 
         ${funcoes.length
           ? html`<section class="secao-funcoes" aria-labelledby="titulo-funcoes">

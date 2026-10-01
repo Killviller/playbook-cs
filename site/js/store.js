@@ -3,6 +3,7 @@
 // continua funcionando com uma cópia em memória até a página ser fechada.
 
 const PREFIXO = 'pb.';
+const PROTEGIDAS = `${PREFIXO}radar`;
 const memoria = new Map();
 
 export const store = {
@@ -27,11 +28,12 @@ export const store = {
     }
   },
 
+  /** Apaga favoritas e preferências. Os radares (chaves "pb.radar*") ficam: são trabalho feito à mão e têm botão próprio. */
   limpar() {
-    memoria.clear();
+    for (const k of [...memoria.keys()]) if (!k.startsWith(PROTEGIDAS)) memoria.delete(k);
     try {
       Object.keys(localStorage)
-        .filter((k) => k.startsWith(PREFIXO))
+        .filter((k) => k.startsWith(PREFIXO) && !k.startsWith(PROTEGIDAS))
         .forEach((k) => localStorage.removeItem(k));
     } catch {
       /* nada a fazer */

@@ -111,7 +111,7 @@ const acoes = {
   },
 
   limpar() {
-    if (!confirm('Apagar as favoritas e as preferências deste aparelho?')) return;
+    if (!confirm('Apagar as favoritas e as preferências deste aparelho? (Os radares salvos ficam.)')) return;
     store.limpar();
     telaAcesa.desligar();
     aplicarPreferencias();
@@ -125,6 +125,11 @@ const acoes = {
     const novo = el.dataset.valor || null;
     store.set('funcao', el.dataset.alternar && novo === atual ? null : novo);
     rerender();
+  },
+
+  'atalho-editor'(el) {
+    store.set('editor', el.checked);
+    aviso(el.checked ? 'Atalho de edição ligado' : 'Atalho de edição desligado');
   },
 
   sugestao(el) {

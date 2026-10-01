@@ -20,6 +20,20 @@ const ICONES = {
   check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
   trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a1.5 1.5 0 0 0 1.5 1.4h7A1.5 1.5 0 0 0 17 19l1-12M9 7V4.5h6V7"/>',
   x: '<path d="M6 6l12 12M18 6 6 18"/>',
+  undo: '<path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',
+  redo: '<path d="m15 14 5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  minus: '<path d="M5 12h14"/>',
+  edit: '<path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',
+  copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>',
+  image: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-8 8"/>',
+  eye: '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  upload: '<path d="M12 20V9M8 12.5l4-4 4 4M5 4h14"/>',
+  radar: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12 18.5 5.5"/>',
+  rota: '<path d="M4 19c5 0 4-8 9-8h5"/><path d="m15 7 4 4-4 4"/>',
+  arremesso: '<path d="M4 19 17 7" stroke-dasharray="3 3.2"/><path d="m11.5 5.5 6.5.5.5 6.5"/>',
+  texto: '<path d="M5 6V4.5h14V6M12 4.5v15M9 19.5h6"/>',
+  bomba: '<rect x="3.5" y="7" width="17" height="10" rx="2.5"/><path d="M8 11v2M12 11v2M16 11v2"/>',
 };
 
 export function icone(nome, classe = '') {
