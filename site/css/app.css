@@ -610,26 +610,22 @@ code {
 .chip--etapa[aria-pressed="true"] { background: var(--destaque); border-color: var(--destaque); color: var(--destaque-tinta); }
 .chip__rotulo { max-width: 9rem; margin-left: 0.5rem; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
 
-/* leitor (tela da tática) */
-.radar-leitor { margin-top: 18px; }
-.radar-leitor__cab { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.radar-leitor__cab .bloco__titulo { margin: 0; }
-.radar-leitor__cab .link { margin-left: auto; }
-.radar-etapas { margin: 10px 0 0; }
-.radar-leitor__texto { margin-top: 10px; }
-.radar-leitor__etapa { display: block; font-size: 1.02rem; }
-.radar-leitor__nota { margin-top: 2px; font-size: 1.06rem; line-height: 1.4; white-space: pre-line; }
-.radar-leitor--vazio .btn { align-self: flex-start; }
-.radar-leitor__voce { margin-top: 8px; font-size: 0.88rem; }
+/* extras do radar feito no editor, dentro do minimapa: um grupo por fase, só o da fase ativa aparece */
+.mm__extras { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; pointer-events: none; }
+.mm__extras-fase { display: none; }
+.mm[data-fase="0"] .mm__extras-fase[data-fase="0"], .mm[data-fase="1"] .mm__extras-fase[data-fase="1"],
+.mm[data-fase="2"] .mm__extras-fase[data-fase="2"], .mm[data-fase="3"] .mm__extras-fase[data-fase="3"] { display: inline; }
+.mm__fase-nota { display: none; margin: 0; padding: 10px 14px 0; font-size: 1.02rem; line-height: 1.4; white-space: pre-line; }
+.mm[data-fase="0"] .mm__fase-nota[data-fase="0"], .mm[data-fase="1"] .mm__fase-nota[data-fase="1"],
+.mm[data-fase="2"] .mm__fase-nota[data-fase="2"], .mm[data-fase="3"] .mm__fase-nota[data-fase="3"] { display: block; }
+.mm__cab-dir { display: inline-flex; align-items: center; gap: 10px; }
+.mm__editar { display: inline-flex; align-items: center; min-height: 2.75rem; color: var(--destaque-texto); font-weight: 700; }
+.mm__legenda { margin: 0; padding: 10px 14px 0; }
 .radar-legenda {
   display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 10px 0 0; padding: 0; list-style: none;
   color: var(--texto-2); font-size: 0.86rem;
 }
 .radar-legenda li { display: inline-flex; align-items: center; gap: 6px; }
-.rl-ponto {
-  display: inline-grid; place-items: center; min-width: 1.7rem; height: 1.7rem; border-radius: 50%;
-  background: var(--c); color: #0b0f14; font-size: 0.72rem; font-weight: 850;
-}
 .rl-glifo { width: 1.55rem; height: 1.55rem; }
 .rl-bomba { padding: 2px 6px; border-radius: 6px; background: #e5483d; color: #fff; font-size: 0.72rem; font-weight: 850; }
 .rl-traco { display: inline-block; width: 1.8rem; height: 0; border-top: 4px solid var(--texto-2); border-radius: 2px; }

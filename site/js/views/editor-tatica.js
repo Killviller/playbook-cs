@@ -1,4 +1,4 @@
-// Editor visual do radar de uma tática (#/editor/mirage-02).
+// Editor visual do radar de uma tática (#/editor/mirage-02). Cada etapa do editor é uma fase do minimapa da tática.
 //
 // Nada de coordenadas: toque para posicionar, arraste para mover, desenhe as rotas com o dedo.
 //  - Jogadores: toque no P1…P5 e depois no radar (ele já passa para o próximo que falta).
@@ -9,10 +9,10 @@
 import { html, raw, bool } from '../lib/html.js';
 import {
   GRANADAS, Historico, LIMITES, canonico, clonar, comIds, comprimento, etapaContinuando, limitar,
-  novoDiagrama, simplificarTraco, temConteudo,
+  nomeDaFase, novoDiagrama, simplificarTraco, temConteudo,
 } from '../lib/radar.js';
 import { corDaFuncao, desenharCamada, desenharSvg, glifoGranada, viewBox } from '../lib/radar-svg.js';
-import { imagemDoMapa, imagemDoSite, pontoDePartida, radarDaTatica, rascunhos, salvos } from '../radares.js';
+import { doPlaybook, imagemDoMapa, imagemDoSite, pontoDePartida, radarDaTatica, rascunhos, salvos } from '../radares.js';
 import { prepararImagem, salvarImagem } from '../imagens.js';
 import { aviso } from '../shell.js';
 import * as roteador from '../router.js';
@@ -80,7 +80,7 @@ function iniciar(raiz, { index, t }) {
   let ferramenta = null; // { tipo: 'jogador'|'granada'|'bomba'|'texto'|'rota', funcao?, granada?, estilo? }
   let vista = { x: 0, y: 0, w: 1 };
   let tracando = null;
-  let imagem = imagemDoSite(t.mapa);
+  let imagem = imagemDoSite(t.mapa) ?? mapa.radar ?? null;
   let ultimoDono = funcoes[0]?.id ?? null;
   let vivo = true;
 
@@ -111,7 +111,7 @@ function iniciar(raiz, { index, t }) {
     const opcoes = {
       funcoes, imagem, vista, editor: true, tracando,
       selecionado: ferramenta ? null : selecionado,
-      rotulo: `Radar editável de ${t.chamada}, etapa ${etapaI + 1}`,
+      rotulo: `Radar editável de ${t.chamada}, fase ${etapaI + 1}`,
     };
     const svg = el.radar.querySelector('svg');
     if (completo || !svg) {
@@ -229,13 +229,13 @@ function iniciar(raiz, { index, t }) {
   }
 
   function htmlEtapas() {
-    return html`<section class="ed-grupo" aria-labelledby="ed-eta"><h3 class="ed-grupo__titulo" id="ed-eta">Etapas</h3>
-      <div class="chips editor__etapas" role="group" aria-label="Etapas do radar">
+    return html`<section class="ed-grupo" aria-labelledby="ed-eta"><h3 class="ed-grupo__titulo" id="ed-eta">Fases</h3>
+      <div class="chips editor__etapas" role="group" aria-label="Fases do radar">
         ${diag.etapas.map(
-          (e, n) => html`<button type="button" class="chip chip--etapa" data-ed="etapa" data-valor="${n}" aria-pressed="${bool(n === etapaI)}">${n + 1}${e.titulo ? html`<span class="chip__rotulo">${e.titulo}</span>` : ''}</button>`,
+          (e, n) => html`<button type="button" class="chip chip--etapa" data-ed="etapa" data-valor="${n}" aria-pressed="${bool(n === etapaI)}">${n + 1}<span class="chip__rotulo">${e.titulo || nomeDaFase(diag.etapas.length, n)}</span></button>`,
         )}
         ${diag.etapas.length < LIMITES.etapas
-          ? html`<button type="button" class="chip" data-ed="nova-etapa" title="Cria a próxima etapa com os jogadores onde as rotas terminam">${icone('plus', 'ic--inline')} Nova etapa</button>`
+          ? html`<button type="button" class="chip" data-ed="nova-etapa" title="Cria a próxima fase com os jogadores onde as rotas terminam">${icone('plus', 'ic--inline')} Nova fase</button>`
           : ''}
       </div></section>`;
   }
@@ -243,14 +243,14 @@ function iniciar(raiz, { index, t }) {
   function htmlForm() {
     const e = etapa();
     return html`<section class="cartao editor__form">
-      <label class="campo"><span class="campo__rotulo">Título da etapa</span>
-        <input class="campo__input" data-ed-campo="titulo" maxlength="${LIMITES.titulo}" value="${e.titulo}" placeholder="Ex.: Posições iniciais" autocomplete="off"></label>
-      <label class="campo"><span class="campo__rotulo">O que acontece nesta etapa</span>
+      <label class="campo"><span class="campo__rotulo">Nome da fase</span>
+        <input class="campo__input" data-ed-campo="titulo" maxlength="${LIMITES.titulo}" value="${e.titulo}" placeholder="${nomeDaFase(diag.etapas.length, etapaI)}" autocomplete="off"></label>
+      <label class="campo"><span class="campo__rotulo">O que acontece nesta fase</span>
         <textarea class="campo__input" data-ed-campo="nota" rows="3" maxlength="${LIMITES.nota}" placeholder="Ex.: P3 joga a smoke de CT, P2 flasha por cima da Ramp.">${e.nota}</textarea></label>
       <div class="botoes">
         <button type="button" class="btn btn--sm" data-ed="duplicar-etapa">${icone('copy')} Duplicar</button>
         <button type="button" class="btn btn--sm" data-ed="limpar-etapa">Limpar</button>
-        <button type="button" class="btn btn--sm btn--perigo" data-ed="excluir-etapa" ${diag.etapas.length < 2 ? raw('disabled') : ''}>${icone('trash')} Excluir etapa</button>
+        <button type="button" class="btn btn--sm btn--perigo" data-ed="excluir-etapa" ${diag.etapas.length < 2 ? raw('disabled') : ''}>${icone('trash')} Excluir fase</button>
       </div>
     </section>`;
   }
@@ -267,15 +267,18 @@ function iniciar(raiz, { index, t }) {
         : ''}`;
   }
 
+  /** Radar (do editor ou posições do playbook.json) de outra tática, ou null. */
+  const diagramaDe = (o) => radarDaTatica(o.id)?.diagrama ?? (temConteudo(doPlaybook(o)) ? doPlaybook(o) : null);
+
   function htmlMais(aberto) {
-    const outras = (index.porMapa.get(t.mapa) ?? []).filter((o) => o.id !== t.id && radarDaTatica(o.id));
+    const outras = (index.porMapa.get(t.mapa) ?? []).filter((o) => o.id !== t.id && diagramaDe(o));
     return html`<details class="sobre editor__mais" ${aberto ? raw('open') : ''}>
       <summary>Mais opções</summary>
       <div class="editor__mais-corpo">
         ${outras.length
           ? html`<label class="campo"><span class="campo__rotulo">Começar a partir de outra tática</span>
               <select class="campo__input" data-ed-copiar>
-                <option value="">Escolher uma tática com radar…</option>
+                <option value="">Escolher uma tática com posições…</option>
                 ${outras.map((o) => html`<option value="${o.id}">${o.chamada} · ${o.titulo}</option>`)}
               </select></label>`
           : ''}
@@ -415,7 +418,7 @@ function iniciar(raiz, { index, t }) {
     const x = limitar(p[0]);
     const y = limitar(p[1]);
     const ocupado = ferramenta.tipo === 'jogador' ? !!jogadorDe(ferramenta.funcao) : ferramenta.tipo === 'bomba' && e.itens.some((i) => i.tipo === 'bomba');
-    if (!ocupado && e.itens.length >= LIMITES.itens) return aviso(`Esta etapa já tem ${LIMITES.itens} itens`);
+    if (!ocupado && e.itens.length >= LIMITES.itens) return aviso(`Esta fase já tem ${LIMITES.itens} itens`);
 
     let novo = null;
     switch (ferramenta.tipo) {
@@ -464,7 +467,7 @@ function iniciar(raiz, { index, t }) {
     }
     const e = etapa();
     if (e.itens.length >= LIMITES.itens) {
-      aviso(`Esta etapa já tem ${LIMITES.itens} itens`);
+      aviso(`Esta fase já tem ${LIMITES.itens} itens`);
       return desenharRadar();
     }
     const pontos = simplificarTraco(a.pontos, 0.006 * vista.w);
@@ -787,11 +790,11 @@ function iniciar(raiz, { index, t }) {
       etapa().itens = [];
       selecionado = null;
       confirmar();
-      aviso('Etapa limpa', { acao: 'Desfazer', aoAcionar: desfazer });
+      aviso('Fase limpa', { acao: 'Desfazer', aoAcionar: desfazer });
     },
     'excluir-etapa'() {
       if (diag.etapas.length < 2) return;
-      if (etapa().itens.length && !confirm(`Excluir a etapa ${etapaI + 1} e o que há nela?`)) return;
+      if (etapa().itens.length && !confirm(`Excluir a fase ${etapaI + 1} e o que há nela?`)) return;
       diag.etapas.splice(etapaI, 1);
       registrarEdicao();
       irParaEtapa(Math.min(etapaI, diag.etapas.length - 1));
@@ -799,7 +802,7 @@ function iniciar(raiz, { index, t }) {
     'escolher-imagem': () => el.arquivo.click(),
     'descartar-rascunho'() {
       rascunhos.descartar(t.id);
-      carregar(pontoDePartida(t.id));
+      carregar(pontoDePartida(t));
       tudo();
       aviso('Alterações não salvas descartadas');
     },
@@ -807,13 +810,13 @@ function iniciar(raiz, { index, t }) {
       if (!confirm('Descartar o que foi salvo neste aparelho e voltar à versão publicada para o time?')) return;
       salvos.remover(t.id);
       rascunhos.descartar(t.id);
-      carregar(pontoDePartida(t.id));
+      carregar(pontoDePartida(t));
       tudo();
       aviso('Voltou à versão publicada');
     },
     'limpar-tudo'() {
       if (!diag.etapas.some((e) => e.itens.length) && diag.etapas.length < 2) return;
-      if (!confirm('Apagar todas as etapas deste radar? (Dá para desfazer antes de salvar.)')) return;
+      if (!confirm('Apagar todas as fases deste radar? (Dá para desfazer antes de salvar.)')) return;
       diag = comIds(novoDiagrama(), gerarId);
       etapaI = 0;
       selecionado = null;
@@ -869,10 +872,11 @@ function iniciar(raiz, { index, t }) {
 
   /** Traz as etapas de outra tática do mapa (muitas começam do mesmo spawn) para depois ajustar aqui. */
   function copiarDe(id) {
-    const origem = id && radarDaTatica(id);
+    const outra = id && index.taticasById.get(id);
+    const origem = outra && diagramaDe(outra);
     if (!origem) return;
     if (diag.etapas.some((e) => e.itens.length) && !confirm('Substituir o que há neste radar pelo da outra tática? (Dá para desfazer antes de salvar.)')) return;
-    diag = comIds(origem.diagrama, gerarId);
+    diag = comIds(origem, gerarId);
     etapaI = 0;
     selecionado = null;
     ferramenta = null;
@@ -888,7 +892,7 @@ function iniciar(raiz, { index, t }) {
     try {
       aviso('Preparando a imagem…', { fixo: true });
       await salvarImagem(t.mapa, await prepararImagem(arquivo));
-      imagem = (await imagemDoMapa(t.mapa))?.url ?? null;
+      imagem = (await imagemDoMapa(t.mapa, mapa.radar))?.url ?? null;
       desenharRadar({ completo: true });
       desenharAlerta();
       desenharMais();
@@ -941,9 +945,9 @@ function iniciar(raiz, { index, t }) {
   document.addEventListener('keydown', aoTecla);
 
   // ------------------------------------------------------------------- partida
-  carregar(pontoDePartida(t.id));
+  carregar(pontoDePartida(t));
   tudo();
-  imagemDoMapa(t.mapa).then((img) => {
+  imagemDoMapa(t.mapa, mapa.radar).then((img) => {
     if (!vivo || (img?.url ?? null) === imagem) return;
     imagem = img?.url ?? null;
     desenharRadar({ completo: true });

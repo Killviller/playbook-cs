@@ -2,10 +2,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  Historico, canonico, comIds, comprimento, etapaContinuando, formatarArquivo, lerArquivo, limitar,
-  mesclarRadares, novoDiagrama, sanearDiagrama, simplificarTraco, temConteudo, validarRadares,
+  Historico, MAX_FASES, canonico, comIds, comprimento, deEntrada, etapaContinuando, formatarArquivo, lerArquivo, limitar,
+  mesclarRadares, nomeDaFase, novoDiagrama, paraEntrada, posicoesDoDiagrama, sanearDiagrama, simplificarTraco, temConteudo, validarRadares,
 } from '../site/js/lib/radar.js';
-import { corDaFuncao, desenharSvg, legendaDaEtapa } from '../site/js/lib/radar-svg.js';
+import { corDaFuncao, desenharCamada, desenharSvg, legendaDosExtras } from '../site/js/lib/radar-svg.js';
 
 const FUNCOES = [
   { id: 'p1', sigla: 'P1', nome: 'Entry', curto: 'Entry' },
@@ -66,7 +66,7 @@ test('sanearDiagrama descarta o que não faz sentido e tira os ids do editor', (
 
 test('sanearDiagrama respeita os limites (etapas, itens e pontos)', () => {
   const muitas = { etapas: Array.from({ length: 30 }, () => ({ itens: [] })) };
-  assert.equal(sanearDiagrama(muitas).etapas.length, 12);
+  assert.equal(sanearDiagrama(muitas).etapas.length, MAX_FASES); // o minimapa mostra até 4 fases
 
   const traco = Array.from({ length: 300 }, (_, i) => [i / 300, Math.sin(i / 7) * 0.2 + 0.5]);
   const rota = sanearDiagrama({ etapas: [{ itens: [{ tipo: 'rota', funcao: 'p1', pontos: traco }] }] }).etapas[0].itens[0];
@@ -154,23 +154,111 @@ test('Historico guarda só o limite de passos', () => {
   assert.equal(passos, 4);
 });
 
-// ------------------------------------------------------------------ arquivo
+// ------------------------------------------------- formato do arquivo (posicoes em %)
+test('MAX_FASES e os nomes padrão das fases batem com o minimapa', () => {
+  assert.equal(MAX_FASES, 4);
+  assert.deepEqual([0, 1, 2].map((i) => nomeDaFase(3, i)), ['Setup', 'Execução', 'Plant']);
+  assert.deepEqual([0, 1].map((i) => nomeDaFase(2, i)), ['Início', 'Final']);
+  assert.equal(nomeDaFase(1, 0), 'Fase 1');
+});
+
+const duasFases = () => ({
+  etapas: [
+    { titulo: '', nota: '', itens: [jog('p2', 0.17, 0.74), jog('p1', 0.22, 0.7), { tipo: 'bomba', x: 0.8, y: 0.2 }] },
+    {
+      titulo: '',
+      nota: 'Smoke cai.',
+      itens: [
+        jog('p1', 0.62, 0.44),
+        { tipo: 'rota', funcao: 'p1', estilo: 'rota', pontos: [[0.22, 0.7], [0.62, 0.44]] },
+        { tipo: 'granada', granada: 'smoke', funcao: 'p2', x: 0.5, y: 0.45 },
+      ],
+    },
+  ],
+});
+const jog = (funcao, x, y) => ({ tipo: 'jogador', funcao, x, y });
+
+test('posicoesDoDiagrama devolve % por fase, na ordem das funções, completando quem faltou numa fase', () => {
+  const { posicoes, fases } = posicoesDoDiagrama(duasFases(), ['p1', 'p2', 'p3']);
+  assert.deepEqual(Object.keys(posicoes), ['p1', 'p2']); // P1 antes de P2 mesmo tendo sido posicionado depois
+  assert.deepEqual(posicoes.p1, [[22, 70], [62, 44]]);
+  assert.deepEqual(posicoes.p2, [[17, 74], [17, 74]]); // não foi posicionado na fase 2: fica onde estava
+  assert.equal(fases, undefined); // ninguém deu nome às fases: o minimapa usa os padrões
+});
+
+test('quem só aparece numa fase posterior vale também para as anteriores (o minimapa precisa de um ponto por fase)', () => {
+  const d = { etapas: [{ titulo: '', nota: '', itens: [jog('p1', 0.1, 0.1)] }, { titulo: '', nota: '', itens: [jog('p1', 0.2, 0.2), jog('p3', 0.9, 0.9)] }] };
+  assert.deepEqual(posicoesDoDiagrama(d, ['p1', 'p2', 'p3']).posicoes.p3, [[90, 90], [90, 90]]);
+});
+
+test('fases: nome escrito vale, as que ficaram sem nome recebem o padrão', () => {
+  const d = duasFases();
+  d.etapas[1].titulo = 'Execução A';
+  assert.deepEqual(posicoesDoDiagrama(d, ['p1', 'p2']).fases, ['Início', 'Execução A']);
+});
+
+test('paraEntrada: posicoes, notas e extras (rotas, granadas, bomba) em %, sem repetir os jogadores', () => {
+  const e = paraEntrada(duasFases(), ['p1', 'p2']);
+  assert.deepEqual(Object.keys(e), ['posicoes', 'notas', 'extras']); // sem "fases": ninguém deu nome
+  assert.deepEqual(e.notas, ['', 'Smoke cai.']);
+  assert.deepEqual(e.extras[0], [{ tipo: 'bomba', x: 80, y: 20 }]);
+  assert.deepEqual(e.extras[1][0], { tipo: 'rota', funcao: 'p1', estilo: 'rota', pontos: [[22, 70], [62, 44]] });
+  assert.deepEqual(e.extras[1][1], { tipo: 'granada', granada: 'smoke', funcao: 'p2', x: 50, y: 45 });
+  assert.equal(paraEntrada(novoDiagrama()), null);
+});
+
+test('paraEntrada só com extras (sem jogadores) ainda vale', () => {
+  const e = paraEntrada({ etapas: [{ titulo: '', nota: '', itens: [{ tipo: 'bomba', x: 0.5, y: 0.5 }] }] });
+  assert.deepEqual(e.posicoes, {});
+  assert.equal(e.extras[0].length, 1);
+});
+
+test('ida e volta: diagrama → entrada → diagrama não perde nada (com os jogadores completados)', () => {
+  const original = duasFases();
+  original.etapas[0].titulo = 'Setup';
+  original.etapas[1].titulo = 'Execução';
+  const volta = deEntrada(paraEntrada(original, ['p1', 'p2']));
+  const jogadores = (d, i) => d.etapas[i].itens.filter((x) => x.tipo === 'jogador').map((x) => `${x.funcao}:${x.x},${x.y}`).sort();
+  assert.deepEqual(jogadores(volta, 0), jogadores(original, 0));
+  assert.deepEqual(jogadores(volta, 1), ['p1:0.62,0.44', 'p2:0.17,0.74']); // P2 completado na fase 2
+  assert.deepEqual(volta.etapas.map((e) => e.titulo), ['Setup', 'Execução']);
+  assert.equal(volta.etapas[1].nota, 'Smoke cai.');
+  const extras = (d, i) => d.etapas[i].itens.filter((x) => x.tipo !== 'jogador');
+  assert.deepEqual(extras(volta, 1), extras(original, 1));
+  assert.deepEqual(extras(volta, 0), extras(original, 0));
+});
+
+test('deEntrada aproveita o `posicoes` escrito à mão no playbook.json (e ignora o que não presta)', () => {
+  const d = deEntrada({
+    posicoes: { p1: [[22, 70], [62, 44], [79, 22]], p2: [[17, 74], [57, 48], [73, 27]], 'Função ruim': [[1, 1], [2, 2], [3, 3]], p3: 'não é lista' },
+    fases: ['Setup', 'Execução', 'Plant'],
+  });
+  assert.equal(d.etapas.length, 3);
+  assert.deepEqual(d.etapas.map((e) => e.titulo), ['Setup', 'Execução', 'Plant']);
+  assert.deepEqual(d.etapas[1].itens.map((i) => [i.funcao, i.x, i.y]), [['p1', 0.62, 0.44], ['p2', 0.57, 0.48]]);
+  assert.deepEqual(deEntrada(null), { etapas: [] });
+  assert.deepEqual(deEntrada({ posicoes: {} }), { etapas: [] });
+  assert.equal(deEntrada({ posicoes: { p1: Array.from({ length: 9 }, () => [1, 1]) } }).etapas.length, MAX_FASES);
+});
+
 test('mesclarRadares: o salvo no aparelho vence o do site, por tática', () => {
   const site = { 'alfa-01': { etapas: [{ itens: [] }] }, 'alfa-02': 'do site' };
   const local = { 'alfa-01': 'local' };
   assert.deepEqual(mesclarRadares(site, local), { 'alfa-01': 'local', 'alfa-02': 'do site' });
 });
 
-test('formatarArquivo gera JSON válido, um item por linha, e ignora diagramas vazios', () => {
+test('formatarArquivo escreve o formato posicoes: JSON válido, um jogador por linha e um extra por linha', () => {
   const texto = formatarArquivo({
     imagens: { alfa: 'img/radar/alfa.webp' },
-    radares: { 'alfa-02': exemplo(), 'alfa-01': novoDiagrama(), 'alfa-03': { etapas: [{ titulo: 'x', itens: [] }] } },
+    radares: { 'alfa-02': duasFases(), 'alfa-01': novoDiagrama(), 'alfa-03': { etapas: [{ titulo: 'x', itens: [] }] } },
+    funcoes: ['p1', 'p2'],
   });
   const lido = JSON.parse(texto);
   assert.equal(lido.versao, 1);
-  assert.deepEqual(Object.keys(lido.radares), ['alfa-02']);
-  assert.deepEqual(lido.radares['alfa-02'], sanearDiagrama(exemplo()));
-  assert.equal(texto.split('\n').filter((l) => l.includes('"tipo"')).length, 6); // um item por linha
+  assert.deepEqual(Object.keys(lido.radares), ['alfa-02']); // vazios ficam de fora
+  assert.deepEqual(lido.radares['alfa-02'].posicoes.p1, [[22, 70], [62, 44]]);
+  assert.match(texto, /"p1": \[\[22, 70\], \[62, 44\]\]/); // como no README: [[22, 70], [62, 44]]
+  assert.equal(texto.split('\n').filter((l) => l.includes('"tipo"')).length, 3); // bomba, rota e granada, um por linha
   assert.ok(texto.endsWith('}\n'));
 });
 
@@ -178,10 +266,17 @@ test('formatarArquivo vazio continua sendo um arquivo válido', () => {
   assert.deepEqual(JSON.parse(formatarArquivo()), { versao: 1, imagens: {}, radares: {} });
 });
 
+test('o arquivo escrito é lido de volta igual (formatar → JSON → lerArquivo)', () => {
+  const arquivo = formatarArquivo({ radares: { 'alfa-02': duasFases() }, funcoes: ['p1', 'p2'] });
+  const { radares } = lerArquivo(JSON.parse(arquivo));
+  assert.equal(radares['alfa-02'].etapas.length, 2);
+  assert.equal(radares['alfa-02'].etapas[1].itens.filter((i) => i.tipo === 'jogador').length, 2);
+});
+
 test('lerArquivo aproveita o que presta e ignora o resto', () => {
   const lido = lerArquivo({
     imagens: { alfa: 'img/radar/alfa.webp', ruim: 'https://exemplo.com/x.png', 'Mapa Ruim': 'img/a.png' },
-    radares: { 'alfa-01': exemplo(), 'alfa-02': { etapas: [] }, 'ID ruim': exemplo() },
+    radares: { 'alfa-01': { posicoes: { p1: [[10, 10], [20, 20]] } }, 'alfa-02': { posicoes: {} }, 'ID ruim': { posicoes: { p1: [[10, 10], [20, 20]] } } },
   });
   assert.deepEqual(Object.keys(lido.imagens), ['alfa']);
   assert.deepEqual(Object.keys(lido.radares), ['alfa-01']);
@@ -189,12 +284,32 @@ test('lerArquivo aproveita o que presta e ignora o resto', () => {
 });
 
 // ------------------------------------------------------------------ validação
-const valido = () => ({ versao: 1, imagens: { alfa: 'img/radar/alfa.webp' }, radares: { 'alfa-01': exemplo() } });
+const valido = () => ({
+  versao: 1,
+  imagens: { alfa: 'img/radar/alfa.webp' },
+  radares: {
+    'alfa-01': {
+      fases: ['Setup', 'Execução'],
+      posicoes: { p1: [[22, 70], [62, 44]], p2: [[17, 74], [57, 48]] },
+      notas: ['', 'Smoke cai.'],
+      extras: [
+        [{ tipo: 'bomba', x: 80, y: 20 }],
+        [
+          { tipo: 'rota', funcao: 'p1', estilo: 'rota', pontos: [[22, 70], [62, 44]] },
+          { tipo: 'granada', granada: 'smoke', funcao: 'p2', x: 50, y: 45 },
+          { tipo: 'texto', texto: 'Palace', x: 20, y: 20 },
+        ],
+      ],
+    },
+  },
+});
 
-test('validarRadares aceita um arquivo correto', () => {
+test('validarRadares aceita um arquivo correto, inclusive o que o próprio editor escreve', () => {
   const { erros, avisos } = validarRadares(valido(), CONTEXTO);
   assert.deepEqual(erros, []);
   assert.deepEqual(avisos, []);
+  const escrito = JSON.parse(formatarArquivo({ radares: { 'alfa-01': duasFases() }, funcoes: ['p1', 'p2', 'p3'] }));
+  assert.deepEqual(validarRadares(escrito, CONTEXTO).erros, []);
 });
 
 test('validarRadares explica cada erro', () => {
@@ -202,14 +317,21 @@ test('validarRadares explica cada erro', () => {
     [(d) => { d.versao = 2; }, /versao/],
     [(d) => { d.imagens.alfa = 'https://x.com/a.png'; }, /caminho relativo/],
     [(d) => { d.imagens.zeta = 'img/z.png'; }, /mapa "zeta"/],
-    [(d) => { d.radares['alfa-01'].etapas[0].itens[0].x = 1.5; }, /"x" precisa ser um número de 0 a 1/],
-    [(d) => { d.radares['alfa-01'].etapas[0].itens[0].funcao = 'p9'; }, /função "p9"/],
-    [(d) => { d.radares['alfa-01'].etapas[0].itens.push({ tipo: 'jogador', funcao: 'p1', x: 0.1, y: 0.1 }); }, /aparece duas vezes/],
-    [(d) => { d.radares['alfa-01'].etapas[0].itens[3].granada = 'bazuca'; }, /"granada" precisa ser/],
-    [(d) => { d.radares['alfa-01'].etapas[0].itens[2].pontos = [[0.1, 0.1]]; }, /"pontos" precisa ter/],
-    [(d) => { d.radares['alfa-01'].etapas[0].itens[5].texto = ''; }, /"texto" precisa ter/],
-    [(d) => { d.radares['alfa-01'].etapas[0].itens.push({ tipo: 'nave' }); }, /"tipo" precisa ser/],
-    [(d) => { d.radares['alfa-01'].etapas = []; }, /ao menos uma etapa/],
+    [(d) => { d.radares['alfa-01'].posicoes.p1[0][0] = 150; }, /posicoes\."p1" precisa ter de 1 a 4 pontos/],
+    [(d) => { d.radares['alfa-01'].posicoes.p9 = [[1, 1], [2, 2]]; }, /posicoes\."p9" não é uma função/],
+    [(d) => { d.radares['alfa-01'].posicoes.p2 = [[1, 1]]; }, /mesmo número de fases/],
+    [(d) => { d.radares['alfa-01'].fases = ['só uma']; }, /mesmo número de fases/],
+    [(d) => { d.radares['alfa-01'].extras.pop(); }, /mesmo número de fases/],
+    [(d) => { d.radares['alfa-01'].fases = ['', 'x']; }, /cada nome em "fases"/],
+    [(d) => { d.radares['alfa-01'].extras[0][0].x = 101; }, /"x" precisa ser um número de 0 a 100/],
+    [(d) => { d.radares['alfa-01'].extras[1][1].granada = 'bazuca'; }, /"granada" precisa ser/],
+    [(d) => { d.radares['alfa-01'].extras[1][0].pontos = [[1, 1]]; }, /"pontos" precisa ter/],
+    [(d) => { d.radares['alfa-01'].extras[1][2].texto = ''; }, /"texto" precisa ter/],
+    [(d) => { d.radares['alfa-01'].extras[1][1].funcao = 'p9'; }, /função "p9"/],
+    [(d) => { d.radares['alfa-01'].extras[0].push({ tipo: 'jogador', funcao: 'p1', x: 1, y: 1 }); }, /jogadores vão em "posicoes"/],
+    [(d) => { d.radares['alfa-01'].extras[0].push({ tipo: 'nave' }); }, /"tipo" precisa ser/],
+    [(d) => { d.radares['alfa-01'] = { fases: ['a', 'b'] }; }, /sem nenhuma posição nem extra/],
+    [(d) => { d.radares['alfa-01'] = []; }, /precisa ser um objeto/],
     [(d) => { d.radares = []; }, /"radares" precisa ser um objeto/],
   ];
   for (const [quebrar, esperado] of casos) {
@@ -222,7 +344,7 @@ test('validarRadares explica cada erro', () => {
 
 test('radar de tática que saiu do playbook vira só um aviso (não derruba o deploy)', () => {
   const dados = valido();
-  dados.radares['alfa-99'] = exemplo();
+  dados.radares['alfa-99'] = valido().radares['alfa-01'];
   const { erros, avisos } = validarRadares(dados, CONTEXTO);
   assert.deepEqual(erros, []);
   assert.ok(avisos.some((a) => a.includes('alfa-99')));
@@ -257,6 +379,13 @@ test('desenharSvg no editor marca os itens, a seleção e as alças da rota', ()
   assert.ok(!semSel.includes('data-alca'));
 });
 
+test('desenharCamada sem jogadores deixa só rotas, granadas, bomba e textos (o minimapa desenha os blips)', () => {
+  const camada = desenharCamada(exemplo().etapas[0], { funcoes: FUNCOES, semJogadores: true });
+  assert.ok(!camada.includes('rd-jogador'));
+  assert.ok(camada.includes('rd-rota') && camada.includes('rd-granada') && camada.includes('rd-bomba') && camada.includes('Palace'));
+  assert.ok(desenharCamada(exemplo().etapas[0], { funcoes: FUNCOES }).includes('rd-jogador'));
+});
+
 test('desenharSvg com "minha função" esmaece os outros jogadores, mas não os textos', () => {
   const svg = desenharSvg(exemplo().etapas[0], { funcoes: FUNCOES, destaque: 'p1' });
   assert.equal((svg.match(/rd-esmaece/g) ?? []).length, 2); // granada do P2 e jogador P2
@@ -271,19 +400,19 @@ test('o zoom do editor muda o recorte e mantém o tamanho dos marcadores na tela
   assert.ok(zoom.includes('viewBox="250 250 500 500"') && zoom.includes('scale(0.5)'));
 });
 
-test('cores: cada função tem a sua e função desconhecida fica neutra', () => {
+test('cores: as mesmas dos blips do minimapa, uma por função, e função desconhecida fica neutra', () => {
   const cores = FUNCOES.map((f) => corDaFuncao(FUNCOES, f.id));
-  assert.equal(new Set(cores).size, 3);
+  assert.deepEqual(cores, ['#4aa8ff', '#3ddc97', '#ffd23f']); // --p1, --p2, --p3 de app.css
   assert.equal(corDaFuncao(FUNCOES, 'zzz'), '#cbd5e1');
 });
 
-test('legendaDaEtapa lista só o que aparece na etapa', () => {
-  const l = legendaDaEtapa(exemplo().etapas[0], FUNCOES);
-  assert.deepEqual(l.funcoes.map((f) => f.sigla), ['P1', 'P2']);
+test('legendaDosExtras lista só o que aparece nos extras de todas as fases', () => {
+  const l = legendaDosExtras(duasFases().etapas);
   assert.deepEqual(l.granadas, ['smoke']);
   assert.equal(l.temBomba, true);
   assert.equal(l.temRota, true);
   assert.equal(l.temArremesso, false);
+  assert.deepEqual(legendaDosExtras(null), { granadas: [], temBomba: false, temArremesso: false, temRota: false });
 });
 
 test('a rota que sai de um jogador não tem alça no primeiro ponto (fica presa ao jogador)', () => {

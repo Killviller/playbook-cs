@@ -11,15 +11,16 @@ import { icone, mapaAtual } from '../ui.js';
 
 const redesenhar = () => document.dispatchEvent(new Event('pb:redesenhar'));
 
+const ORIGENS = { aparelho: 'Só neste aparelho', site: 'Publicado', playbook: 'Posições do playbook.json' };
+
 function selo(s) {
   if (!s.etapas) return html`<span class="tag">Sem radar</span>`;
-  const quantas = `${s.etapas} ${s.etapas === 1 ? 'etapa' : 'etapas'}`;
-  return html`<span class="tag tag--ok">${quantas}</span>
-    <span class="tag">${s.origem === 'aparelho' ? 'Só neste aparelho' : 'Publicado'}</span>`;
+  const quantas = `${s.etapas} ${s.etapas === 1 ? 'fase' : 'fases'}`;
+  return html`<span class="tag tag--ok">${quantas}</span><span class="tag">${ORIGENS[s.origem] ?? ''}</span>`;
 }
 
 function linhaEditor(t) {
-  const s = situacao(t.id);
+  const s = situacao(t);
   return html`<li><a class="row" href="#/editor/${t.id}">
     <span class="row__num" aria-hidden="true">${pad2(t.numero)}</span>
     <span class="row__main">
@@ -43,7 +44,7 @@ export function editor({ index, query }) {
     semAbas: true,
     corpo: html`
       <div data-editor-home>
-        <p class="intro">Monte o radar de cada tática arrastando os jogadores e desenhando as rotas com o dedo, sem digitar coordenadas.
+        <p class="intro">Marque as posições de cada tática no radar (as fases do minimapa) arrastando os jogadores e desenhando as rotas com o dedo, sem digitar coordenadas.
           O que você salva fica neste aparelho. Para o time ver, publique (no fim desta tela).</p>
 
         <div class="chips" role="group" aria-label="Mapa">${index.mapas.map(
@@ -89,17 +90,17 @@ export function editor({ index, query }) {
         <input type="file" accept="image/*" hidden data-r="arquivo-imagem">
         <input type="file" accept="application/json,.json" hidden data-r="arquivo-json">
       </div>`,
-    montar: (main) => montar(main, { mapa }),
+    montar: (main) => montar(main, { mapa, ordem: index.funcoes.map((f) => f.id) }),
   };
 }
 
-function montar(main, { mapa }) {
+function montar(main, { mapa, ordem }) {
   const raiz = main.querySelector('[data-editor-home]');
   const q = (n) => raiz.querySelector(`[data-r="${n}"]`);
 
   // ------------------------------------------------------------ imagem do mapa
   async function desenharImagem() {
-    const atual = await imagemDoMapa(mapa.id);
+    const atual = await imagemDoMapa(mapa.id, mapa.radar);
     const local = atual?.origem === 'aparelho' ? await lerImagem(mapa.id) : null;
     q('imagem').innerHTML = String(html`
       <div class="img-radar">
@@ -108,10 +109,10 @@ function montar(main, { mapa }) {
           ? html`<strong>Ainda sem imagem.</strong> Sem ela o radar aparece só com uma grade. Escolha um print ou foto do radar de ${mapa.nome}.`
           : atual.origem === 'aparelho'
             ? html`<strong>Imagem escolhida neste aparelho.</strong> Para o time ver, envie o arquivo para <code>site/img/radar/</code> (veja em Publicar).`
-            : html`<strong>Imagem publicada no site.</strong> Escolher outra vale só neste aparelho.`}</p>
+            : html`<strong>${atual.origem === 'playbook' ? 'Radar do playbook.' : 'Imagem publicada no site.'}</strong> Já está pronto para usar. Se escolher outra imagem, ela vale só neste aparelho até você publicar.`}</p>
       </div>
       <div class="botoes">
-        <button type="button" class="btn btn--sm" data-ed="escolher-imagem">${icone('image')} ${atual ? 'Trocar imagem' : 'Escolher imagem'}</button>
+        <button type="button" class="btn btn--sm" data-ed="escolher-imagem">${icone('image')} ${atual ? 'Usar outra imagem' : 'Escolher imagem'}</button>
         ${local ? html`<button type="button" class="btn btn--sm" data-ed="baixar-imagem">${icone('download')} Baixar a imagem pronta</button>
           <button type="button" class="btn btn--sm btn--perigo" data-ed="remover-imagem">Remover daqui</button>` : ''}
       </div>
@@ -133,7 +134,7 @@ function montar(main, { mapa }) {
   // O texto do arquivo fica pronto antes do toque: o Safari só deixa copiar logo depois do gesto, sem esperar nada.
   let textoPronto = '';
   const preparar = async () => {
-    textoPronto = await exportarArquivo();
+    textoPronto = await exportarArquivo(ordem);
   };
 
   desenharImagem();

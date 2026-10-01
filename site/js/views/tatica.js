@@ -1,10 +1,11 @@
 import { html, bool } from '../lib/html.js';
-import { favoritas } from '../store.js';
+import { favoritas, store } from '../store.js';
 import { funcoesDaTatica, vizinhas } from '../data.js';
 import { pad2 } from '../lib/text.js';
-import { minimapa } from '../minimapa.js';
+import { minimapa, montarMinimapa } from '../minimapa.js';
+import { posicoesDoDiagrama } from '../lib/radar.js';
+import { radarDaTatica } from '../radares.js';
 import { etiquetasTipo, icone, minhaFuncao, selosSite, seletorDeFuncao } from '../ui.js';
-import { blocoRadar, montarRadar } from './radar-leitor.js';
 
 /** Blocos opcionais: só aparecem quando a tática tem esses dados no JSON. */
 function extras(t) {
@@ -56,6 +57,12 @@ export function tatica({ index, params }) {
   const minha = minhaFuncao(index);
   const funcoes = funcoesDaTatica(index, t, minha);
 
+  // radar feito no editor (salvo neste aparelho ou publicado em radares.json): vale mais que `posicoes` do playbook.json
+  const radar = radarDaTatica(t.id);
+  const ordem = index.funcoes.map((f) => f.id);
+  const comRadar = (tt) => (radar ? { ...tt, posicoes: undefined, fases: undefined, ...posicoesDoDiagrama(radar.diagrama, ordem) } : tt);
+  const opcoesRadar = { etapas: radar?.diagrama.etapas ?? null, origem: radar?.origem ?? null, atalho: store.get('editor', false) };
+
   return {
     titulo: mapa.nome,
     tituloDocumento: `${t.titulo} · ${mapa.nome}`,
@@ -65,7 +72,7 @@ export function tatica({ index, params }) {
     acoes: html`
       <button type="button" class="icon-btn icon-btn--fav ${fav ? 'is-on' : ''}" data-action="fav" data-id="${t.id}" aria-pressed="${bool(fav)}" aria-label="Favorita">${icone('star')}</button>
       <button type="button" class="icon-btn" data-action="compartilhar" data-id="${t.id}" aria-label="Compartilhar">${icone('share')}</button>`,
-    montar: (main) => montarRadar(main, index, t),
+    montar: (main) => montarMinimapa(main, mapa),
     corpo: html`
       <article class="detalhe">
         <header class="detalhe__cab">
@@ -78,14 +85,13 @@ export function tatica({ index, params }) {
         </header>
 
         <div class="detalhe__grade">
-        <div class="detalhe__lado">${minimapa(index, mapa, t, minha)}</div>
+        <div class="detalhe__lado">${minimapa(index, mapa, comRadar(t), minha, opcoesRadar)}</div>
         <div class="detalhe__principal">
         <div class="ficha">
           ${ficha('Objetivo', t.objetivo, 'ficha__item--objetivo')}
           ${ficha('Economia', t.economia)}
         </div>
 
-        ${blocoRadar(index, t)}
 
         ${funcoes.length
           ? html`<section class="secao-funcoes" aria-labelledby="titulo-funcoes">

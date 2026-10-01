@@ -59,10 +59,10 @@ const primeiraTatica = async () => JSON.parse(await readFile(join(siteReal, 'dat
 test('radares.json com erro bloqueia o build e diz onde está o problema', async () => {
   const id = await primeiraTatica();
   const { raiz, construir: rodar } = await construirComRadares({
-    versao: 1, imagens: {}, radares: { [id]: { etapas: [{ itens: [{ tipo: 'jogador', funcao: 'p1', x: 3, y: 0.5 }] }] } },
+    versao: 1, imagens: {}, radares: { [id]: { posicoes: { p1: [[20, 30], [150, 50]] } } },
   });
   try {
-    await assert.rejects(rodar(), /radares\.json.*"x" precisa ser um número de 0 a 1/s);
+    await assert.rejects(rodar(), /radares\.json.*posicoes\."p1" precisa ter de 1 a 4 pontos/s);
   } finally {
     await rm(raiz, { recursive: true, force: true });
   }
@@ -80,15 +80,16 @@ test('radares.json com JSON quebrado também bloqueia o build', async () => {
 test('radar válido entra no build; imagem ainda não enviada é só aviso', async () => {
   const id = await primeiraTatica();
   const mapa = id.split('-')[0];
+  const faltando = `img/radar/${mapa}-ainda-nao-enviada.webp`; // um arquivo que (de propósito) não existe
   const { raiz, construir: rodar } = await construirComRadares({
     versao: 1,
-    imagens: { [mapa]: `img/radar/${mapa}.webp` },
-    radares: { [id]: { etapas: [{ titulo: 'Posições', itens: [{ tipo: 'jogador', funcao: 'p1', x: 0.3, y: 0.4 }] }] } },
+    imagens: { [mapa]: faltando },
+    radares: { [id]: { fases: ['Setup', 'Execução'], posicoes: { p1: [[30, 40], [60, 20]] }, extras: [[{ tipo: 'bomba', x: 50, y: 50 }], []] } },
   });
   try {
     const r = await rodar();
     assert.ok(r.precache.includes('./data/radares.json'));
-    assert.ok(r.avisos.some((a) => a.includes(`img/radar/${mapa}.webp`) && a.includes('ainda não está')), JSON.stringify(r.avisos));
+    assert.ok(r.avisos.some((a) => a.includes(faltando) && a.includes('ainda não está')), JSON.stringify(r.avisos));
   } finally {
     await rm(raiz, { recursive: true, force: true });
   }

@@ -8,7 +8,7 @@ Importado do *Playbook TR — CS2* (32 páginas): 7 mapas × 10 táticas. Cada t
 - **Para o IGL no jogo:** abre direto no mapa da partida, texto grande, tema escuro, 1 toque até a tática, "Chamar" por tipo de round e opção de manter a tela acesa.
 - **Para cada jogador:** escolha a sua função (P1 a P5) e o app destaca o que você faz em cada tática e mostra o seu papel nas listas.
 - **Para estudar:** filtros por tipo, busca sem acento (também no texto das funções), favoritas e link direto para cada tática.
-- **Radar visual:** o IGL monta o radar de cada tática arrastando os jogadores e desenhando as rotas com o dedo, sem digitar coordenadas (veja [Radar das táticas](#radar-das-táticas-editor-visual)).
+- **Radar visual:** o IGL monta o minimapa de cada tática arrastando os jogadores e desenhando as rotas com o dedo, sem digitar coordenadas (veja [Radar das táticas](#radar-das-táticas-editor-visual)).
 - Sem servidor, sem conta, sem dependências. É um site estático.
 
 ## Telas
@@ -20,7 +20,7 @@ Importado do *Playbook TR — CS2* (32 páginas): 7 mapas × 10 táticas. Cada t
 | **Chamar** | "Qual tática chamar?": as táticas do mapa agrupadas por tipo de round (Pistol, Default, Execução, Split, Fake, Rápida, Contato, Force), com a descrição de cada tipo. |
 | **Guia** | "Como usar", funções fixas do time, tipos de tática e regras gerais (a introdução do PDF). Dá para marcar a sua função aqui. |
 | **Favoritas** | Táticas fixadas neste aparelho. |
-| **Radar** | Dentro da tática (quando existe): os jogadores, rotas, granadas e a bomba no mapa, por etapas. Com *Minha função*, os outros jogadores ficam esmaecidos. |
+| **Minimapa** | Dentro da tática: os jogadores no radar, fase a fase. Se a tática tem radar feito no editor, mostra também rotas, granadas, a bomba e a nota de cada fase. |
 | **Editor de radar** | Ajustes → *Editor de radar*. Onde o radar é montado, salvo e exportado (abaixo). |
 | **Busca / Ajustes** | Busca por nome, call, posição, função ou texto; tema, tamanho do texto, **Minha função**, tela acesa, instalação e atualização. |
 
@@ -29,70 +29,81 @@ com a marca "Você"; nas listas aparece um trecho do que você faz em cada táti
 
 ## Radar das táticas (editor visual)
 
-Cada tática pode ter um **radar**: os 5 jogadores no mapa, rotas, granadas, a bomba e textos, em uma ou mais **etapas**
-(posições iniciais → execução → pós-plant). O editor funciona no celular (com o dedo) e no computador (mouse e teclado).
+O **minimapa** de cada tática (os blips dos jogadores que andam entre as fases *Setup → Execução → Plant*) é montado aqui,
+sem digitar coordenadas: você toca, arrasta e desenha. Além das posições dos jogadores, o editor deixa marcar **rotas**,
+**arremessos**, **granadas**, a **bomba** e **textos** em cada fase, mais uma **nota** do que acontece nela. O editor funciona no
+celular (com o dedo) e no computador (mouse e teclado) e já abre com o radar do mapa (`site/img/radar/`).
 
 **Abrir:** *Ajustes → Editor de radar → Abrir o editor*. Se ligar **Atalho de edição nas táticas**, cada tática passa a mostrar
 *Editar* (ou *Criar o radar desta tática*). Quem não ligou não vê nada disso.
 
-1. **Imagem do radar.** Escolha o mapa e toque em *Escolher imagem* (um print ou foto do radar). O app deixa a imagem quadrada e leve
-   (até 1024 px) e guarda neste aparelho. Sem imagem o radar aparece só com uma grade.
-2. **Jogadores.** Abra a tática, toque em **P1** e depois no radar. Ele já arma o P2, o P3… Arraste para ajustar.
-3. **Rotas.** Toque em **Rota** e arraste o dedo no radar. Se começar em cima de um jogador, a rota usa a cor dele. Depois dá para
+1. **Escolha a tática** (por mapa). Se ela já tem `posicoes` no `playbook.json`, o editor abre com elas, prontas para ajustar no radar.
+2. **Jogadores.** Toque em **P1** e depois no radar. Ele já arma o P2, o P3… Arraste para ajustar. As cores são as mesmas do minimapa.
+3. **Fases** (de 1 a 4). **Nova fase** já traz cada jogador onde a rota dele terminou; *Duplicar* copia tudo. Dê um nome à fase
+   (se deixar em branco, valem os nomes padrão do minimapa) e escreva o que acontece nela.
+4. **Rotas.** Toque em **Rota** e arraste o dedo no radar. Se começar em cima de um jogador, a rota usa a cor dele. Depois dá para
    arrastar os pontos brancos (ou a linha toda). **Arremesso** é a linha tracejada: de onde a granada sai até onde cai.
-4. **Granadas, bomba e texto.** Toque na ferramenta e depois no radar. Escolha quem joga a granada para ela ficar com a cor da pessoa.
-5. **Etapas.** *Nova etapa* já traz cada jogador onde a rota dele terminou. Dê um título e escreva o que acontece (aparece embaixo do radar).
-   *Duplicar* copia tudo. *Mais opções → Começar a partir de outra tática* aproveita um radar parecido do mesmo mapa.
-6. **Salvar.** Fica neste aparelho e já aparece na tática, com a marca *Salvo só neste aparelho*. O que ainda não foi salvo vira
+5. **Granadas, bomba e texto.** Toque na ferramenta e depois no radar. Escolha quem joga a granada para ela ficar com a cor da pessoa.
+6. **Salvar.** Fica neste aparelho e já aparece no minimapa da tática, com a marca *Só neste aparelho*. O que ainda não foi salvo vira
    **rascunho automático**: se você sair sem querer, ele volta quando abrir o editor de novo.
 
-Dois dedos (ou a roda do mouse) fazem zoom. No computador: `Ctrl+Z` / `Ctrl+Y` desfazem e refazem, `Ctrl+S` salva, `Delete` apaga,
-as setas movem o item selecionado (`Shift` anda mais) e `Esc` desliga a ferramenta.
+Dois dedos (ou a roda do mouse) fazem zoom. *Mais opções → Começar a partir de outra tática* aproveita um radar parecido do mesmo mapa.
+No computador: `Ctrl+Z` / `Ctrl+Y` desfazem e refazem, `Ctrl+S` salva, `Delete` apaga, as setas movem o item selecionado (`Shift` anda
+mais) e `Esc` desliga a ferramenta.
 
 ### Publicar os radares para o time
 
 O que você salva fica só no seu aparelho. Para o time ver, o arquivo `site/data/radares.json` precisa ir para o repositório:
 
 1. No editor, em **Publicar para o time**, toque em **Baixar radares.json** (ou **Copiar**). O arquivo já junta o que está no site e o que você salvou.
-2. Se você escolheu imagens de radar, baixe cada imagem pronta (também em *Publicar para o time*) e envie para a pasta `site/img/radar/`
-   no GitHub (*Add file → Upload files*). Faça isto **antes** do passo 3.
-3. No GitHub, abra `site/data/radares.json`, toque no lápis (*Edit*), apague tudo, cole o conteúdo e confirme em **Commit changes**.
-4. Em cerca de 2 minutos o site atualiza e o time recebe o aviso *Nova versão disponível*.
+2. No GitHub, abra `site/data/radares.json`, toque no lápis (*Edit*), apague tudo, cole o conteúdo e confirme em **Commit changes**.
+3. Em cerca de 2 minutos o site atualiza e o time recebe o aviso *Nova versão disponível*.
+
+Só se você tiver escolhido **outra imagem de radar** (*Usar outra imagem*, na tela inicial do editor): baixe a imagem pronta e envie para
+`site/img/radar/` no GitHub (*Add file → Upload files*) **antes** do passo 2. Ela substitui o radar atual do mapa.
 
 Dá para levar o trabalho de um aparelho para outro: baixe o `radares.json` num e use **Importar radares.json** no outro.
 O botão *Apagar dados* dos Ajustes **não** apaga radares nem rascunhos (eles têm botão próprio no editor).
+Depois de publicar, a cópia salva no aparelho que ficou igual à do site é descartada sozinha na próxima abertura, para uma edição
+futura no site não ficar escondida atrás dela.
 
 ### Formato do `radares.json`
 
 Fica separado do `playbook.json`: o texto das táticas (conferido palavra por palavra com o PDF) não é tocado. O editor escreve o arquivo
-sozinho; este formato só importa se um dia quiser ler ou conferir à mão. Um item por linha:
+sozinho; este formato só importa se um dia quiser ler ou conferir à mão. `posicoes` é **igual** ao do `playbook.json` (x e y em % do
+radar, um ponto por fase, de 1 a 4). O que o minimapa não tinha vem em `extras` e `notas`, uma entrada por fase:
 
 ```jsonc
 {
   "versao": 1,
-  "imagens": { "mirage": "img/radar/mirage.webp" },            // imagem de cada mapa (quadrada)
+  "imagens": {},                                        // só se usar outra imagem de radar: { "mirage": "img/radar/mirage.webp" }
   "radares": {
-    "mirage-02": {                                                // id da tática
-      "etapas": [
-        {
-          "titulo": "Posições iniciais",
-          "nota": "P3 joga a smoke de CT.",
-          "itens": [
-            {"tipo":"jogador","funcao":"p1","x":0.312,"y":0.741},   // x e y de 0 a 1 (esquerda→direita, cima→baixo)
-            {"tipo":"rota","funcao":"p1","estilo":"rota","pontos":[[0.312,0.741],[0.4,0.6],[0.55,0.5]]},
-            {"tipo":"granada","granada":"smoke","funcao":"p3","x":0.5,"y":0.45},   // smoke, flash, molotov ou he
-            {"tipo":"bomba","x":0.6,"y":0.4},
-            {"tipo":"texto","texto":"Palace","x":0.2,"y":0.2}
-          ]
-        }
+    "mirage-02": {                                      // id da tática
+      "fases": ["Setup", "Execução"],                   // opcional (sem isto valem os nomes padrão)
+      "posicoes": {
+        "p1": [[22, 70], [62, 44]],
+        "p2": [[17, 74], [57, 48]]
+      },
+      "notas": ["P3 joga a smoke de CT.", ""],          // opcional
+      "extras": [                                       // opcional; um item por linha
+        [
+          {"tipo":"bomba","x":80,"y":20}
+        ],
+        [
+          {"tipo":"rota","funcao":"p1","estilo":"rota","pontos":[[22,70],[40,60],[62,44]]},
+          {"tipo":"granada","granada":"smoke","funcao":"p2","x":50,"y":45},   // smoke, flash, molotov ou he
+          {"tipo":"texto","texto":"Palace","x":20,"y":20}
+        ]
       ]
     }
   }
 }
 ```
 
-`npm run validar` e o build conferem este arquivo (coordenadas fora de 0–1, função que não existe, jogador repetido na etapa…).
-Erro bloqueia o deploy; imagem que ainda não foi enviada é só um aviso. Radar de uma tática que saiu do playbook é ignorado.
+Quando uma tática tem radar no `radares.json` (ou salvo no aparelho), ele vale no lugar de `posicoes`/`fases` do `playbook.json`;
+sem isso o minimapa segue usando o `playbook.json`. `npm run validar` e o build conferem este arquivo (coordenadas fora de 0–100, função
+que não existe, número de fases diferente entre jogadores…). Erro bloqueia o deploy; imagem que ainda não foi enviada é só um aviso.
+Radar de uma tática que saiu do playbook é ignorado.
 
 ## Publicar (GitHub Pages)
 
@@ -143,7 +154,7 @@ o teste valida o arquivo antes de publicar, então um erro de digitação não d
 
 ### Granadas, ordem de execução e radar (opcionais)
 
-O app já mostra estes blocos quando a tática os tiver. Não precisa mudar código. (Para o radar com jogadores e rotas, use o
+O app já mostra estes blocos quando a tática os tiver. Não precisa mudar código. (Para marcar jogadores e rotas no radar, use o
 [editor visual](#radar-das-táticas-editor-visual); o campo `radar` abaixo é só para colar uma imagem pronta.)
 
 ```jsonc
@@ -200,7 +211,7 @@ site/                 o que vai ao ar
   css/app.css         tema escuro/claro, componentes
   js/                 app sem framework: roteador por hash, telas em js/views/
   data/playbook.json  TODO o texto das táticas
-  data/radares.json   radares feitos no editor (jogadores, rotas, granadas)
+  data/radares.json   radares feitos no editor (posicoes, rotas, granadas)
   img/radar/          imagens dos radares (quadradas), uma por mapa
   icons/              ícones do app
 scripts/              validação, build, servidor local

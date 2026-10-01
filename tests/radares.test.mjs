@@ -21,16 +21,20 @@ globalThis.localStorage = espelho;
 
 const { store, favoritas } = await import('../site/js/store.js');
 const radares = await import('../site/js/radares.js');
+const { paraEntrada } = await import('../site/js/lib/radar.js');
 const { salvos, rascunhos } = radares;
 
 const jogador = (funcao, x = 0.5, y = 0.5) => ({ tipo: 'jogador', funcao, x, y });
 const diagrama = (...itens) => ({ etapas: [{ titulo: '', nota: '', itens }] });
 
+const ORDEM = ['p1', 'p2', 'p3', 'p4', 'p5'];
+const entrada = (d) => paraEntrada(d, ORDEM); // como o radares.json guarda: posicoes em %
 const DO_SITE = {
   versao: 1,
   imagens: { alfa: 'img/radar/alfa.webp' },
-  radares: { 'alfa-01': diagrama(jogador('p1', 0.1, 0.1)), 'alfa-02': diagrama(jogador('p2')) },
+  radares: { 'alfa-01': entrada(diagrama(jogador('p1', 0.1, 0.1))), 'alfa-02': entrada(diagrama(jogador('p2'))) },
 };
+const doSiteDiagrama = (id) => radares.doSite(id);
 
 function falsoFetch(corpo, { ok = true, status = 200 } = {}) {
   globalThis.fetch = async () => ({ ok, status, json: async () => corpo });
@@ -44,7 +48,7 @@ beforeEach(async () => {
 });
 
 test('carregarRadares lê o do site e ignora o que não presta', async () => {
-  falsoFetch({ imagens: { alfa: 'https://x.com/a.png', bravo: 'img/radar/bravo.png' }, radares: { 'alfa-01': { etapas: [] }, 'alfa-02': diagrama(jogador('p1')) } });
+  falsoFetch({ imagens: { alfa: 'https://x.com/a.png', bravo: 'img/radar/bravo.png' }, radares: { 'alfa-01': { posicoes: {} }, 'alfa-02': entrada(diagrama(jogador('p1'))) } });
   await radares.carregarRadares();
   assert.equal(radares.imagemDoSite('alfa'), null); // endereço externo recusado
   assert.equal(radares.imagemDoSite('bravo'), 'img/radar/bravo.png');
@@ -92,29 +96,51 @@ test('salvar guarda a forma limpa: sem ids do editor e sem etapas vazias', () =>
   assert.equal(lido.etapas[0].itens[0].id, undefined);
 });
 
-test('pontoDePartida: rascunho > salvo > site > em branco', () => {
-  assert.equal(radares.pontoDePartida('alfa-99').inicial.etapas.length, 0);
-  assert.equal(radares.pontoDePartida('alfa-01').inicial.etapas[0].itens[0].x, 0.1);
+const tatica = (id, extra = {}) => ({ id, ...extra });
+
+test('pontoDePartida: rascunho > salvo > site > posições do playbook.json > em branco', () => {
+  assert.equal(radares.pontoDePartida(tatica('alfa-99')).inicial.etapas.length, 0);
+  assert.equal(radares.pontoDePartida(tatica('alfa-01')).inicial.etapas[0].itens[0].x, 0.1);
 
   salvos.salvar('alfa-01', diagrama(jogador('p1', 0.4, 0.4)));
-  assert.equal(radares.pontoDePartida('alfa-01').inicial.etapas[0].itens[0].x, 0.4);
+  assert.equal(radares.pontoDePartida(tatica('alfa-01')).inicial.etapas[0].itens[0].x, 0.4);
 
   rascunhos.guardar('alfa-01', diagrama(jogador('p1', 0.7, 0.7)));
-  const p = radares.pontoDePartida('alfa-01');
+  const p = radares.pontoDePartida(tatica('alfa-01'));
   assert.equal(p.recuperado, true);
   assert.equal(p.inicial.etapas[0].itens[0].x, 0.7);
   assert.equal(p.base.etapas[0].itens[0].x, 0.4); // a base é o último salvo: serve para saber se há mudança
 
   rascunhos.descartar('alfa-01');
-  assert.equal(radares.pontoDePartida('alfa-01').recuperado, false);
+  assert.equal(radares.pontoDePartida(tatica('alfa-01')).recuperado, false);
+});
+
+test('posições escritas à mão no playbook.json viram o ponto de partida do editor (para editar no radar)', () => {
+  const escrita = tatica('alfa-50', { posicoes: { p1: [[22, 70], [62, 44], [79, 22]], p2: [[17, 74], [57, 48], [73, 27]] }, fases: ['Setup', 'Execução', 'Plant'] });
+  const { inicial, base } = radares.pontoDePartida(escrita);
+  assert.equal(inicial.etapas.length, 3);
+  assert.deepEqual(inicial.etapas.map((e) => e.titulo), ['Setup', 'Execução', 'Plant']);
+  assert.deepEqual(inicial.etapas[2].itens.map((i) => [i.funcao, i.x, i.y]), [['p1', 0.79, 0.22], ['p2', 0.73, 0.27]]);
+  assert.deepEqual(base, inicial); // aberto e fechado sem mexer: nada pendente
+
+  // o site (radares.json) vence as posições do playbook.json, e o salvo no aparelho vence os dois
+  assert.equal(radares.pontoDePartida({ ...escrita, id: 'alfa-01' }).inicial.etapas.length, 1);
+  salvos.salvar('alfa-50', diagrama(jogador('p3', 0.5, 0.5)));
+  assert.equal(radares.pontoDePartida(escrita).inicial.etapas[0].itens[0].funcao, 'p3');
+
+  // "radarDaTatica" é só o que o editor produziu: sem ele, o minimapa usa `posicoes` do playbook.json sozinho
+  salvos.remover('alfa-50');
+  assert.equal(radares.radarDaTatica('alfa-50'), null);
 });
 
 test('situacao resume o estado de cada tática para a lista do editor', () => {
-  assert.deepEqual(radares.situacao('alfa-99'), { etapas: 0, origem: null, rascunho: false, noSite: false });
-  assert.deepEqual(radares.situacao('alfa-01'), { etapas: 1, origem: 'site', rascunho: false, noSite: true });
+  assert.deepEqual(radares.situacao(tatica('alfa-99')), { etapas: 0, origem: null, rascunho: false, noSite: false });
+  assert.deepEqual(radares.situacao(tatica('alfa-01')), { etapas: 1, origem: 'site', rascunho: false, noSite: true });
   salvos.salvar('alfa-01', diagrama(jogador('p1', 0.8, 0.8)));
   rascunhos.guardar('alfa-01', diagrama(jogador('p1', 0.9, 0.9)));
-  assert.deepEqual(radares.situacao('alfa-01'), { etapas: 1, origem: 'aparelho', rascunho: true, noSite: true });
+  assert.deepEqual(radares.situacao(tatica('alfa-01')), { etapas: 1, origem: 'aparelho', rascunho: true, noSite: true });
+  const escrita = tatica('alfa-50', { posicoes: { p1: [[1, 1], [2, 2]] } });
+  assert.deepEqual(radares.situacao(escrita), { etapas: 2, origem: 'playbook', rascunho: false, noSite: false });
 });
 
 test('exportarArquivo junta o site e o aparelho, sem diagramas vazios', async () => {
@@ -122,15 +148,16 @@ test('exportarArquivo junta o site e o aparelho, sem diagramas vazios', async ()
   salvos.salvar('alfa-02', { etapas: [] }); // apagado
   salvos.salvar('alfa-05', diagrama(jogador('p4', 0.2, 0.2)));
 
-  const arquivo = JSON.parse(await radares.exportarArquivo());
+  const arquivo = JSON.parse(await radares.exportarArquivo(ORDEM));
   assert.equal(arquivo.versao, 1);
   assert.deepEqual(arquivo.imagens, { alfa: 'img/radar/alfa.webp' });
   assert.deepEqual(Object.keys(arquivo.radares), ['alfa-01', 'alfa-05']);
-  assert.equal(arquivo.radares['alfa-01'].etapas[0].itens[0].funcao, 'p3');
+  assert.deepEqual(Object.keys(arquivo.radares['alfa-01'].posicoes), ['p3']);
+  assert.deepEqual(arquivo.radares['alfa-05'].posicoes.p4, [[20, 20]]); // em %, como o `posicoes` do playbook.json
 });
 
 test('importarArquivo traz os radares como salvos neste aparelho e conta quantos entraram', () => {
-  const n = radares.importarArquivo({ radares: { 'alfa-07': diagrama(jogador('p1')), 'alfa-08': { etapas: [] }, 'ID ruim': diagrama(jogador('p1')) } });
+  const n = radares.importarArquivo({ radares: { 'alfa-07': entrada(diagrama(jogador('p1'))), 'alfa-08': { posicoes: {} }, 'ID ruim': entrada(diagrama(jogador('p1'))) } });
   assert.equal(n, 1);
   assert.equal(radares.radarDaTatica('alfa-07').origem, 'aparelho');
   assert.equal(radares.importarArquivo('lixo'), 0);
@@ -168,7 +195,7 @@ test('valor corrompido no armazenamento não derruba o app', () => {
 
 test('depois de publicar, a cópia local idêntica à do site sai: não vira "só neste aparelho" nem tapa atualizações futuras', async () => {
   // o autor salvou e publicou: o site agora tem exatamente o que está salvo aqui
-  salvos.salvar('alfa-01', DO_SITE.radares['alfa-01']);
+  salvos.salvar('alfa-01', doSiteDiagrama('alfa-01'));
   assert.equal(radares.radarDaTatica('alfa-01').origem, 'site', 'idêntico ao do site já é "publicado"');
   assert.ok(salvos.tem('alfa-01'));
 
@@ -176,7 +203,7 @@ test('depois de publicar, a cópia local idêntica à do site sai: não vira "s�
   assert.equal(salvos.tem('alfa-01'), false, 'a cópia redundante foi descartada');
 
   // alguém muda o radar no site: quem tinha a cópia antiga passa a ver a versão nova
-  falsoFetch({ ...DO_SITE, radares: { ...DO_SITE.radares, 'alfa-01': diagrama(jogador('p1', 0.9, 0.9)) } });
+  falsoFetch({ ...DO_SITE, radares: { ...DO_SITE.radares, 'alfa-01': entrada(diagrama(jogador('p1', 0.9, 0.9))) } });
   await radares.carregarRadares();
   assert.equal(radares.radarDaTatica('alfa-01').diagrama.etapas[0].itens[0].x, 0.9);
 });
@@ -195,10 +222,16 @@ test('cópia local diferente da publicada é mantida; vazia sobre o nada é desc
 
 test('sem conseguir ler o radares.json, nada salvo neste aparelho é apagado', async () => {
   salvos.salvar('alfa-01', diagrama(jogador('p1', 0.4, 0.4)));
-  salvos.salvar('alfa-02', DO_SITE.radares['alfa-02']);
+  salvos.salvar('alfa-02', doSiteDiagrama('alfa-02'));
   globalThis.fetch = async () => {
     throw new Error('sem rede');
   };
   await radares.carregarRadares();
   assert.ok(salvos.tem('alfa-01') && salvos.tem('alfa-02'));
+});
+
+test('imagem do radar: a do radares.json vence a do playbook.json (mapa.radar); sem nenhuma, não há imagem', async () => {
+  assert.deepEqual(await radares.imagemDoMapa('alfa', 'img/radar/alfa-padrao.webp'), { url: 'img/radar/alfa.webp', origem: 'site' });
+  assert.deepEqual(await radares.imagemDoMapa('bravo', 'img/radar/bravo.webp'), { url: 'img/radar/bravo.webp', origem: 'playbook' });
+  assert.equal(await radares.imagemDoMapa('bravo'), null);
 });

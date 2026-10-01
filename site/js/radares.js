@@ -2,7 +2,7 @@
 // O salvo no aparelho vence o do site, tática por tática. Os rascunhos são cópias automáticas de uma edição
 // ainda não salva: protegem o trabalho contra fechar a aba ou apertar "voltar" sem querer.
 import { store } from './store.js';
-import { canonico, formatarArquivo, lerArquivo, mesclarRadares, sanearDiagrama, temConteudo } from './lib/radar.js';
+import { canonico, deEntrada, formatarArquivo, lerArquivo, mesclarRadares, sanearDiagrama, temConteudo } from './lib/radar.js';
 import { extensao, lerImagem, mapasComImagemLocal, urlDaImagemLocal } from './imagens.js';
 
 // Chaves "pb.radar*": o botão "Apagar dados" dos Ajustes não mexe nelas (ver store.limpar).
@@ -83,32 +83,45 @@ export function radarDaTatica(id) {
   return d && temConteudo(d) ? { diagrama: d, origem: 'site' } : null;
 }
 
-/** O que a pessoa vê ao abrir o editor: rascunho > salvo no aparelho > site > em branco. */
-export function pontoDePartida(id) {
-  const base = salvos.tem(id) ? salvos.obter(id) : (doSite(id) ?? { etapas: [] });
+/** Posições escritas à mão no playbook.json (`posicoes` + `fases`), como diagrama editável; vazio se não houver. */
+export const doPlaybook = (t) => (t?.posicoes ? deEntrada({ posicoes: t.posicoes, fases: t.fases }) : { etapas: [] });
+
+/**
+ * O que a pessoa vê ao abrir o editor: rascunho > salvo no aparelho > radares.json do site > posições do playbook.json > em branco.
+ * `base` é o último estado "salvo" (serve para saber se há alterações pendentes).
+ */
+export function pontoDePartida(t) {
+  const id = t.id;
+  const base = salvos.tem(id) ? salvos.obter(id) : (doSite(id) ?? doPlaybook(t));
   const rascunho = rascunhos.obter(id);
   return { base: canonico(base), inicial: rascunho ?? base, recuperado: !!rascunho };
 }
 
-export function situacao(id) {
-  const radar = radarDaTatica(id);
+export function situacao(t) {
+  const radar = radarDaTatica(t.id);
+  const doJson = radar ? null : doPlaybook(t);
+  const posicoes = doJson && temConteudo(doJson);
   return {
-    etapas: radar?.diagrama.etapas.length ?? 0,
-    origem: radar?.origem ?? null,
-    rascunho: rascunhos.tem(id),
-    noSite: !!doSite(id) && temConteudo(doSite(id)),
+    etapas: radar?.diagrama.etapas.length ?? (posicoes ? doJson.etapas.length : 0),
+    origem: radar?.origem ?? (posicoes ? 'playbook' : null),
+    rascunho: rascunhos.tem(t.id),
+    noSite: !!doSite(t.id) && temConteudo(doSite(t.id)),
   };
 }
 
 // ---------------------------------------------------------------- imagens
 export const imagemDoSite = (mapaId) => site.imagens[mapaId] ?? null;
 
-/** Imagem escolhida neste aparelho vence a do site. Devolve { url, origem } ou null. */
-export async function imagemDoMapa(mapaId) {
+/**
+ * Imagem do radar de um mapa. A escolhida neste aparelho vence a do radares.json, que vence a do playbook.json (`mapa.radar`).
+ * Devolve { url, origem: 'aparelho'|'site'|'playbook' } ou null.
+ */
+export async function imagemDoMapa(mapaId, padrao = null) {
   const local = await urlDaImagemLocal(mapaId);
   if (local) return { url: local, origem: 'aparelho' };
   const publicada = imagemDoSite(mapaId);
-  return publicada ? { url: publicada, origem: 'site' } : null;
+  if (publicada) return { url: publicada, origem: 'site' };
+  return padrao ? { url: padrao, origem: 'playbook' } : null;
 }
 
 /** Imagens escolhidas aqui que ainda não estão no site: precisam ser enviadas ao repositório. */
@@ -124,11 +137,11 @@ export async function imagensParaEnviar() {
 
 // ---------------------------------------------------------------- exportar
 /** O radares.json completo (site + aparelho), pronto para colar no repositório. */
-export async function exportarArquivo() {
+export async function exportarArquivo(funcoes = []) {
   const radares = mesclarRadares(site.radares, lerMapa(SALVOS));
   const imagens = { ...site.imagens };
   for (const img of await imagensParaEnviar()) if (!imagens[img.mapaId]) imagens[img.mapaId] = img.caminho;
-  return formatarArquivo({ imagens, radares });
+  return formatarArquivo({ imagens, radares, funcoes });
 }
 
 /** Traz radares de um arquivo para este aparelho (como salvos). @returns {number} quantos radares entraram */

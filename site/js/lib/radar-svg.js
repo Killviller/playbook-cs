@@ -3,8 +3,11 @@
 import { esc } from './html.js';
 import { GRANADAS } from './radar.js';
 
-/** Uma cor por posição na lista de funções (P1…P5). A sigla também aparece no marcador: a cor nunca é a única pista. */
-export const CORES_FUNCAO = ['#ff6b5e', '#ffc247', '#4fd1a5', '#5aa9ff', '#c18bff'];
+/**
+ * Uma cor por posição na lista de funções (P1…P5), as mesmas dos blips do minimapa (--p1…--p5 em app.css).
+ * A sigla também aparece no marcador: a cor nunca é a única pista.
+ */
+export const CORES_FUNCAO = ['#4aa8ff', '#3ddc97', '#ffd23f', '#ff8a3d', '#b58cff'];
 const NEUTRA = '#cbd5e1';
 const TINTA = '#0b0f14';
 const S = 1000; // o desenho usa 1000 unidades; os dados guardam 0 a 1
@@ -177,7 +180,7 @@ const contexto = (etapa, { funcoes, destaque = null, vista = { x: 0, y: 0, w: 1 
  */
 export function desenharCamada(etapa, o) {
   const c = contexto(etapa, o);
-  const de = (tipo) => c.itens.filter((i) => i.tipo === tipo);
+  const de = (tipo) => (tipo === 'jogador' && o.semJogadores ? [] : c.itens.filter((i) => i.tipo === tipo));
   const rota = c.editor && c.selecionado ? c.itens.find((i) => i.id === c.selecionado && i.tipo === 'rota') : null;
   return [
     de('rota').map((i) => caminho(i, c)).join(''),
@@ -203,6 +206,7 @@ export const viewBox = (vista = { x: 0, y: 0, w: 1 }) => `${px(vista.x)} ${px(vi
  * @param {boolean} [o.editor] liga as áreas de toque e as alças
  * @param {string|null} [o.selecionado] id do item selecionado (só editor)
  * @param {object|null} [o.tracando] rota em andamento (só editor)
+ * @param {boolean} [o.semJogadores] só rotas, granadas, bomba e textos (o minimapa já desenha os jogadores como blips)
  */
 export function desenharSvg(etapa, o) {
   const { imagem = null, vista = { x: 0, y: 0, w: 1 }, rotulo = 'Radar da tática' } = o;
@@ -216,14 +220,10 @@ export function desenharSvg(etapa, o) {
   );
 }
 
-/** Quem aparece na etapa (para a legenda embaixo do radar). */
-export function legendaDaEtapa(etapa, funcoes) {
-  const itens = etapa?.itens ?? [];
-  const usadas = new Set(itens.map((i) => i.funcao).filter(Boolean));
+/** O que aparece nos extras de todas as fases (para a legenda do minimapa; os jogadores já têm os seus chips). */
+export function legendaDosExtras(etapas) {
+  const itens = (etapas ?? []).flatMap((e) => e?.itens ?? []);
   return {
-    funcoes: funcoes
-      .filter((f) => usadas.has(f.id))
-      .map((f) => ({ id: f.id, sigla: f.sigla, curto: f.curto ?? f.nome, cor: corDaFuncao(funcoes, f.id) })),
     granadas: Object.keys(GRANADAS).filter((g) => itens.some((i) => i.tipo === 'granada' && i.granada === g)),
     temBomba: itens.some((i) => i.tipo === 'bomba'),
     temArremesso: itens.some((i) => i.tipo === 'rota' && i.estilo === 'arremesso'),
