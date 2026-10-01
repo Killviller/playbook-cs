@@ -1,0 +1,17 @@
+{
+  "name": "playbook-cs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playbook de táticas T de CS2 para o time: PWA mobile-first, sem dependências.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "node scripts/servir.mjs site 5173",
+    "validar": "node scripts/validar-dados.mjs",
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/servir.mjs dist 4173 /playbook-cs",
+    "test": "node --test tests/*.test.mjs"
+  }
+}
