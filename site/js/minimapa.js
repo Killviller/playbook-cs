@@ -9,7 +9,14 @@ export const MAX_FASES = 4;
 
 export function minimapa(index, mapa, t, minha) {
   const pos = t.posicoes;
-  if (!pos) return '';
+  if (!pos) {
+    if (!mapa.radar) return '';
+    return html`<section class="mm mm--so-radar" aria-label="Radar">
+      <div class="mm__cab"><strong>Radar</strong><span>${mapa.nome}</span></div>
+      <div class="mm__mapa"><img src="${mapa.radar}" alt="Radar de ${mapa.nome}"></div>
+      <p class="mm__nota">As posições dos jogadores desta tática ainda não foram marcadas.</p>
+    </section>`;
+  }
   const jogadores = index.funcoes.filter((f) => pos[f.id]);
   if (!jogadores.length) return '';
   const n = pos[jogadores[0].id].length;
