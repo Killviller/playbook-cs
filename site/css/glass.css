@@ -5,26 +5,26 @@
 :root {
   --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI", system-ui, Roboto, sans-serif;
   --font-titulo: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
-  --raio: 22px;
-  --raio-sm: 16px;
+  --raio: 26px;
+  --raio-sm: 18px;
   --maxw: 46rem;
   --tab-h: 6.2rem;
 
-  --bg: #06090e;
-  --superficie: rgba(255, 255, 255, 0.065);
-  --superficie-2: rgba(255, 255, 255, 0.1);
-  --superficie-3: rgba(255, 255, 255, 0.16);
-  --linha: rgba(255, 255, 255, 0.12);
-  --vidro-borda: rgba(255, 255, 255, 0.16);
-  --vidro-brilho: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  --bg: #020409;
+  --superficie: rgba(255, 255, 255, 0.04);
+  --superficie-2: rgba(255, 255, 255, 0.075);
+  --superficie-3: rgba(255, 255, 255, 0.12);
+  --linha: rgba(255, 255, 255, 0.07);
+  --vidro-borda: rgba(255, 255, 255, 0.09);
+  --vidro-brilho: inset 0 1px 0 rgba(255, 255, 255, 0.08);
   --vidro-blur: blur(24px) saturate(170%);
-  --sombra-vidro: 0 12px 36px rgba(0, 0, 0, 0.35);
+  --sombra-vidro: 0 14px 40px rgba(0, 0, 0, 0.5);
   --texto-2: #b3bcc8;
   --texto-3: #8b96a5;
   --ambiente:
-    radial-gradient(60rem 38rem at 8% -8%, rgba(242, 177, 52, 0.20), transparent 60%),
-    radial-gradient(52rem 40rem at 105% 12%, rgba(74, 116, 255, 0.20), transparent 62%),
-    radial-gradient(50rem 40rem at 50% 118%, rgba(150, 90, 255, 0.16), transparent 60%);
+    radial-gradient(60rem 38rem at 8% -8%, rgba(242, 177, 52, 0.09), transparent 60%),
+    radial-gradient(52rem 40rem at 105% 12%, rgba(74, 116, 255, 0.10), transparent 62%),
+    radial-gradient(50rem 40rem at 50% 118%, rgba(150, 90, 255, 0.08), transparent 60%);
 }
 
 :root[data-tema="claro"] {
@@ -87,8 +87,9 @@ body {
 
 /* ------------------------------------------------------------ cabeçalho */
 .appbar {
-  background: color-mix(in srgb, var(--bg) 55%, transparent);
-  border-bottom: 1px solid var(--linha);
+  background: color-mix(in srgb, var(--bg) 62%, transparent);
+  border-bottom: 0;
+  box-shadow: 0 1px 0 var(--linha), 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 .appbar__titulo { font-family: var(--font-titulo); font-size: 1.15rem; font-weight: 650; letter-spacing: -0.01em; }
 .marca { border-radius: 9px; }
@@ -164,7 +165,7 @@ body {
 
 /* ------------------------------------------------------ lista de táticas */
 .rows { gap: 10px; border: 0; background: none; }
-.row { border-radius: var(--raio); min-height: 4.4rem; padding: 12px 14px; gap: 14px; background: var(--superficie); transition: transform 0.18s ease, background 0.18s; }
+.row { border-radius: 24px; min-height: 4.4rem; padding: 12px 14px; gap: 14px; background: var(--superficie); transition: transform 0.18s ease, background 0.18s; }
 .rows > li + li > .row { border-top: 1px solid var(--vidro-borda); }
 .row:hover { background: var(--superficie-2); transform: translateY(-1px); }
 .row__num {
@@ -178,7 +179,7 @@ body {
 /* --------------------------------------------------------- cards de mapa */
 .tiles { gap: 14px; }
 .tile {
-  display: block; aspect-ratio: 4 / 3.3; min-height: 0; border-radius: 28px; border: 1px solid var(--vidro-borda);
+  display: block; aspect-ratio: 4 / 3.3; min-height: 0; border-radius: 32px; border: 1px solid var(--vidro-borda);
   background: var(--superficie); box-shadow: var(--vidro-brilho), var(--sombra-vidro);
 }
 .tiles > :first-child { aspect-ratio: 16 / 10; }
@@ -192,7 +193,7 @@ body {
 }
 .tile__texto {
   position: absolute; left: 8px; right: 8px; bottom: 8px; display: flex; flex-direction: column; justify-content: center;
-  min-height: 3.6rem; padding: 8px 4rem 8px 14px; border-radius: 20px; color: #fff;
+  min-height: 3.6rem; padding: 8px 4rem 8px 16px; border-radius: 24px; color: #fff;
   background: rgba(10, 14, 20, 0.42); border: 1px solid rgba(255, 255, 255, 0.18); box-shadow: var(--vidro-brilho);
 }
 .tile__texto::after {
@@ -205,12 +206,23 @@ body {
 
 /* ------------------------------------------------- faixa do mapa na lista */
 .hero {
-  min-height: 11rem; margin-bottom: 14px; border-radius: 28px; border: 1px solid var(--vidro-borda);
+  position: relative; display: flex; align-items: flex-end; overflow: hidden;
+  background:
+    radial-gradient(circle at 72% 28%, hsl(var(--h) 58% 34% / 0.9), transparent 62%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 12px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 12px), #0a0f15;
+}
+.hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; }
+.hero__texto { position: relative; z-index: 1; flex: 0 1 auto; min-width: 12rem; display: flex; flex-direction: column; gap: 2px; }
+.hero__nome, .hero__info { display: block; }
+.hero {
+  min-height: 11rem; margin-bottom: 14px; border-radius: 32px; border: 1px solid var(--vidro-borda);
   box-shadow: var(--vidro-brilho), var(--sombra-vidro);
 }
 .hero::after { background: linear-gradient(to top, rgba(6, 9, 14, 0.7), transparent 60%); }
 .hero__texto {
-  margin: 8px; padding: 10px 16px; border-radius: 20px; background: rgba(10, 14, 20, 0.4); border: 1px solid rgba(255, 255, 255, 0.18); color: #fff;
+  margin: 10px; padding: 12px 18px; border-radius: 24px; background: rgba(10, 14, 20, 0.4); border: 1px solid rgba(255, 255, 255, 0.18); color: #fff;
 }
 .hero__nome { font-family: var(--font-titulo); font-size: 1.9rem; font-weight: 700; text-transform: none; letter-spacing: -0.02em; }
 .hero__info { font-family: var(--font); font-size: 0.85rem; letter-spacing: 0; text-transform: none; color: rgba(255, 255, 255, 0.8); }
@@ -237,20 +249,20 @@ body {
 .sobre[open] { padding-bottom: 10px; }
 
 /* ---------------------------------------------------------------- minimapa */
-.mm { margin-top: 0; border-radius: 28px; overflow: hidden; background: var(--superficie); }
-.mm__cab { font-family: var(--font); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; border-bottom: 1px solid var(--linha); }
+.mm { margin-top: 0; border-radius: 32px; overflow: hidden; background: var(--superficie); }
+.mm__cab { border-bottom: 0 !important; font-family: var(--font); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; border-bottom: 1px solid var(--linha); }
 .mm__cab strong { color: var(--destaque-texto); font-weight: 700; }
 .mm__mapa { aspect-ratio: 1; background-color: rgba(4, 7, 11, 0.55); }
 .mm__mapa > img { object-fit: contain; }
 .mm__nota { padding: 10px 14px 14px; font-size: 0.88rem; color: var(--texto-2); }
 .mm__ponto { font-family: var(--font); font-weight: 700; }
-.mm__fases { background: var(--linha); }
-.mm__fase { background: color-mix(in srgb, var(--bg) 35%, transparent); font-family: var(--font); }
+.mm__fases { background: none; gap: 6px; padding: 8px; }
+.mm__fase { background: var(--superficie); border-radius: 18px; font-family: var(--font); }
 .mm__fase small { font-family: var(--font); letter-spacing: 0.06em; }
 .mm__fase[aria-pressed="true"] { background: var(--texto); color: var(--bg); }
-.mm__chip { border-radius: 16px; background: var(--superficie); border: 1px solid var(--vidro-borda); }
+.mm__chip { border-radius: 20px; background: var(--superficie); border: 1px solid var(--vidro-borda); }
 .mm__chip b { font-family: var(--font); }
-.mm__papel { border-radius: 16px; border-left-width: 3px; background: var(--superficie-2); }
+.mm__papel { border-radius: 22px; border-left-width: 0; background: var(--superficie-2); }
 .mm__papel b { font-family: var(--font-titulo); text-transform: none; letter-spacing: -0.01em; }
 
 .toast { border-radius: 999px; background: color-mix(in srgb, var(--texto) 92%, transparent); }
@@ -295,8 +307,8 @@ body {
   .tile:first-child .tile__texto { min-height: 4.6rem; padding-left: 1.4rem; }
 
   /* lista de táticas em duas colunas */
-  .hero { min-height: 16rem; }
-  .hero__nome { font-size: 3rem; }
+  .hero { min-height: 13rem; }
+  .hero__nome { font-size: 2.4rem; }
   .rows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   .row { height: 100%; }
 
@@ -320,3 +332,9 @@ body {
   .tab { min-height: 2.8rem; }
   .tabbar__inner { padding: 4px; }
 }
+
+/* divisórias internas mais suaves */
+.ficha__item + .ficha__item { border-top: 1px solid var(--linha); }
+.ficha, .mm__papel, .funcao { overflow: hidden; }
+.mm__mapa { border-radius: 24px; margin: 0 8px; }
+.tab::before { background: var(--texto); }
