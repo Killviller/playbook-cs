@@ -26,10 +26,11 @@ com a marca "Você"; nas listas aparece um trecho do que você faz em cada táti
 
 ## Publicar (GitHub Pages)
 
-1. Deixe o código no branch **`main`**.
-2. No GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-3. A cada push na `main`, o workflow roda os testes, gera o site e publica. O link fica em
-   `https://<usuario>.github.io/playbook-cs/` (aparece em **Actions** e em **Settings → Pages**).
+1. No GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+   Não use "Deploy from a branch": esse modo publica a raiz do repositório e o que aparece é o README, não o app.
+2. A cada push no **branch padrão** do repositório, o workflow roda os testes, gera o site e publica
+   (também dá para publicar na hora em **Actions → Testes e publicação → Run workflow**).
+3. O link fica em `https://<usuario>.github.io/playbook-cs/` (aparece em **Actions** e em **Settings → Pages**).
 4. Mande o link para o time. No celular, abra o link e instale:
    - **Android (Chrome):** botão *Instalar* no app (ou menu → *Instalar app*).
    - **iPhone (Safari):** *Compartilhar → Adicionar à Tela de Início*.
@@ -41,7 +42,7 @@ Também dá para publicar a pasta `dist/` (gerada por `npm run build`) em qualqu
 
 ## Como atualizar as táticas
 
-Todo o conteúdo está em **`site/data/playbook.json`**. Edite o arquivo (dá para fazer direto no GitHub, pelo ícone de lápis) e faça commit na `main`:
+Todo o conteúdo está em **`site/data/playbook.json`**. Edite o arquivo (dá para fazer direto no GitHub, pelo ícone de lápis) e faça commit no branch padrão:
 o teste valida o arquivo antes de publicar, então um erro de digitação não derruba o site.
 
 ```jsonc
