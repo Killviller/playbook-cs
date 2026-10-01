@@ -59,7 +59,7 @@ export async function validarPlaybook(dados, { siteDir = null } = {}) {
   // ------------------------------------------------------------------ mapas
   const mapas = new Map();
   if (!Array.isArray(dados.mapas) || !dados.mapas.length) erro('"mapas" precisa ter ao menos um mapa.');
-  (dados.mapas ?? []).forEach((m, i) => {
+  for (const [i, m] of (dados.mapas ?? []).entries()) {
     if (!SLUG.test(m?.id ?? '')) erro(`mapas[${i}]: "id" inválido (use minúsculas, números e hífen).`);
     else if (mapas.has(m.id)) erro(`mapas: id repetido "${m.id}".`);
     else mapas.set(m.id, m);
@@ -67,9 +67,20 @@ export async function validarPlaybook(dados, { siteDir = null } = {}) {
     if (m?.matiz !== undefined && !(Number.isFinite(m.matiz) && m.matiz >= 0 && m.matiz <= 360)) {
       erro(`mapa "${m?.id}": "matiz" precisa ser um número de 0 a 360.`);
     }
+    for (const campo of ['capa', 'radar']) {
+      if (m?.[campo] !== undefined && (!ehTexto(m[campo]) || /^(?:[a-z]+:|\/)/i.test(m[campo]))) {
+        erro(`mapa "${m?.id}": "${campo}" precisa ser um caminho relativo (ex.: "img/${campo === 'capa' ? 'mapas' : 'radar'}/${m?.id}.webp").`);
+      } else if (m?.[campo] !== undefined && siteDir) {
+        try {
+          await access(join(siteDir, m[campo]));
+        } catch {
+          erro(`mapa "${m.id}": a imagem "${m[campo]}" não existe dentro de site/.`);
+        }
+      }
+    }
     if (m?.ativo !== undefined && typeof m.ativo !== 'boolean') erro(`mapa "${m?.id}": "ativo" precisa ser true ou false.`);
     if (m?.descricao !== undefined && !ehTexto(m.descricao)) erro(`mapa "${m?.id}": "descricao" precisa ser um texto.`);
-  });
+  }
 
   // ---------------------------------------------------------------- táticas
   const ids = new Set();
@@ -137,6 +148,26 @@ export async function validarPlaybook(dados, { siteDir = null } = {}) {
           } catch {
             erro(`${nome}: a imagem "${r.src}" não existe dentro de site/.`);
           }
+        }
+      }
+    }
+
+    if (t?.posicoes !== undefined) {
+      const pos = t.posicoes;
+      const ok = pos && typeof pos === 'object' && !Array.isArray(pos);
+      if (!ok) erro(`${nome}: "posicoes" precisa ser { "p1": [[x, y], …], … }.`);
+      else {
+        const tamanhos = new Set();
+        for (const [fid, lista] of Object.entries(pos)) {
+          if (!funcoes.has(fid)) erro(`${nome}: posicoes."${fid}" não é uma função cadastrada.`);
+          const pontos = Array.isArray(lista) && lista.length >= 2 && lista.length <= 4 &&
+            lista.every((p) => Array.isArray(p) && p.length === 2 && p.every((v) => Number.isFinite(v) && v >= 0 && v <= 100));
+          if (!pontos) erro(`${nome}: posicoes."${fid}" precisa ter de 2 a 4 pontos [x, y] com valores de 0 a 100.`);
+          else tamanhos.add(lista.length);
+        }
+        if (tamanhos.size > 1) erro(`${nome}: todos os jogadores de "posicoes" precisam ter o mesmo número de fases.`);
+        if (t.fases !== undefined && !(listaDeTextos(t.fases) && tamanhos.size === 1 && t.fases.length === [...tamanhos][0])) {
+          erro(`${nome}: "fases" precisa ser uma lista de textos, um por ponto de "posicoes".`);
         }
       }
     }

@@ -6,14 +6,23 @@ import { acoesPadrao, cartaoInstalar } from '../ui.js';
 export function mapas({ index }) {
   const atual = store.get('mapa');
 
-  const tiles = index.mapas.map((m) => {
+  // o mapa da partida vai primeiro (card grande)
+  const ordem = [...index.mapas].sort((a, b) => (b.id === atual) - (a.id === atual));
+  const tiles = ordem.map((m) => {
     const n = index.porMapa.get(m.id).length;
     const sigla = m.sigla ?? m.nome.slice(0, 3).toUpperCase();
+    const agora = m.id === atual;
     return html`
-      <a class="tile" href="#/mapa/${m.id}" style="--h:${m.matiz ?? 210}" ${m.id === atual ? raw('aria-current="true"') : ''}>
-        <span class="tile__sigla" aria-hidden="true">${sigla}</span>
-        <span class="tile__nome">${m.nome}</span>
-        <span class="tile__info">${m.id === atual ? 'Mapa da partida · ' : ''}${n} ${n === 1 ? 'tática' : 'táticas'}</span>
+      <a class="tile" href="#/mapa/${m.id}" style="--h:${m.matiz ?? 210}" ${agora ? raw('aria-current="true"') : ''}>
+        <span class="tile__capa">
+          ${m.capa ? html`<img src="${m.capa}" alt="" loading="lazy">` : ''}
+          <span class="tile__sigla" aria-hidden="true">${sigla}</span>
+          ${agora ? html`<span class="tile__atual">Mapa da partida</span>` : ''}
+        </span>
+        <span class="tile__texto">
+          <span class="tile__nome">${m.nome}</span>
+          <span class="tile__info">${n} ${n === 1 ? 'tática' : 'táticas'}</span>
+        </span>
       </a>`;
   });
 
