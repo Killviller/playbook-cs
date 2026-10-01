@@ -10,7 +10,8 @@
   --maxw: 46rem;
   --tab-h: 6.2rem;
 
-  --bg: #020409;
+  --bg: #000000;
+  --texto: #f2f2f2;
   --superficie: rgba(255, 255, 255, 0.04);
   --superficie-2: rgba(255, 255, 255, 0.075);
   --superficie-3: rgba(255, 255, 255, 0.12);
@@ -19,12 +20,10 @@
   --vidro-brilho: inset 0 1px 0 rgba(255, 255, 255, 0.08);
   --vidro-blur: blur(24px) saturate(170%);
   --sombra-vidro: 0 14px 40px rgba(0, 0, 0, 0.5);
-  --texto-2: #b3bcc8;
-  --texto-3: #8b96a5;
+  --texto-2: #b4b4b4;
+  --texto-3: #888888;
   --ambiente:
-    radial-gradient(60rem 38rem at 8% -8%, rgba(242, 177, 52, 0.09), transparent 60%),
-    radial-gradient(52rem 40rem at 105% 12%, rgba(74, 116, 255, 0.10), transparent 62%),
-    radial-gradient(50rem 40rem at 50% 118%, rgba(150, 90, 255, 0.08), transparent 60%);
+    radial-gradient(70rem 40rem at 50% -20%, rgba(255, 255, 255, 0.06), transparent 65%);
 }
 
 :root[data-tema="claro"] {
@@ -194,7 +193,7 @@ body {
 .tile__texto {
   position: absolute; left: 8px; right: 8px; bottom: 8px; display: flex; flex-direction: column; justify-content: center;
   min-height: 3.6rem; padding: 8px 4rem 8px 16px; border-radius: 24px; color: #fff;
-  background: rgba(10, 14, 20, 0.42); border: 1px solid rgba(255, 255, 255, 0.18); box-shadow: var(--vidro-brilho);
+  background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(255, 255, 255, 0.18); box-shadow: var(--vidro-brilho);
 }
 .tile__texto::after {
   content: ""; position: absolute; right: 8px; top: 50%; width: 2.6rem; height: 2.6rem; transform: translateY(-50%); border-radius: 50%;
@@ -210,7 +209,7 @@ body {
   background:
     radial-gradient(circle at 72% 28%, hsl(var(--h) 58% 34% / 0.9), transparent 62%),
     repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 12px),
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 12px), #0a0f15;
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 12px), #0b0b0b;
 }
 .hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; }
@@ -220,9 +219,9 @@ body {
   min-height: 11rem; margin-bottom: 14px; border-radius: 32px; border: 1px solid var(--vidro-borda);
   box-shadow: var(--vidro-brilho), var(--sombra-vidro);
 }
-.hero::after { background: linear-gradient(to top, rgba(6, 9, 14, 0.7), transparent 60%); }
+.hero::after { background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent 60%); }
 .hero__texto {
-  margin: 10px; padding: 12px 18px; border-radius: 24px; background: rgba(10, 14, 20, 0.4); border: 1px solid rgba(255, 255, 255, 0.18); color: #fff;
+  margin: 10px; padding: 12px 18px; border-radius: 24px; background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(255, 255, 255, 0.18); color: #fff;
 }
 .hero__nome { font-family: var(--font-titulo); font-size: 1.9rem; font-weight: 700; text-transform: none; letter-spacing: -0.02em; }
 .hero__info { font-family: var(--font); font-size: 0.85rem; letter-spacing: 0; text-transform: none; color: rgba(255, 255, 255, 0.8); }
@@ -252,7 +251,7 @@ body {
 .mm { margin-top: 0; border-radius: 32px; overflow: hidden; background: var(--superficie); }
 .mm__cab { border-bottom: 0 !important; font-family: var(--font); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; border-bottom: 1px solid var(--linha); }
 .mm__cab strong { color: var(--destaque-texto); font-weight: 700; }
-.mm__mapa { aspect-ratio: 1; background-color: rgba(4, 7, 11, 0.55); }
+.mm__mapa { aspect-ratio: 1; background-color: rgba(0, 0, 0, 0.55); }
 .mm__mapa > img { object-fit: contain; }
 .mm__nota { padding: 10px 14px 14px; font-size: 0.88rem; color: var(--texto-2); }
 .mm__ponto { font-family: var(--font); font-weight: 700; }
@@ -338,3 +337,9 @@ body {
 .ficha, .mm__papel, .funcao { overflow: hidden; }
 .mm__mapa { border-radius: 24px; margin: 0 8px; }
 .tab::before { background: var(--texto); }
+
+/* neutro: etiqueta do mapa sem cor de matiz; cards pequenos com seta menor */
+.tag--mapa { color: var(--texto-2); }
+.tile:not(:first-child) .tile__texto { padding-right: 3.3rem; }
+.tile:not(:first-child) .tile__texto::after { width: 2.2rem; height: 2.2rem; background-size: 1.1rem; }
+.tile__info { white-space: nowrap; }
