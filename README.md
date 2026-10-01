@@ -159,6 +159,29 @@ O app já mostra estes blocos quando a tática os tiver. Não precisa mudar cód
 
 Imagens de radar vão em `site/img/radar/`. Prefira WebP/PNG leves (até ~200 KB): elas entram no cache para uso sem internet.
 
+### Imagens dos mapas e minimapa (opcionais)
+
+Em cada mapa de `site/data/playbook.json`:
+
+```json
+{ "id": "mirage", "nome": "Mirage", "capa": "img/mapas/mirage.webp", "radar": "img/radar/mirage.webp" }
+```
+
+- `capa`: imagem do card na tela de seleção (sugestão 640×400). Sem ela, o card usa o fundo em gradiente.
+- `radar`: imagem **quadrada** do radar (sugestão 1024×1024, sem texto nem blips). É a base do minimapa.
+
+Em cada tática, `posicoes` coloca o blip de cada jogador, em **% do radar** (x, y), um ponto por fase (de 2 a 4):
+
+```json
+"posicoes": {
+  "p1": [[22, 70], [62, 44], [79, 22]],
+  "p2": [[17, 74], [57, 48], [73, 27]]
+}
+```
+
+As fases padrão são Setup, Execução e Plant (3 pontos). Para nomes próprios use `"fases": ["Setup", "Execução", "Plant"]`.
+Táticas sem `posicoes` não mostram o minimapa. Na tela da tática, tocar numa fase move os blips; tocar num jogador mostra o que ele faz.
+
 ## Desenvolvimento
 
 Precisa só do Node 20+ (sem `npm install`).

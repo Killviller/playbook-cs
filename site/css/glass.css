@@ -1,0 +1,371 @@
+/* Playbook T — camada "vidro" (glassmorphism).
+   Carrega depois de app.css e redefine superfícies, formas e layout.
+   Celular: barra flutuante em pílula. Computador: trilho lateral e telas em colunas. */
+
+:root {
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI", system-ui, Roboto, sans-serif;
+  --font-titulo: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+  --raio: 26px;
+  --raio-sm: 18px;
+  --maxw: 46rem;
+  --tab-h: 6.2rem;
+
+  --bg: #000000;
+  --texto: #f2f2f2;
+  --superficie: rgba(255, 255, 255, 0.04);
+  --superficie-2: rgba(255, 255, 255, 0.075);
+  --superficie-3: rgba(255, 255, 255, 0.12);
+  --linha: rgba(255, 255, 255, 0.07);
+  --vidro-borda: rgba(255, 255, 255, 0.09);
+  --vidro-brilho: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --vidro-blur: blur(24px) saturate(170%);
+  --sombra-vidro: 0 14px 40px rgba(0, 0, 0, 0.5);
+  --texto-2: #b4b4b4;
+  --texto-3: #888888;
+  --ambiente:
+    radial-gradient(70rem 40rem at 50% -20%, rgba(255, 255, 255, 0.06), transparent 65%);
+}
+
+:root[data-tema="claro"] {
+  --bg: #efefef;
+  --texto: #111111;
+  --superficie: rgba(255, 255, 255, 0.7);
+  --superficie-2: rgba(255, 255, 255, 0.88);
+  --superficie-3: #ffffff;
+  --linha: rgba(0, 0, 0, 0.08);
+  --vidro-borda: rgba(255, 255, 255, 0.9);
+  --vidro-brilho: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  --sombra-vidro: 0 10px 30px rgba(0, 0, 0, 0.09);
+  --texto-2: #4a4a4a;
+  --texto-3: #6b6b6b;
+  --destaque: #1a1a1a;
+  --destaque-texto: #1a1a1a;
+  --destaque-tinta: #ffffff;
+  --destaque-suave: rgba(0, 0, 0, 0.05);
+  --azul: #3a3a3a;
+  --azul-tinta: #ffffff;
+  --ambiente: radial-gradient(70rem 40rem at 50% -20%, rgba(255, 255, 255, 0.9), transparent 65%);
+}
+
+@media (prefers-color-scheme: light) {
+  :root[data-tema="sistema"] {
+    --bg: #efefef;
+    --texto: #111111;
+    --superficie: rgba(255, 255, 255, 0.7);
+    --superficie-2: rgba(255, 255, 255, 0.88);
+    --superficie-3: #ffffff;
+    --linha: rgba(0, 0, 0, 0.08);
+    --vidro-borda: rgba(255, 255, 255, 0.9);
+    --vidro-brilho: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    --sombra-vidro: 0 10px 30px rgba(0, 0, 0, 0.09);
+    --texto-2: #4a4a4a;
+    --texto-3: #6b6b6b;
+    --destaque: #1a1a1a;
+    --destaque-texto: #1a1a1a;
+    --destaque-tinta: #ffffff;
+    --destaque-suave: rgba(0, 0, 0, 0.05);
+    --azul: #3a3a3a;
+    --azul-tinta: #ffffff;
+    --ambiente: radial-gradient(70rem 40rem at 50% -20%, rgba(255, 255, 255, 0.9), transparent 65%);
+  }
+}
+
+/* telas grandes: o app inteiro cresce (rem), respeitando a escolha de texto da pessoa */
+@media (min-width: 1100px) { html[data-texto="normal"] { --fs: 18px; } }
+@media (min-width: 1600px) { html[data-texto="normal"] { --fs: 21px; } }
+@media (min-width: 2200px) { html[data-texto="normal"] { --fs: 26px; } }
+
+body {
+  background: var(--ambiente), var(--bg);
+  background-attachment: fixed;
+  letter-spacing: -0.005em;
+}
+
+/* o vidro: todas as superfícies translúcidas ganham desfoque, borda clara e brilho no topo */
+.appbar, .tabbar, .row, .ficha, .funcao, .cartao, .dica, .regra, .guia-tipo, .pager__item, .mm, .tile__texto,
+.btn, .chip, .seg, .busca__campo, .toast, .hero__texto, .sobre {
+  -webkit-backdrop-filter: var(--vidro-blur);
+  backdrop-filter: var(--vidro-blur);
+}
+.row, .ficha, .funcao, .cartao, .dica, .regra, .guia-tipo, .pager__item, .mm, .sobre {
+  border: 1px solid var(--vidro-borda);
+  box-shadow: var(--vidro-brilho), var(--sombra-vidro);
+}
+
+/* ------------------------------------------------------------ cabeçalho */
+.appbar {
+  background: color-mix(in srgb, var(--bg) 62%, transparent);
+  border-bottom: 0;
+  box-shadow: 0 1px 0 var(--linha), 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+.appbar__titulo { font-family: var(--font-titulo); font-size: 1.15rem; font-weight: 650; letter-spacing: -0.01em; }
+.marca { border-radius: 9px; }
+.icon-btn { border-radius: 50%; }
+.icon-btn:hover { background: var(--superficie-2); }
+
+.pagina-titulo, .vazio__titulo, .cartao__titulo {
+  font-family: var(--font-titulo); text-transform: none; letter-spacing: -0.02em; font-weight: 700;
+}
+.pagina-titulo { font-size: 2.1rem; line-height: 1.05; }
+.secao, .bloco__titulo, .ficha__rotulo, .pager__dir {
+  font-family: var(--font); font-size: 0.78rem; font-weight: 650; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--texto-3);
+}
+.ficha__item--objetivo .ficha__rotulo { color: var(--destaque-texto); }
+.link { font-family: var(--font); font-size: 0.95rem; font-weight: 600; letter-spacing: 0; text-transform: none; }
+
+/* -------------------------------------------- barra de navegação flutuante */
+.tabbar {
+  left: 16px; right: 16px; bottom: calc(12px + env(safe-area-inset-bottom));
+  border: 1px solid var(--vidro-borda); border-radius: 999px; padding: 0;
+  background: color-mix(in srgb, var(--bg) 50%, rgba(255, 255, 255, 0.08));
+  box-shadow: var(--vidro-brilho), 0 18px 40px rgba(0, 0, 0, 0.45);
+}
+.tabbar__inner { max-width: 26rem; padding: 8px; gap: 4px; }
+.tab {
+  min-height: 3.5rem; padding: 0; border-radius: 999px; display: grid; place-items: center;
+  font-family: var(--font); font-size: 0.7rem; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--texto-2);
+  transition: color 0.2s;
+}
+.tab > span {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+.tab > .ic { position: relative; z-index: 1; width: 1.45rem; height: 1.45rem; }
+.tab::before, .tab[aria-current="page"]::before {
+  content: ""; position: absolute; top: 50%; left: 50%; right: auto; bottom: auto;
+  width: 3.4rem; height: 3.4rem; border-radius: 50%; transform: translate(-50%, -50%) scale(0.6); opacity: 0;
+  background: var(--texto); transition: transform 0.25s cubic-bezier(.2, .8, .2, 1), opacity 0.2s;
+}
+.tab[aria-current="page"] { color: var(--bg); }
+.tab[aria-current="page"]::before { transform: translate(-50%, -50%) scale(1); opacity: 1; height: 3.4rem; }
+.tab:active { background: transparent; }
+
+/* ------------------------------------------------------- chips e etiquetas */
+.chip {
+  border-radius: 999px; border: 1px solid var(--vidro-borda); background: var(--superficie);
+  font-family: var(--font); font-size: 0.95rem; font-weight: 600; letter-spacing: 0; text-transform: none; min-height: 2.75rem;
+  box-shadow: var(--vidro-brilho);
+}
+.chip:hover { background: var(--superficie-2); }
+.chip--mapa[aria-current="page"], .chip--mapa[aria-pressed="true"],
+.chip--tipo[aria-pressed="true"] { background: var(--texto); border-color: var(--texto); color: var(--bg); }
+.chip--tipo .ponto { border-radius: 50%; }
+.chip--tipo[aria-pressed="true"] .ponto { box-shadow: 0 0 0 2px var(--bg); }
+
+/* sem "pílulas": o tipo é um ponto colorido + texto; o site é um círculo discreto */
+.tag, .tipo {
+  min-height: 0; padding: 0; border: 0; border-radius: 0; background: none;
+  font-family: var(--font); font-size: 0.82rem; font-weight: 550; letter-spacing: 0; text-transform: none; color: var(--texto-2);
+}
+.tipo::before {
+  content: ""; width: 0.5rem; height: 0.5rem; margin-right: 0.4rem; border-radius: 50%; background: var(--tc);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--tc) 70%, transparent);
+}
+.tag--mapa { color: hsl(var(--h, 210) 80% 78%); background: none; border: 0; }
+.site {
+  min-width: 2rem; height: 2rem; padding: 0; border-radius: 50%;
+  background: var(--superficie-2); border: 1px solid var(--vidro-borda); box-shadow: var(--vidro-brilho);
+  font-family: var(--font); font-size: 0.88rem; font-weight: 700;
+}
+.site--A { color: var(--destaque); }
+.site--B { color: var(--azul); }
+
+/* ------------------------------------------------------ lista de táticas */
+.rows { gap: 10px; border: 0; background: none; }
+.row { border-radius: 24px; min-height: 4.4rem; padding: 12px 14px; gap: 14px; background: var(--superficie); transition: transform 0.18s ease, background 0.18s; }
+.rows > li + li > .row { border-top: 1px solid var(--vidro-borda); }
+.row:hover { background: var(--superficie-2); transform: translateY(-1px); }
+.row__num {
+  align-self: center; width: auto; min-width: 1.9rem; height: auto; border: 0; background: none; border-radius: 0;
+  font-family: var(--font-titulo); font-size: 1.5rem; font-weight: 300; letter-spacing: -0.02em; color: var(--texto-3);
+}
+.row__main { padding: 0; gap: 6px; }
+.row__title { font-size: 1.06rem; font-weight: 600; letter-spacing: -0.01em; }
+.row__meta { gap: 12px; }
+
+/* --------------------------------------------------------- cards de mapa */
+.tiles { gap: 14px; }
+.tile {
+  display: block; aspect-ratio: 4 / 3.3; min-height: 0; border-radius: 32px; border: 1px solid var(--vidro-borda);
+  background: var(--superficie); box-shadow: var(--vidro-brilho), var(--sombra-vidro);
+}
+.tiles > :first-child { aspect-ratio: 16 / 10; }
+.tile:hover { transform: translateY(-3px); border-color: var(--vidro-borda); }
+.tile__capa, .tile:first-child .tile__capa { position: absolute; inset: 0; height: auto; }
+.tile__sigla { display: none; }
+.tile__atual {
+  left: 12px; top: 12px; padding: 6px 12px; border-radius: 999px; font-family: var(--font); font-size: 0.78rem; font-weight: 650;
+  letter-spacing: 0; text-transform: none; background: rgba(255, 255, 255, 0.18); color: #fff;
+  -webkit-backdrop-filter: var(--vidro-blur); backdrop-filter: var(--vidro-blur); border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.tile__texto {
+  position: absolute; left: 8px; right: 8px; bottom: 8px; display: flex; flex-direction: column; justify-content: center;
+  min-height: 3.6rem; padding: 8px 4rem 8px 16px; border-radius: 24px; color: #fff;
+  background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(255, 255, 255, 0.18); box-shadow: var(--vidro-brilho);
+}
+.tile__texto::after {
+  content: ""; position: absolute; right: 8px; top: 50%; width: 2.6rem; height: 2.6rem; transform: translateY(-50%); border-radius: 50%;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 6 6 6-6 6'/%3E%3C/svg%3E") center / 1.3rem no-repeat;
+}
+.tile__nome { font-family: var(--font-titulo); font-size: 1.2rem; font-weight: 700; letter-spacing: -0.01em; text-transform: none; }
+.tile:first-child .tile__nome { font-size: 1.5rem; }
+.tile__info { color: rgba(255, 255, 255, 0.78); font-size: 0.82rem; margin-top: 1px; }
+
+/* ------------------------------------------------- faixa do mapa na lista */
+.hero {
+  position: relative; display: flex; align-items: flex-end; overflow: hidden;
+  background:
+    radial-gradient(circle at 72% 28%, hsl(var(--h) 58% 34% / 0.9), transparent 62%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 12px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 12px), #0b0b0b;
+}
+.hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; }
+.hero__texto { position: relative; z-index: 1; flex: 0 1 auto; min-width: 12rem; display: flex; flex-direction: column; gap: 2px; }
+.hero__nome, .hero__info { display: block; }
+.hero {
+  min-height: 11rem; margin-bottom: 14px; border-radius: 32px; border: 1px solid var(--vidro-borda);
+  box-shadow: var(--vidro-brilho), var(--sombra-vidro);
+}
+.hero::after { background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent 60%); }
+.hero__texto {
+  margin: 10px; padding: 12px 18px; border-radius: 24px; background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(255, 255, 255, 0.18); color: #fff;
+}
+.hero__nome { font-family: var(--font-titulo); font-size: 1.9rem; font-weight: 700; text-transform: none; letter-spacing: -0.02em; }
+.hero__info { font-family: var(--font); font-size: 0.85rem; letter-spacing: 0; text-transform: none; color: rgba(255, 255, 255, 0.8); }
+
+/* ---------------------------------------------------------------- detalhe */
+.detalhe__titulo { font-family: var(--font-titulo); font-size: 2.2rem; font-weight: 700; letter-spacing: -0.025em; text-transform: none; line-height: 1.05; }
+.detalhe__num {
+  min-width: 0; height: auto; background: none; color: var(--destaque); border-radius: 0;
+  font-family: var(--font-titulo); font-size: 2.2rem; font-weight: 300;
+}
+.detalhe__call, .detalhe__contexto strong { font-family: var(--font); }
+.ficha, .funcao, .cartao, .regra, .guia-tipo, .pager__item { border-radius: var(--raio); background: var(--superficie); }
+.ficha__item--objetivo { background: var(--destaque-suave); }
+.funcao--minha { box-shadow: var(--vidro-brilho), 0 0 0 1.5px var(--destaque) inset; }
+.funcao__sigla { border-radius: 50%; min-width: 2.3rem; height: 2.3rem; font-family: var(--font); }
+.pager__titulo { font-family: var(--font-titulo); text-transform: none; font-size: 1rem; font-weight: 600; }
+.btn { border-radius: 999px; border: 1px solid var(--vidro-borda); background: var(--superficie-2); font-family: var(--font); font-size: 0.95rem; letter-spacing: 0; text-transform: none; box-shadow: var(--vidro-brilho); }
+.btn--primario { background: var(--texto); border-color: var(--texto); color: var(--bg); }
+.seg { border-radius: 999px; }
+.seg__op { border-radius: 999px; }
+.seg__op[aria-checked="true"] { background: var(--texto); color: var(--bg); }
+.busca__campo { border-radius: 999px; background: var(--superficie); }
+.sobre { border-radius: var(--raio); padding: 0 16px; margin-bottom: 12px; background: var(--superficie); }
+.sobre[open] { padding-bottom: 10px; }
+
+/* ---------------------------------------------------------------- minimapa */
+.mm { margin-top: 0; border-radius: 32px; overflow: hidden; background: var(--superficie); }
+.mm__cab { border-bottom: 0 !important; font-family: var(--font); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; border-bottom: 1px solid var(--linha); }
+.mm__cab strong { color: var(--destaque-texto); font-weight: 700; }
+.mm__mapa { aspect-ratio: 1; background-color: rgba(0, 0, 0, 0.55); }
+.mm__mapa > img { object-fit: contain; }
+.mm__nota { padding: 10px 14px 14px; font-size: 0.88rem; color: var(--texto-2); }
+.mm__ponto { font-family: var(--font); font-weight: 700; }
+.mm__fases { background: none; gap: 6px; padding: 8px; }
+.mm__fase { background: var(--superficie); border-radius: 18px; font-family: var(--font); }
+.mm__fase small { font-family: var(--font); letter-spacing: 0.06em; }
+.mm__fase[aria-pressed="true"] { background: var(--texto); color: var(--bg); }
+.mm__chip { border-radius: 20px; background: var(--superficie); border: 1px solid var(--vidro-borda); }
+.mm__chip b { font-family: var(--font); }
+.mm__papel { border-radius: 22px; border-left-width: 0; background: var(--superficie-2); }
+.mm__papel b { font-family: var(--font-titulo); text-transform: none; letter-spacing: -0.01em; }
+
+.toast { border-radius: 999px; background: color-mix(in srgb, var(--texto) 92%, transparent); }
+
+/* ----------------------------------------------- tela de detalhe em colunas */
+.detalhe__grade { display: block; }
+.detalhe__lado { margin-bottom: 14px; }
+
+/* ===================================================================== */
+/*                       COMPUTADOR / MONITOR GRANDE                      */
+/* ===================================================================== */
+@media (min-width: 900px) {
+  :root { --maxw: 82rem; --tab-h: 0rem; }
+
+  .appbar__inner { max-width: 82rem; padding-left: 7.5rem; padding-right: 1.5rem; min-height: 4rem; }
+  .appbar__titulo { font-size: 1.3rem; }
+  main { max-width: 82rem; padding: 24px 2rem 3rem 7.5rem; }
+
+  /* barra de navegação vira um trilho de vidro vertical */
+  .tabbar {
+    left: 1.25rem; right: auto; top: 50%; bottom: auto; transform: translateY(-50%);
+    width: 5.2rem; border-radius: 2.6rem; padding: 0.5rem;
+  }
+  .tabbar__inner { display: flex; flex-direction: column; max-width: none; padding: 0; gap: 0.35rem; }
+  .tab { min-height: 4.4rem; border-radius: 2rem; gap: 0.25rem; align-content: center; }
+  .tab > span {
+    position: static; width: auto; height: auto; clip: auto; margin-top: -0.3rem; z-index: 1; font-size: 0.68rem;
+  }
+  .tab { grid-template-rows: auto auto; place-items: center; align-content: center; }
+  .tab::before, .tab[aria-current="page"]::before { width: 100%; height: 100%; border-radius: 2rem; }
+  .tab:hover:not([aria-current="page"]) { background: var(--superficie-2); }
+  .toast { bottom: 1.5rem; }
+
+  .pagina-titulo { font-size: 2.8rem; }
+  .intro { max-width: 46rem; font-size: 1.05rem; }
+
+  /* seleção de mapa: grade larga com capas grandes */
+  .tiles { grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: 1.2rem; }
+  .tiles > :first-child { grid-column: span 2; aspect-ratio: 8 / 3; }
+  .tile { aspect-ratio: 4 / 3; }
+  .tile:first-child .tile__nome { font-size: 2.1rem; }
+  .tile:first-child .tile__texto { min-height: 4.6rem; padding-left: 1.4rem; }
+
+  /* lista de táticas em duas colunas */
+  .hero { min-height: 13rem; }
+  .hero__nome { font-size: 2.4rem; }
+  .rows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .row { height: 100%; }
+
+  /* tática: minimapa grande e fixo à esquerda, texto à direita */
+  .detalhe__titulo, .detalhe__num { font-size: 3rem; }
+  .detalhe__grade { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 2rem; align-items: start; }
+  .detalhe__lado { position: sticky; top: 5.5rem; margin-bottom: 0; }
+  .pager { margin-top: 2rem; }
+  .ficha__texto, .funcao__texto { font-size: 1.05rem; }
+
+  .guia-tipos, .regras { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1500px) {
+  .rows { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .detalhe__grade { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 3rem; }
+}
+
+@media (orientation: landscape) and (max-height: 500px) and (max-width: 899px) {
+  .tabbar { bottom: 6px; }
+  .tab { min-height: 2.8rem; }
+  .tabbar__inner { padding: 4px; }
+}
+
+/* divisórias internas mais suaves */
+.ficha__item + .ficha__item { border-top: 1px solid var(--linha); }
+.ficha, .mm__papel, .funcao { overflow: hidden; }
+.mm__mapa { border-radius: 24px; margin: 0 8px; }
+.tab::before { background: var(--texto); }
+
+/* neutro: etiqueta do mapa sem cor de matiz; cards pequenos com seta menor */
+.tag--mapa { color: var(--texto-2); }
+.tile:not(:first-child) .tile__texto { padding-right: 3.3rem; }
+.tile:not(:first-child) .tile__texto::after { width: 2.2rem; height: 2.2rem; background-size: 1.1rem; }
+.tile__info { white-space: nowrap; }
+
+/* tema claro: marcadores sem cor (A/B só pela letra) */
+:root[data-tema="claro"] .site--A, :root[data-tema="claro"] .site--B { color: var(--texto); }
+@media (prefers-color-scheme: light) { :root[data-tema="sistema"] .site--A, :root[data-tema="sistema"] .site--B { color: var(--texto); } }
+
+/* tema claro: cabeçalho e minimapa legíveis */
+:root[data-tema="claro"] { --bar-fg: #111111; }
+:root[data-tema="claro"] .mm__mapa {
+  background-color: rgba(0, 0, 0, 0.06);
+  background-image: linear-gradient(rgba(0, 0, 0, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 0.07) 1px, transparent 1px);
+}
+@media (prefers-color-scheme: light) {
+  :root[data-tema="sistema"] { --bar-fg: #111111; }
+  :root[data-tema="sistema"] .mm__mapa {
+    background-color: rgba(0, 0, 0, 0.06);
+    background-image: linear-gradient(rgba(0, 0, 0, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 0.07) 1px, transparent 1px);
+  }
+}

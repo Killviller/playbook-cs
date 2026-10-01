@@ -2,6 +2,7 @@ import { html, bool } from '../lib/html.js';
 import { favoritas } from '../store.js';
 import { funcoesDaTatica, vizinhas } from '../data.js';
 import { pad2 } from '../lib/text.js';
+import { minimapa } from '../minimapa.js';
 import { etiquetasTipo, icone, minhaFuncao, selosSite, seletorDeFuncao } from '../ui.js';
 import { blocoRadar, montarRadar } from './radar-leitor.js';
 
@@ -76,6 +77,9 @@ export function tatica({ index, params }) {
           <p class="detalhe__tags">${etiquetasTipo(index, t)}${selosSite(t.alvo)}</p>
         </header>
 
+        <div class="detalhe__grade">
+        <div class="detalhe__lado">${minimapa(index, mapa, t, minha)}</div>
+        <div class="detalhe__principal">
         <div class="ficha">
           ${ficha('Objetivo', t.objetivo, 'ficha__item--objetivo')}
           ${ficha('Economia', t.economia)}
@@ -110,6 +114,8 @@ export function tatica({ index, params }) {
           : ''}
 
         ${extras(t)}
+        </div>
+        </div>
         <nav class="pager" aria-label="Outras táticas do mapa">
           ${pager('anterior', viz.anterior)}${pager('proxima', viz.proxima)}
         </nav>

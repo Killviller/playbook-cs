@@ -235,3 +235,16 @@ test('busca: título pesa mais que o corpo', () => {
   const corpo = buscar(indice, 'smoke'); // só no texto das funções
   assert.ok(corpo.length >= 6 && corpo.every((t) => !/smoke/i.test(t.titulo)));
 });
+
+test('o validador confere "posicoes" e imagens de mapa', async () => {
+  const d = exemplo();
+  d.taticas[0].posicoes = { p1: [[10, 10], [50, 50], [90, 90]], p2: [[10, 10], [50, 50], [90, 90]] };
+  assert.equal((await validarPlaybook(d)).erros.length, 0);
+  d.taticas[0].posicoes.p2 = [[10, 10], [50, 50]];
+  assert.ok((await validarPlaybook(d)).erros.some((e) => e.includes('mesmo número de fases')));
+  d.taticas[0].posicoes = { p1: [[10, 10], [150, 50]] };
+  assert.ok((await validarPlaybook(d)).erros.some((e) => e.includes('0 a 100')));
+  const m = exemplo();
+  m.mapas[0].radar = '/img/radar.webp';
+  assert.ok((await validarPlaybook(m)).erros.some((e) => e.includes('caminho relativo')));
+});

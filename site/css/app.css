@@ -3,27 +3,30 @@
 
 :root {
   --fs: 17px;
+  --font-titulo: "Bahnschrift", "Barlow Condensed", "Roboto Condensed", "Arial Narrow", system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, "Liberation Mono", monospace;
+  --p1: #4aa8ff; --p2: #3ddc97; --p3: #ffd23f; --p4: #ff8a3d; --p5: #b58cff;
   --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   --maxw: 640px;
   --bar-h: 3.4rem;
   --tab-h: 3.7rem;
-  --raio: 16px;
-  --raio-sm: 12px;
+  --raio: 8px;
+  --raio-sm: 6px;
 
   /* barra superior é escura nos dois temas (combina com a barra de status do celular) */
-  --bar-bg: #0d1117;
+  --bar-bg: transparent;
   --bar-fg: #e8edf3;
 
   color-scheme: dark;
-  --bg: #0d1117;
-  --superficie: #161b22;
-  --superficie-2: #1f2630;
-  --superficie-3: #2a3441;
-  --linha: #2b3340;
+  --bg: #0c0f12;
+  --superficie: #151a1f;
+  --superficie-2: #1d242b;
+  --superficie-3: #28323b;
+  --linha: #232a31;
   --texto: #e8edf3;
   --texto-2: #a6b0be;
   --texto-3: #7d8999;
-  --destaque: #f5b83d;
+  --destaque: #f2b134;
   --destaque-tinta: #1b1403;
   --destaque-texto: #f5b83d;
   --destaque-suave: rgba(245, 184, 61, 0.14);
@@ -295,22 +298,93 @@ main {
 
 /* -------------------------------------------------------- seletor de mapas */
 .tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
-.tiles > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+.tiles > :first-child { grid-column: 1 / -1; }
 .tile {
-  position: relative; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px;
-  min-height: 8.6rem; padding: 14px; overflow: hidden; border-radius: 18px; color: #fff;
-  background: linear-gradient(150deg, hsl(var(--h) 42% 26%), hsl(var(--h) 38% 13%));
-  border: 1px solid hsl(var(--h) 35% 32%);
+  position: relative; display: flex; flex-direction: column; min-height: 44px; overflow: hidden;
+  border-radius: var(--raio-sm); color: var(--texto); background: var(--superficie); border: 1px solid var(--linha);
+  transition: transform 0.15s ease, border-color 0.15s ease;
 }
+.tile:hover { border-color: var(--destaque); transform: translateY(-2px); }
 .tile:active { transform: scale(0.985); }
-.tile[aria-current="true"] { outline: 2px solid var(--destaque); outline-offset: 2px; }
-.tile__sigla {
-  position: absolute; top: 8px; right: 12px; line-height: 1;
-  font-size: 3rem; font-weight: 900; letter-spacing: -0.03em;
-  color: hsl(var(--h) 80% 70% / 0.28);
+.tile[aria-current="true"] { border-color: var(--destaque); }
+.tile__capa {
+  position: relative; display: block; height: 4.6rem; overflow: hidden;
+  background:
+    radial-gradient(circle at 72% 28%, hsl(var(--h) 58% 34% / 0.95), transparent 62%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.055) 0 1px, transparent 1px 12px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.055) 0 1px, transparent 1px 12px),
+    #0b0b0b;
 }
-.tile__nome { font-size: 1.3rem; font-weight: 800; }
-.tile__info { font-size: 0.8rem; color: hsl(var(--h) 30% 82%); }
+.tile:first-child .tile__capa { height: 8.2rem; }
+.tile__capa img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.tile__sigla {
+  position: absolute; right: 8px; bottom: 2px; line-height: 1; pointer-events: none;
+  font-family: var(--font-titulo); font-size: 2.4rem; font-weight: 800; color: rgba(255,255,255,.14);
+}
+.tile:first-child .tile__sigla { font-size: 4rem; }
+.tile__atual {
+  position: absolute; left: 10px; top: 10px; padding: 3px 8px; background: var(--destaque); color: var(--destaque-tinta);
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.tile__texto { display: block; padding: 9px 12px 11px; }
+.tile__nome { display: block; font-family: var(--font-titulo); font-size: 1.35rem; font-weight: 800; text-transform: uppercase; line-height: 1; }
+.tile__info { display: block; margin-top: 3px; font-size: 0.8rem; color: var(--texto-2); }
+
+/* ------------------------------------------------------------- minimapa */
+.mm { margin-top: 16px; background: var(--superficie); border: 1px solid var(--linha); }
+.mm__cab { display: flex; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid var(--linha);
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--texto-2); }
+.mm__cab strong { color: var(--destaque-texto); font-weight: 500; }
+.mm__mapa {
+  position: relative; aspect-ratio: 1; overflow: hidden; background: #050505;
+  background-image: linear-gradient(#1b1b1b 1px, transparent 1px), linear-gradient(90deg, #1b1b1b 1px, transparent 1px);
+  background-size: 12.5% 12.5%;
+}
+.mm__mapa > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.mm__vazio { position: absolute; right: 8px; bottom: 6px; font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.08em; color: #5b6673; }
+.mm__blip {
+  position: absolute; left: var(--x0); top: var(--y0); width: 2.75rem; height: 2.75rem; padding: 0; z-index: 2;
+  display: grid; place-items: center; transform: translate(-50%, -50%);
+  background: none; border: 0; cursor: pointer;
+  transition: left 0.8s cubic-bezier(.2,.8,.2,1), top 0.8s cubic-bezier(.2,.8,.2,1);
+}
+.mm[data-fase="1"] .mm__blip { left: var(--x1); top: var(--y1); }
+.mm[data-fase="2"] .mm__blip { left: var(--x2); top: var(--y2); }
+.mm[data-fase="3"] .mm__blip { left: var(--x3); top: var(--y3); }
+.mm__ponto {
+  position: relative; display: grid; place-items: center; width: 1.7rem; height: 1.7rem; border-radius: 50%;
+  background: var(--c); color: #0b0b0b; font-family: var(--mono); font-size: 0.72rem; font-weight: 700;
+  box-shadow: 0 0 0 2px #000; transition: transform 0.2s;
+}
+.mm__blip[aria-pressed="true"] { z-index: 4; }
+.mm__blip[aria-pressed="true"] .mm__ponto { transform: scale(1.18); box-shadow: 0 0 0 2px #000, 0 0 0 4px #fff; }
+.mm__blip[aria-pressed="true"] .mm__ponto::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--c); animation: mm-pulso 1.8s ease-out infinite;
+}
+@keyframes mm-pulso { from { transform: scale(1); opacity: 0.7; } to { transform: scale(2.1); opacity: 0; } }
+.mm__fases { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 1px; background: var(--linha); border-top: 1px solid var(--linha); }
+.mm__fase {
+  min-height: 3.2rem; padding: 0; border: 0; cursor: pointer; background: var(--superficie); color: var(--texto-2);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; font: inherit;
+}
+.mm__fase small { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em; }
+.mm__fase span { font-size: 0.92rem; font-weight: 700; }
+.mm__fase[aria-pressed="true"] { background: var(--destaque); color: var(--destaque-tinta); }
+.mm__jogadores { display: flex; gap: 6px; padding: 10px 10px 0; }
+.mm__chip {
+  flex: 1; min-height: 3rem; padding: 0; cursor: pointer; font: inherit; color: var(--texto);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: var(--bg); border: 1px solid var(--linha); border-radius: var(--raio-sm);
+}
+.mm__chip b { font-family: var(--mono); font-size: 0.9rem; color: var(--c); }
+.mm__chip small { font-size: 0.68rem; color: var(--texto-2); }
+.mm__chip[aria-pressed="true"] { background: var(--superficie-2); border-color: var(--c); }
+.mm__papel { display: none; margin: 10px; padding: 12px 14px; background: var(--superficie-2); border-left: 3px solid var(--c); }
+.mm__papel b { display: block; margin-bottom: 4px; font-family: var(--font-titulo); font-size: 1.1rem; text-transform: uppercase; }
+.mm__papel p { font-size: 1.05rem; line-height: 1.4; }
+.mm[data-sel="p1"] .mm__papel[data-id="p1"], .mm[data-sel="p2"] .mm__papel[data-id="p2"], .mm[data-sel="p3"] .mm__papel[data-id="p3"],
+.mm[data-sel="p4"] .mm__papel[data-id="p4"], .mm[data-sel="p5"] .mm__papel[data-id="p5"] { display: block; }
+@media (prefers-reduced-motion: reduce) { .mm__blip, .mm__ponto { transition: none; } .mm__blip .mm__ponto::after { animation: none; } }
 
 /* ------------------------------------------------------ detalhe da tática */
 .detalhe__cab { margin: 4px 0 16px; }
@@ -700,3 +774,4 @@ code {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
 }
+
