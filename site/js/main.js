@@ -1,4 +1,5 @@
-import { carregarPlaybook } from './data.js';
+import { carregarCru, montarIndice } from './data.js';
+import { aplicar as aplicarEdicoes, carregarEdicoes, definirBase } from './edicoes.js';
 import { carregarRadares } from './radares.js';
 import * as roteador from './router.js';
 import { aplicarPreferencias } from './prefs.js';
@@ -12,6 +13,7 @@ const ROTAS = [
   [['mapas'], telas.mapas],
   [['mapa', ':id'], telas.mapa],
   [['tatica', ':id'], telas.tatica],
+  [['tatica', ':id', 'editar'], telas.editarTatica],
   [['chamar'], telas.chamar],
   [['guia'], telas.guia],
   [['favoritas'], telas.favoritas],
@@ -21,6 +23,7 @@ const ROTAS = [
   [['editor', ':id'], telas.editorTatica],
 ];
 
+let cruBase = null; // playbook.json como está no arquivo
 let indice = null;
 let chaveAnterior = null;
 let limpeza = null; // o que a tela atual pediu para desfazer ao sair (listeners fora do <main>)
@@ -53,6 +56,11 @@ function renderizar({ manterRolagem = false } = {}) {
   chaveAnterior = rota.chave;
 }
 
+/** Refaz o índice com as edições de texto (do site e deste aparelho) por cima do playbook.json. */
+function reindexar() {
+  indice = montarIndice(aplicarEdicoes(cruBase));
+}
+
 // Telas que mostram estado de instalação/offline precisam redesenhar quando ele muda.
 function redesenharSeDependeDoPwa() {
   const primeira = roteador.atual().segmentos[0];
@@ -64,17 +72,23 @@ async function iniciar() {
   iniciarAcoes({ renderizar, indice: () => indice });
 
   try {
-    indice = await carregarPlaybook();
+    cruBase = await carregarCru();
+    definirBase(cruBase);
+    indice = montarIndice(cruBase);
   } catch (erro) {
     mostrarErro(erro.message);
     return;
   }
-  // opcional: sem radares o app funciona igual. Se a rede estiver lenta, não segura a abertura (chega a tempo das próximas telas)
-  await Promise.race([carregarRadares(), new Promise((ok) => setTimeout(ok, 3000))]);
+  // Radares e textos editados são opcionais: sem eles o app funciona igual. Se a rede estiver lenta, não seguram a
+  // abertura; quando chegam, o índice é refeito e as próximas telas já mostram tudo.
+  const extras = Promise.all([carregarRadares(), carregarEdicoes()]).then(reindexar);
+  await Promise.race([extras, new Promise((ok) => setTimeout(ok, 3000))]);
 
   roteador.iniciar(() => renderizar());
   // telas que mudam dados locais (ex.: importar radares) pedem para se redesenhar sem perder a rolagem
   document.addEventListener('pb:redesenhar', () => renderizar({ manterRolagem: true }));
+  // o editor de texto salvou algo: as próximas telas usam o texto novo (a tela do editor não é redesenhada)
+  document.addEventListener('pb:indice', reindexar);
 
   eventos.addEventListener('atualizacao-pronta', () =>
     aviso('Nova versão do playbook disponível', { acao: 'Atualizar', aoAcionar: () => location.reload(), fixo: true }),

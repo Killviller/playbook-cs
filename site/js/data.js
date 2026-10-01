@@ -1,9 +1,14 @@
 import { normalizar } from './lib/text.js';
 
-export async function carregarPlaybook(url = './data/playbook.json') {
+/** O playbook.json como está no arquivo (sem edições): o main aplica as edições por cima e monta o índice. */
+export async function carregarCru(url = './data/playbook.json') {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Não foi possível carregar os dados (HTTP ${res.status}).`);
-  return montarIndice(await res.json());
+  return res.json();
+}
+
+export async function carregarPlaybook(url = './data/playbook.json') {
+  return montarIndice(await carregarCru(url));
 }
 
 /** Indexa o JSON para consulta rápida. Mapas com ativo:false ficam fora do app. */

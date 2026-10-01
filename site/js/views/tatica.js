@@ -1,7 +1,7 @@
 import { html, bool } from '../lib/html.js';
 import { favoritas, store } from '../store.js';
 import { funcoesDaTatica, vizinhas } from '../data.js';
-import { pad2 } from '../lib/text.js';
+import { dataBr, pad2 } from '../lib/text.js';
 import { minimapa, montarMinimapa } from '../minimapa.js';
 import { posicoesDoDiagrama } from '../lib/radar.js';
 import { radarDaTatica } from '../radares.js';
@@ -31,6 +31,14 @@ function extras(t) {
     )}</section>`);
   }
   return blocos;
+}
+
+/** "Atualizada em 01/10/2026": o time vê que a tática foi melhorada (e se isso ainda é só deste aparelho). */
+function seloEdicao(t) {
+  if (!t.edicao) return '';
+  const data = t.edicao.atualizadoEm ? `Atualizada em ${dataBr(t.edicao.atualizadoEm)}` : 'Texto atualizado';
+  const aparelho = t.edicao.origem === 'aparelho' ? ' · só neste aparelho' : '';
+  return html`<span class="tag tag--aviso" title="Texto melhorado depois do PDF">${data}${aparelho}</span>`;
 }
 
 function pager(direcao, t) {
@@ -70,6 +78,7 @@ export function tatica({ index, params }) {
     voltar: `/mapa/${t.mapa}`,
     aba: 'taticas',
     acoes: html`
+      ${store.get('editor', false) ? html`<a class="icon-btn" href="#/tatica/${t.id}/editar" aria-label="Editar o texto da tática" title="Editar o texto">${icone('edit')}</a>` : ''}
       <button type="button" class="icon-btn icon-btn--fav ${fav ? 'is-on' : ''}" data-action="fav" data-id="${t.id}" aria-pressed="${bool(fav)}" aria-label="Favorita">${icone('star')}</button>
       <button type="button" class="icon-btn" data-action="compartilhar" data-id="${t.id}" aria-label="Compartilhar">${icone('share')}</button>`,
     montar: (main) => montarMinimapa(main, mapa),
@@ -81,7 +90,7 @@ export function tatica({ index, params }) {
             <span class="muted">Call <strong class="detalhe__call">${t.chamada}</strong> · ${viz.pos} de ${viz.total}</span>
           </p>
           <h1 class="detalhe__titulo"><span class="detalhe__num">${pad2(t.numero)}</span>${t.titulo}</h1>
-          <p class="detalhe__tags">${etiquetasTipo(index, t)}${selosSite(t.alvo)}</p>
+          <p class="detalhe__tags">${etiquetasTipo(index, t)}${selosSite(t.alvo)}${seloEdicao(t)}</p>
         </header>
 
         <div class="detalhe__grade">

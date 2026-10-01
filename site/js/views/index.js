@@ -12,6 +12,7 @@ export { buscarTela as buscar } from './buscar.js';
 export { ajustes } from './ajustes.js';
 export { editor } from './editor.js';
 export { editorTatica } from './editor-tatica.js';
+export { editarTatica } from './editar-tatica.js';
 
 /** Abre direto no mapa da partida; na primeira vez, mostra o seletor de mapas. */
 export function home(ctx) {

@@ -2,6 +2,7 @@
 // Erros bloqueiam o build; avisos só chamam atenção (campos opcionais vazios, táticas marcadas para revisão).
 import { access, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { validarEdicoes } from '../../site/js/lib/edicoes.js';
 import { caminhoRelativo, validarRadares } from '../../site/js/lib/radar.js';
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -221,6 +222,35 @@ export async function validarRadaresDoSite(playbook, { siteDir }) {
     }
   }
   return { erros: erros.map((e) => (e.startsWith('radares.json') ? e : `radares.json: ${e}`)), avisos };
+}
+
+/**
+ * Confere site/data/edicoes.json (os textos de táticas melhorados no app). Arquivo ausente é normal: ainda não há edições.
+ * @param {object} playbook conteúdo já lido do playbook.json
+ * @param {{siteDir: string}} opcoes
+ */
+export async function validarEdicoesDoSite(playbook, { siteDir }) {
+  let texto;
+  try {
+    texto = await readFile(join(siteDir, 'data/edicoes.json'), 'utf8');
+  } catch {
+    return { erros: [], avisos: [] };
+  }
+
+  let dados;
+  try {
+    dados = JSON.parse(texto);
+  } catch (e) {
+    return { erros: [`edicoes.json: JSON inválido (${e.message}). Confira vírgulas e aspas.`], avisos: [] };
+  }
+
+  const { erros, avisos } = validarEdicoes(dados, {
+    taticas: new Set((playbook?.taticas ?? []).map((t) => t.id)),
+    funcoes: new Set((playbook?.funcoes ?? []).map((f) => f.id)),
+    tipos: new Set((playbook?.tipos ?? []).map((t) => t.id)),
+  });
+  const prefixar = (m) => (m.startsWith('edicoes.json') ? m : `edicoes.json: ${m}`);
+  return { erros: erros.map(prefixar), avisos: avisos.map(prefixar) };
 }
 
 export function formatarRelatorio({ erros, avisos }) {

@@ -1,8 +1,9 @@
-// Início do editor de radar (#/editor): escolhe a tática, cuida da imagem do radar de cada mapa
-// e exporta tudo para publicar no repositório.
+// Início do editor (#/editor): escolhe a tática para editar o radar (modo Radar) ou o texto (modo Texto), cuida da imagem
+// do radar de cada mapa e exporta tudo para publicar no repositório.
 import { html, raw } from '../lib/html.js';
-import { pad2 } from '../lib/text.js';
+import { dataBr, pad2 } from '../lib/text.js';
 import { baixar, copiarTexto, lerImagem, nomeDoArquivo, prepararImagem, removerImagem, salvarImagem } from '../imagens.js';
+import * as textos from '../edicoes.js';
 import {
   contagem, exportarArquivo, imagemDoMapa, importarArquivo, imagensParaEnviar, rascunhos, salvos, situacao,
 } from '../radares.js';
@@ -31,59 +32,99 @@ function linhaEditor(t) {
   </a></li>`;
 }
 
+function linhaTexto(t) {
+  const s = textos.situacao(t.id);
+  const origem = s.origem === 'aparelho' ? 'Só neste aparelho' : 'Publicada';
+  return html`<li><a class="row" href="#/tatica/${t.id}/editar">
+    <span class="row__num" aria-hidden="true">${pad2(t.numero)}</span>
+    <span class="row__main">
+      <span class="row__title">${t.titulo}</span>
+      <span class="row__meta">
+        ${s.editada
+          ? html`<span class="tag tag--ok">Editada${s.atualizadoEm ? ` em ${dataBr(s.atualizadoEm)}` : ''}</span><span class="tag">${origem}</span>`
+          : html`<span class="tag">Texto original</span>`}
+        ${s.rascunho ? html`<span class="tag tag--aviso">Edição não salva</span>` : ''}
+      </span>
+    </span>
+    <span class="row__end">${icone('edit')}</span>
+  </a></li>`;
+}
+
+const plural = (n, um, varios) => `${n} ${n === 1 ? um : varios}`;
+
+function resumoDe(r, { um, varios }) {
+  if (!r.total) return html`Nenhuma tática ${varios}.`;
+  return html`<strong>${plural(r.total, `tática ${um}`, `táticas ${varios}`)}</strong>${r.soNoAparelho
+    ? html`, <strong>${r.soNoAparelho}</strong> ainda só neste aparelho.`
+    : '. Tudo já está publicado.'}`;
+}
+
 export function editor({ index, query }) {
   const pedido = query.get('mapa');
   const mapaId = index.mapasById.has(pedido) ? pedido : mapaAtual(index);
   const mapa = index.mapasById.get(mapaId);
   const taticas = index.porMapa.get(mapaId) ?? [];
-  const resumo = contagem();
+  const modoTexto = query.get('modo') === 'texto';
+  const radares = contagem();
+  const edicoes = textos.contagem();
 
   return {
-    titulo: 'Editor de radar',
+    titulo: 'Editor',
     voltar: '/ajustes',
     semAbas: true,
     corpo: html`
       <div data-editor-home>
-        <p class="intro">Marque as posições de cada tática no radar (as fases do minimapa) arrastando os jogadores e desenhando as rotas com o dedo, sem digitar coordenadas.
-          O que você salva fica neste aparelho. Para o time ver, publique (no fim desta tela).</p>
+        <nav class="seg editor__modos" aria-label="O que editar">
+          <a class="seg__op" href="#/editor?mapa=${mapaId}" data-replace ${!modoTexto ? raw('aria-current="page"') : ''}>Radar</a>
+          <a class="seg__op" href="#/editor?modo=texto&mapa=${mapaId}" data-replace ${modoTexto ? raw('aria-current="page"') : ''}>Texto das táticas</a>
+        </nav>
+
+        ${modoTexto
+          ? html`<p class="intro">Tática melhora com o tempo: reescreva o objetivo, o que cada um faz, o pós-plant… O texto original do PDF fica guardado
+              e cada campo alterado mostra o <strong>Antes</strong>. O que você salva fica neste aparelho; para o time ver, publique (no fim desta tela).</p>`
+          : html`<p class="intro">Marque as posições de cada tática no radar (as fases do minimapa) arrastando os jogadores e desenhando as rotas com o dedo, sem digitar coordenadas.
+              O que você salva fica neste aparelho. Para o time ver, publique (no fim desta tela).</p>`}
 
         <div class="chips" role="group" aria-label="Mapa">${index.mapas.map(
-          (m) => html`<a class="chip chip--mapa" href="#/editor?mapa=${m.id}" data-replace ${m.id === mapaId ? raw('aria-current="page"') : ''}>${m.nome}</a>`,
+          (m) => html`<a class="chip chip--mapa" href="#/editor?${modoTexto ? 'modo=texto&' : ''}mapa=${m.id}" data-replace ${m.id === mapaId ? raw('aria-current="page"') : ''}>${m.nome}</a>`,
         )}</div>
 
-        <section class="cartao" aria-labelledby="img-titulo">
-          <h2 class="cartao__titulo" id="img-titulo">Imagem do radar · ${mapa.nome}</h2>
-          <div data-r="imagem"><p class="muted">Verificando…</p></div>
-        </section>
+        ${modoTexto
+          ? ''
+          : html`<section class="cartao" aria-labelledby="img-titulo">
+              <h2 class="cartao__titulo" id="img-titulo">Imagem do radar · ${mapa.nome}</h2>
+              <div data-r="imagem"><p class="muted">Verificando…</p></div>
+            </section>`}
 
         <h2 class="secao">Táticas de ${mapa.nome}</h2>
-        <ul class="rows">${taticas.map(linhaEditor)}</ul>
+        <ul class="rows">${taticas.map(modoTexto ? linhaTexto : linhaEditor)}</ul>
 
         <section class="cartao editor-publicar" aria-labelledby="pub-titulo">
           <h2 class="cartao__titulo" id="pub-titulo">Publicar para o time</h2>
-          <p>${resumo.total
-            ? html`<strong>${resumo.total} ${resumo.total === 1 ? 'tática tem' : 'táticas têm'} radar</strong>${resumo.soNoAparelho
-                ? html`, <strong>${resumo.soNoAparelho}</strong> ainda só neste aparelho.`
-                : '. Tudo já está publicado.'}`
-            : 'Nenhuma tática tem radar ainda.'}</p>
+          <p>${resumoDe(radares, { um: 'tem radar', varios: 'têm radar' })}</p>
+          <p>${resumoDe(edicoes, { um: 'tem texto editado', varios: 'têm texto editado' })}</p>
           <ol class="passos">
-            <li>Toque em <strong>Baixar radares.json</strong> (ou <strong>Copiar</strong>).</li>
-            <li>No GitHub, abra <strong>site/data/radares.json</strong>, toque no lápis (<em>Edit</em>), apague tudo e cole o conteúdo.</li>
+            <li>Baixe (ou copie) o arquivo que mudou: <strong>radares.json</strong> para os radares, <strong>edicoes.json</strong> para os textos.</li>
+            <li>No GitHub, abra <strong>site/data/</strong> com o mesmo nome do arquivo, toque no lápis (<em>Edit</em>), apague tudo e cole o conteúdo.</li>
             <li>Toque em <strong>Commit changes</strong>. Em cerca de 2 minutos o time recebe o aviso <em>Nova versão disponível</em>.</li>
           </ol>
           <div class="botoes">
-            <button type="button" class="btn btn--primario" data-ed="baixar-json">${icone('download')} Baixar radares.json</button>
+            <button type="button" class="btn ${modoTexto ? '' : 'btn--primario'}" data-ed="baixar-json">${icone('download')} Baixar radares.json</button>
             <button type="button" class="btn" data-ed="copiar-json">${icone('copy')} Copiar</button>
+          </div>
+          <div class="botoes">
+            <button type="button" class="btn ${modoTexto ? 'btn--primario' : ''}" data-ed="baixar-edicoes">${icone('download')} Baixar edicoes.json</button>
+            <button type="button" class="btn" data-ed="copiar-edicoes">${icone('copy')} Copiar</button>
           </div>
           <div data-r="envio"></div>
         </section>
 
         <section class="cartao" aria-labelledby="mov-titulo">
           <h2 class="cartao__titulo" id="mov-titulo">Trazer de outro aparelho</h2>
-          <p class="muted">Quer continuar no computador o que fez no celular? Baixe o radares.json aqui e importe lá. Os radares do arquivo entram como salvos neste aparelho.</p>
+          <p class="muted">Quer continuar no computador o que fez no celular? Baixe o arquivo aqui e importe lá (serve para o radares.json e para o edicoes.json). O que vem no arquivo entra como salvo neste aparelho.</p>
           <div class="botoes">
-            <button type="button" class="btn" data-ed="importar">${icone('upload')} Importar radares.json</button>
-            <button type="button" class="btn btn--perigo" data-ed="apagar-tudo">${icone('trash')} Apagar radares deste aparelho</button>
+            <button type="button" class="btn" data-ed="importar">${icone('upload')} Importar arquivo</button>
+            <button type="button" class="btn btn--perigo" data-ed="apagar-tudo">${icone('trash')} Apagar radares e textos deste aparelho</button>
           </div>
         </section>
 
@@ -137,7 +178,7 @@ function montar(main, { mapa, ordem }) {
     textoPronto = await exportarArquivo(ordem);
   };
 
-  desenharImagem();
+  if (q('imagem')) desenharImagem(); // só no modo Radar
   desenharEnvio();
   preparar();
 
@@ -170,16 +211,29 @@ function montar(main, { mapa, ordem }) {
     },
 
     async 'copiar-json'() {
-      aviso((await copiarTexto(textoPronto)) ? 'Copiado. Agora cole no GitHub.' : 'O navegador não deixou copiar: use Baixar');
+      aviso((await copiarTexto(textoPronto)) ? 'radares.json copiado. Agora cole no GitHub.' : 'O navegador não deixou copiar: use Baixar');
+    },
+
+    // o edicoes.json sai na hora (sem esperar nada): o Safari só deixa copiar logo depois do toque
+    'baixar-edicoes'() {
+      baixar('edicoes.json', textos.exportarArquivo(), 'application/json');
+      aviso('edicoes.json baixado');
+    },
+
+    async 'copiar-edicoes'() {
+      aviso((await copiarTexto(textos.exportarArquivo())) ? 'edicoes.json copiado. Agora cole no GitHub.' : 'O navegador não deixou copiar: use Baixar');
     },
 
     importar: () => q('arquivo-json').click(),
 
     'apagar-tudo'() {
-      if (!confirm('Apagar TODOS os radares e rascunhos salvos neste aparelho? O que já foi publicado para o time não muda.')) return;
+      if (!confirm('Apagar TODOS os radares e textos editados (e os rascunhos) salvos neste aparelho? O que já foi publicado para o time não muda.')) return;
       salvos.limpar();
       rascunhos.limpar();
-      aviso('Radares deste aparelho apagados');
+      textos.salvas.limpar();
+      textos.rascunhos.limpar();
+      document.dispatchEvent(new Event('pb:indice'));
+      aviso('Radares e textos deste aparelho apagados');
       redesenhar();
     },
   };
@@ -191,7 +245,7 @@ function montar(main, { mapa, ordem }) {
     acoes[botao.dataset.ed]?.(botao);
   });
 
-  q('arquivo-imagem').addEventListener('change', async (ev) => {
+  q('arquivo-imagem')?.addEventListener('change', async (ev) => {
     const arquivo = ev.target.files?.[0];
     ev.target.value = '';
     if (!arquivo) return;
@@ -212,11 +266,19 @@ function montar(main, { mapa, ordem }) {
     ev.target.value = '';
     if (!arquivo) return;
     try {
-      const n = importarArquivo(JSON.parse(await arquivo.text()));
-      aviso(n ? `${n} ${n === 1 ? 'radar importado' : 'radares importados'}` : 'Esse arquivo não tem radares');
+      const cru = JSON.parse(await arquivo.text());
+      // o arquivo diz o que é: "radares" (radares.json) ou "taticas" (edicoes.json)
+      if (cru && typeof cru === 'object' && cru.taticas && !cru.radares) {
+        const n = textos.importarArquivo(cru);
+        document.dispatchEvent(new Event('pb:indice'));
+        aviso(n ? `${plural(n, 'texto de tática importado', 'textos de táticas importados')}` : 'Esse arquivo não tem textos editados');
+      } else {
+        const n = importarArquivo(cru);
+        aviso(n ? `${plural(n, 'radar importado', 'radares importados')}` : 'Esse arquivo não tem radares');
+      }
       redesenhar();
     } catch {
-      aviso('Esse arquivo não é um radares.json válido');
+      aviso('Esse arquivo não é um radares.json nem um edicoes.json válido');
     }
   });
 }

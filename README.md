@@ -8,6 +8,7 @@ Importado do *Playbook TR — CS2* (32 páginas): 7 mapas × 10 táticas. Cada t
 - **Para o IGL no jogo:** abre direto no mapa da partida, texto grande, tema escuro, 1 toque até a tática, "Chamar" por tipo de round e opção de manter a tela acesa.
 - **Para cada jogador:** escolha a sua função (P1 a P5) e o app destaca o que você faz em cada tática e mostra o seu papel nas listas.
 - **Para estudar:** filtros por tipo, busca sem acento (também no texto das funções), favoritas e link direto para cada tática.
+- **Tática que melhora com o tempo:** dá para reescrever o texto de uma tática no próprio app (o PDF original fica guardado e dá para voltar a ele). Veja [Editar o texto das táticas](#editar-o-texto-das-táticas).
 - **Radar visual:** o IGL monta o minimapa de cada tática arrastando os jogadores e desenhando as rotas com o dedo, sem digitar coordenadas (veja [Radar das táticas](#radar-das-táticas-editor-visual)).
 - Sem servidor, sem conta, sem dependências. É um site estático.
 
@@ -21,11 +22,70 @@ Importado do *Playbook TR — CS2* (32 páginas): 7 mapas × 10 táticas. Cada t
 | **Guia** | "Como usar", funções fixas do time, tipos de tática e regras gerais (a introdução do PDF). Dá para marcar a sua função aqui. |
 | **Favoritas** | Táticas fixadas neste aparelho. |
 | **Minimapa** | Dentro da tática: os jogadores no radar, fase a fase. Se a tática tem radar feito no editor, mostra também rotas, granadas, a bomba e a nota de cada fase. |
-| **Editor de radar** | Ajustes → *Editor de radar*. Onde o radar é montado, salvo e exportado (abaixo). |
+| **Editor** | Ajustes → *Editar táticas e radares*. Modo **Texto** (reescrever o texto de uma tática) e modo **Radar** (marcar as posições). Salva, exporta e importa (abaixo). |
 | **Busca / Ajustes** | Busca por nome, call, posição, função ou texto; tema, tamanho do texto, **Minha função**, tela acesa, instalação e atualização. |
 
 **Minha função:** em *Ajustes*, no *Guia* ou dentro de qualquer tática, escolha P1 a P5. Na tela da tática o seu cartão sobe para o topo
 com a marca "Você"; nas listas aparece um trecho do que você faz em cada tática. A escolha fica só neste aparelho.
+
+## Editar o texto das táticas
+
+Tática melhora com o tempo. Em vez de mexer no `playbook.json`, o texto novo vale **por cima** dele: o texto importado do PDF
+continua guardado, dá para ver o **Antes** de cada campo e voltar a ele quando quiser.
+
+**Abrir:** *Ajustes → Editar táticas e radares → Editar o texto das táticas* (modo **Texto** do editor), ou, com o
+**Atalho de edição nas táticas** ligado, o **lápis** no alto de cada tática.
+
+1. Escolha o mapa e a tática. Dá para mudar o **título**, os **tipos** (e qual é o principal, o que agrupa em *Chamar*), o **site**
+   (A, B, os dois ou nenhum), o **objetivo**, a **economia**, o que **cada função faz (P1–P5)**, o **pós-plant** e o **plano B**.
+2. Cada campo que difere do que o time vê hoje ganha uma moldura e mostra o **Antes**, com o botão **Restaurar** só daquele campo.
+3. **Salvar** confere os campos (objetivo, título e as 5 funções não podem ficar vazios; o título não começa com número) e guarda
+   neste aparelho. A tática já aparece com o texto novo, com o selo **Atualizada em dd/mm/aaaa · só neste aparelho**, e a busca enxerga o texto novo.
+   O que ainda não foi salvo vira **rascunho automático**: se você sair sem querer, ele volta quando abrir a edição de novo.
+4. Em *Mais opções*: **Desfazer alterações não salvas**, **Voltar à versão publicada** (descarta o que você salvou aqui) e
+   **Voltar ao texto original do PDF** (preenche o formulário com o texto do PDF; vale quando você tocar em Salvar).
+
+No computador, `Ctrl+S` salva.
+
+### Publicar o texto para o time
+
+O que você salva fica só no seu aparelho. Para o time ver, o arquivo `site/data/edicoes.json` precisa ir para o repositório, igual aos radares:
+no editor, em **Publicar para o time**, toque em **Baixar edicoes.json** (ou **Copiar**), abra `site/data/edicoes.json` no GitHub, toque no
+lápis (*Edit*), apague tudo, cole e confirme em **Commit changes**. Em cerca de 2 minutos o time recebe o aviso *Nova versão disponível*,
+e quem abrir a tática vê **Atualizada em…**. O arquivo já junta o que está no site e o que você salvou. *Importar arquivo* (na mesma tela)
+leva o trabalho de um aparelho para outro. O botão *Apagar dados* dos Ajustes **não** apaga textos editados nem rascunhos.
+Depois de publicar, a cópia salva no aparelho que ficou igual à do site é descartada sozinha na próxima abertura.
+
+### Formato do `edicoes.json`
+
+O app escreve o arquivo sozinho; só importa se um dia quiser ler ou conferir à mão. Cada tática guarda **só os campos que mudaram**
+(o resto continua vindo do `playbook.json`), um campo por linha:
+
+```jsonc
+{
+  "versao": 1,
+  "taticas": {
+    "mirage-02": {                                      // id da tática
+      "atualizadoEm": "2026-10-01",                     // aparece como "Atualizada em 01/10/2026"
+      "tipos": ["split", "execucao"],                   // o primeiro é o tipo principal
+      "alvo": ["A", "B"],                               // [] = o site é decidido na hora
+      "objetivo": "Tomar A com as três smokes e trocar as duas primeiras mortes.",
+      "funcoes": {                                      // só as funções que mudaram
+        "p3": "IGL. Smoke CT e Stairs, entra por Ramp atrás do Entry."
+      },
+      "planoB": "Se houver 3 CTs em A, o IGL chama Mid-B."
+    }
+  }
+}
+```
+
+Campos aceitos: `atualizadoEm`, `titulo`, `tipos`, `alvo`, `objetivo`, `economia`, `funcoes`, `posPlant` e `planoB` (o id, o mapa e o número da
+tática não mudam). `economia`, `posPlant` e `planoB` vazios apagam o campo. `npm run validar` e o build conferem o arquivo (tipo ou função que não
+existem, texto vazio, passou de 600 caracteres…); erro bloqueia o deploy, e edição de tática que saiu do playbook é só um aviso.
+
+> **Cuidado ao editar o `playbook.json` à mão:** para uma tática que tem edição no `edicoes.json`, o texto do `edicoes.json` continua valendo
+> nos campos editados, mesmo que você mude esses mesmos campos no `playbook.json`. Para mudar de vez, edite pelo app (ou apague a entrada da
+> tática no `edicoes.json`).
 
 ## Radar das táticas (editor visual)
 
@@ -34,8 +94,8 @@ sem digitar coordenadas: você toca, arrasta e desenha. Além das posições dos
 **arremessos**, **granadas**, a **bomba** e **textos** em cada fase, mais uma **nota** do que acontece nela. O editor funciona no
 celular (com o dedo) e no computador (mouse e teclado) e já abre com o radar do mapa (`site/img/radar/`).
 
-**Abrir:** *Ajustes → Editor de radar → Abrir o editor*. Se ligar **Atalho de edição nas táticas**, cada tática passa a mostrar
-*Editar* (ou *Criar o radar desta tática*). Quem não ligou não vê nada disso.
+**Abrir:** *Ajustes → Editar táticas e radares → Editar os radares* (modo **Radar** do editor). Se ligar **Atalho de edição nas táticas**, cada tática passa a mostrar
+*Editar* (ou *Criar o radar desta tática*) no minimapa. Quem não ligou não vê nada disso.
 
 1. **Escolha a tática** (por mapa). Se ela já tem `posicoes` no `playbook.json`, o editor abre com elas, prontas para ajustar no radar.
 2. **Jogadores.** Toque em **P1** e depois no radar. Ele já arma o P2, o P3… Arraste para ajustar. As cores são as mesmas do minimapa.
@@ -123,7 +183,7 @@ Também dá para publicar a pasta `dist/` (gerada por `npm run build`) em qualqu
 
 ## Como atualizar as táticas
 
-Todo o conteúdo está em **`site/data/playbook.json`**. Edite o arquivo (dá para fazer direto no GitHub, pelo ícone de lápis) e faça commit no branch padrão:
+O texto das táticas está em **`site/data/playbook.json`**. (Para melhorar uma tática com o tempo sem mexer nele, use [Editar o texto das táticas](#editar-o-texto-das-táticas) no app.) Edite o arquivo (dá para fazer direto no GitHub, pelo ícone de lápis) e faça commit no branch padrão:
 o teste valida o arquivo antes de publicar, então um erro de digitação não derruba o site.
 
 ```jsonc
@@ -212,6 +272,7 @@ site/                 o que vai ao ar
   js/                 app sem framework: roteador por hash, telas em js/views/
   data/playbook.json  TODO o texto das táticas
   data/radares.json   radares feitos no editor (posicoes, rotas, granadas)
+  data/edicoes.json   textos de táticas melhorados no app (só os campos que mudaram)
   img/radar/          imagens dos radares (quadradas), uma por mapa
   icons/              ícones do app
 scripts/              validação, build, servidor local
@@ -230,7 +291,7 @@ quando há versão nova o app mostra o aviso **"Nova versão disponível · Atua
 - O título e o tipo de cada tática conferem com o índice do PDF, e as cores dos tipos são as do próprio PDF.
 - **Campos derivados** (não existem no PDF e podem ser ajustados): `alvo` (o site A/B vem da linha de pós-plant; sem ela, da última letra A/B do título;
   táticas "Default" cujo site é decidido na hora ficam sem site), o rótulo curto das funções (`curto`) e a sigla/cor de cada mapa.
-- Os radares ficam em outro arquivo (`radares.json`), então o texto importado do PDF nunca é alterado pelo editor.
+- Os radares ficam em outro arquivo (`radares.json`) e os textos melhorados em outro (`edicoes.json`), então o texto importado do PDF nunca é alterado pelo editor.
 - O PDF antigo (*Livro de Táticas T*) tinha uma "cola rápida" por situação do round e um vocabulário de calls (Default, Control, Split, Go, Abort, Save…).
   O PDF novo não traz essas partes, então elas saíram do app. Continuam no histórico do git (commit `1a04c56`) se quiserem trazer de volta.
 - "Ancient 10" é de dois tipos (*Default/Execução*). Na tela *Chamar* ela aparece no primeiro tipo (Default), com a etiqueta Execução na linha.

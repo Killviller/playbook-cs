@@ -9,3 +9,9 @@ export function normalizar(s) {
 }
 
 export const pad2 = (n) => String(n).padStart(2, '0');
+
+/** "2026-10-01" → "01/10/2026" (texto que não é data volta como veio) */
+export function dataBr(iso) {
+  const [a, m, d] = String(iso ?? '').split('-');
+  return a && m && d ? `${d}/${m}/${a}` : (iso ?? '');
+}

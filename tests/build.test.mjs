@@ -16,7 +16,7 @@ test('o build carimba o service worker e lista os arquivos do cache offline', as
     assert.ok(sw.includes(`const BUILD_ID = '${id}';`));
     assert.ok(!sw.includes('__BUILD_ID__') && !sw.includes('__PRECACHE__'));
 
-    for (const essencial of ['./', './index.html', './data/playbook.json', './data/radares.json', './js/main.js', './js/views/editor-tatica.js', './css/app.css', './manifest.webmanifest', './build.json', './icons/icon-192.png']) {
+    for (const essencial of ['./', './index.html', './data/playbook.json', './data/radares.json', './data/edicoes.json', './js/main.js', './js/views/editor-tatica.js', './js/views/editar-tatica.js', './css/app.css', './manifest.webmanifest', './build.json', './icons/icon-192.png']) {
       assert.ok(precache.includes(essencial), `faltou no cache offline: ${essencial}`);
     }
     assert.ok(!precache.includes('./sw.js'));
@@ -104,4 +104,55 @@ test('sem radares.json o build continua funcionando (ainda não há radares)', a
   } finally {
     await rm(raiz, { recursive: true, force: true });
   }
+});
+
+// ------------------------------------------------------ edicoes.json no build
+/** Copia o site para uma pasta temporária (com um edicoes.json de teste) e roda o build nela. */
+async function construirComEdicoes(edicoes) {
+  const raiz = await mkdtemp(join(tmpdir(), 'playbook-edicoes-'));
+  const origem = join(raiz, 'site');
+  await cp(siteReal, origem, { recursive: true });
+  if (edicoes !== undefined) await writeFile(join(origem, 'data/edicoes.json'), typeof edicoes === 'string' ? edicoes : JSON.stringify(edicoes));
+  return { raiz, origem, construir: () => construir({ origem, destino: join(raiz, 'dist') }) };
+}
+
+test('edicoes.json com erro bloqueia o build e diz onde está o problema', async () => {
+  const id = await primeiraTatica();
+  const { raiz, construir: rodar } = await construirComEdicoes({ versao: 1, taticas: { [id]: { atualizadoEm: '2026-10-01', tipos: ['nao-existe'], funcoes: { p9: 'x' } } } });
+  try {
+    await assert.rejects(rodar(), /edicoes\.json.*o tipo "nao-existe" não existe/s);
+    await assert.rejects(rodar(), /a função "p9" não existe/);
+  } finally {
+    await rm(raiz, { recursive: true, force: true });
+  }
+});
+
+test('edicoes.json com JSON quebrado também bloqueia o build', async () => {
+  const { raiz, construir: rodar } = await construirComEdicoes('{ "versao": 1, ');
+  try {
+    await assert.rejects(rodar(), /edicoes\.json: JSON inválido/);
+  } finally {
+    await rm(raiz, { recursive: true, force: true });
+  }
+});
+
+test('edição válida entra no build; edição de tática que sumiu é só aviso', async () => {
+  const id = await primeiraTatica();
+  const { raiz, construir: rodar } = await construirComEdicoes({
+    versao: 1,
+    taticas: { [id]: { atualizadoEm: '2026-10-01', planoB: 'Plano B melhorado.', funcoes: { p3: 'Smoke melhorada.' } }, 'mapa-que-sumiu-99': { planoB: 'x' } },
+  });
+  try {
+    const r = await rodar();
+    assert.ok(r.precache.includes('./data/edicoes.json'));
+    assert.ok(r.avisos.some((a) => a.includes('mapa-que-sumiu-99') && a.includes('não existe mais')), JSON.stringify(r.avisos));
+  } finally {
+    await rm(raiz, { recursive: true, force: true });
+  }
+});
+
+test('o edicoes.json em branco que vai no repositório é válido', async () => {
+  const { validarEdicoesDoSite } = await import('../scripts/lib/validar.mjs');
+  const real = JSON.parse(await readFile(join(siteReal, 'data/playbook.json'), 'utf8'));
+  assert.deepEqual(await validarEdicoesDoSite(real, { siteDir: siteReal }), { erros: [], avisos: [] });
 });

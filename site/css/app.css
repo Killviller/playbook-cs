@@ -735,6 +735,38 @@ code {
 .envio__lista { display: flex; flex-direction: column; gap: 8px; margin: 8px 0 0; padding: 0; list-style: none; }
 .envio__lista li { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 
+/* modos do editor (Radar | Texto) */
+.editor__modos { margin-bottom: 12px; }
+a.seg__op { display: grid; place-items: center; text-align: center; }
+.seg__op[aria-current="page"] { background: var(--destaque); color: var(--destaque-tinta); }
+
+/* edição do texto da tática */
+.edicao { display: flex; flex-direction: column; gap: 12px; }
+.edicao .cartao { margin-bottom: 0; gap: 14px; }
+.edicao__barra {
+  position: sticky; top: calc(var(--bar-h) + env(safe-area-inset-top)); z-index: 6;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 6px 6px 14px;
+  border-radius: 20px; background: color-mix(in srgb, var(--bg) 82%, transparent);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+}
+[data-r="tipos"] { display: flex; flex-direction: column; gap: 14px; }
+.edicao__estado { min-width: 0; color: var(--texto-2); font-size: 0.92rem; line-height: 1.25; }
+.edicao__estado--pendente { color: var(--destaque-texto); font-weight: 700; }
+.edicao__acoes .botoes { gap: 10px; }
+.campo--edicao { gap: 6px; }
+.campo__input--auto { overflow: hidden; resize: none; line-height: 1.4; }
+.campo--alterado .campo__input { border-color: var(--destaque); box-shadow: 0 0 0 1px var(--destaque) inset; }
+.campo--erro .campo__input { border-color: var(--perigo); box-shadow: 0 0 0 1px var(--perigo) inset; }
+.campo__erro { margin: 0; color: var(--perigo); font-size: 0.9rem; font-weight: 650; }
+.campo__dica { margin: 0; font-size: 0.88rem; }
+.campo__antes {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px 12px;
+  border-radius: 12px; background: var(--superficie-2); color: var(--texto-2); font-size: 0.92rem; line-height: 1.35;
+}
+.campo__antes p { margin: 0; }
+.chips--quebra { flex-wrap: wrap; overflow: visible; margin: 0; padding: 0; }
+.chip--site[aria-pressed="true"] { background: var(--texto); border-color: var(--texto); color: var(--bg); }
+
 /* celular alto: o radar fica fixo no topo e as ferramentas rolam por baixo */
 @media (max-width: 719px) and (min-height: 760px) {
   .editor__palco {

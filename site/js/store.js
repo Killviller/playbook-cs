@@ -3,7 +3,9 @@
 // continua funcionando com uma cópia em memória até a página ser fechada.
 
 const PREFIXO = 'pb.';
-const PROTEGIDAS = `${PREFIXO}radar`;
+// trabalho feito à mão (radares e textos editados, com seus rascunhos) tem botão próprio no editor
+const PROTEGIDAS = [`${PREFIXO}radar`, `${PREFIXO}edic`];
+const protegida = (k) => PROTEGIDAS.some((p) => k.startsWith(p));
 const memoria = new Map();
 
 export const store = {
@@ -28,12 +30,12 @@ export const store = {
     }
   },
 
-  /** Apaga favoritas e preferências. Os radares (chaves "pb.radar*") ficam: são trabalho feito à mão e têm botão próprio. */
+  /** Apaga favoritas e preferências. Radares e textos editados (chaves "pb.radar*" e "pb.edic*") ficam: são trabalho feito à mão. */
   limpar() {
-    for (const k of [...memoria.keys()]) if (!k.startsWith(PROTEGIDAS)) memoria.delete(k);
+    for (const k of [...memoria.keys()]) if (!protegida(k)) memoria.delete(k);
     try {
       Object.keys(localStorage)
-        .filter((k) => k.startsWith(PREFIXO) && !k.startsWith(PROTEGIDAS))
+        .filter((k) => k.startsWith(PREFIXO) && !protegida(k))
         .forEach((k) => localStorage.removeItem(k));
     } catch {
       /* nada a fazer */

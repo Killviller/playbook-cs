@@ -287,7 +287,7 @@ function iniciar(raiz, { index, t }) {
           ${salvos.tem(t.id) ? html`<button type="button" class="btn btn--sm" data-ed="voltar-publicada">Voltar à versão publicada</button>` : ''}
           <button type="button" class="btn btn--sm btn--perigo" data-ed="limpar-tudo">${icone('trash')} Apagar todo este radar</button>
         </div>
-        <p class="muted">Para o time ver o que você salvou, publique em <a class="link" href="#/editor?mapa=${t.mapa}">Editor de radar → Publicar para o time</a>.</p>
+        <p class="muted">Para o time ver o que você salvou, publique em <a class="link" href="#/editor?mapa=${t.mapa}">Editor → Radar → Publicar para o time</a>.</p>
       </div>
     </details>`;
   }

@@ -1,4 +1,5 @@
 import { html, raw, bool } from '../lib/html.js';
+import { dataBr } from '../lib/text.js';
 import { store } from '../store.js';
 import { cartaoInstalar, icone, minhaFuncao, seletorDeFuncao } from '../ui.js';
 import { info, pwa, telaAcesa } from '../pwa.js';
@@ -13,11 +14,6 @@ function segmentado(rotulo, acao, opcoes, atual) {
       ([valor, nome]) => html`<button type="button" role="radio" class="seg__op" data-action="${acao}" data-valor="${valor}" aria-checked="${bool(valor === atual)}">${nome}</button>`,
     )}</div>
   </div>`;
-}
-
-function dataBr(iso) {
-  const [a, m, d] = String(iso ?? '').split('-');
-  return a && m && d ? `${d}/${m}/${a}` : (iso ?? '');
 }
 
 export function ajustes({ index }) {
@@ -88,12 +84,12 @@ export function ajustes({ index }) {
       </section>
 
       <section class="cartao">
-        <h2 class="cartao__titulo">Editor de radar</h2>
-        <p class="muted">Monte o radar das táticas arrastando os jogadores e desenhando as rotas. É para quem mantém o playbook do time.</p>
+        <h2 class="cartao__titulo">Editar táticas e radares</h2>
+        <p class="muted">Tática melhora com o tempo: reescreva o texto e marque as posições no radar. É para quem mantém o playbook do time.</p>
         <label class="ajuste">
           <span class="ajuste__texto">
             <span class="ajuste__titulo">Atalho de edição nas táticas</span>
-            <span class="ajuste__desc">Mostra "Editar" e "Criar radar" na tela de cada tática.</span>
+            <span class="ajuste__desc">Mostra o lápis e "Editar" / "Criar radar" na tela de cada tática.</span>
           </span>
           <span class="switch">
             <input type="checkbox" role="switch" data-action="atalho-editor" ${store.get('editor', false) ? raw('checked') : ''}>
@@ -101,13 +97,14 @@ export function ajustes({ index }) {
           </span>
         </label>
         <div class="botoes">
-          <a class="btn" href="#/editor">${icone('radar')} Abrir o editor de radar</a>
+          <a class="btn" href="#/editor?modo=texto">${icone('edit')} Editar o texto das táticas</a>
+          <a class="btn" href="#/editor">${icone('radar')} Editar os radares</a>
         </div>
       </section>
 
       <section class="cartao">
         <h2 class="cartao__titulo">Dados deste aparelho</h2>
-        <p class="muted">Favoritas, mapa da partida e preferências ficam só aqui, no seu celular. Os radares que você salvou não são apagados por este botão (eles têm o botão deles no editor).</p>
+        <p class="muted">Favoritas, mapa da partida e preferências ficam só aqui, no seu celular. Os radares e os textos que você editou não são apagados por este botão (eles têm botão próprio no editor).</p>
         <div class="botoes">
           <button type="button" class="btn btn--perigo" data-action="limpar">${icone('trash')} Apagar dados</button>
         </div>
