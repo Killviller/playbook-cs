@@ -1,0 +1,1018 @@
+{
+  "meta": {
+    "titulo": "Livro de Táticas T",
+    "subtitulo": "CS2 — Playbook de 5 jogadores",
+    "objetivo": "Folha de consulta rápida para chamadas de IGL, com 10 táticas por mapa.",
+    "lado": "T",
+    "atualizadoEm": "2026-10-01",
+    "notaFonte": "As táticas foram mantidas conforme o material fornecido, sem adicionar lineups específicas de granadas. A distribuição T1–T5 pode ser adaptada ao nível e às posições do time.",
+    "notaPool": "Como o pool mudou em julho de 2026, guias antigos que trazem Overpass no lugar de Cache estão desatualizados para o Premier atual. O pool atual é Ancient, Anubis, Cache, Dust II, Inferno, Mirage e Nuke."
+  },
+  "tipos": [
+    {"id": "default", "nome": "Default"},
+    {"id": "controle", "nome": "Controle"},
+    {"id": "execute", "nome": "Execute"},
+    {"id": "split", "nome": "Split"},
+    {"id": "fake", "nome": "Fake"},
+    {"id": "lurk", "nome": "Lurk"},
+    {"id": "rush", "nome": "Rush"},
+    {"id": "lento", "nome": "Lento"},
+    {"id": "anti", "nome": "Anti-agressão"}
+  ],
+  "mapas": [
+    {"id": "ancient", "nome": "Ancient", "sigla": "ANC", "matiz": 140, "ativo": true},
+    {"id": "anubis", "nome": "Anubis", "sigla": "ANU", "matiz": 52, "ativo": true},
+    {"id": "cache", "nome": "Cache", "sigla": "CCH", "matiz": 215, "ativo": true},
+    {"id": "dust2", "nome": "Dust II", "sigla": "D2", "matiz": 28, "ativo": true},
+    {"id": "inferno", "nome": "Inferno", "sigla": "INF", "matiz": 5, "ativo": true},
+    {"id": "mirage", "nome": "Mirage", "sigla": "MIR", "matiz": 285, "ativo": true},
+    {"id": "nuke", "nome": "Nuke", "sigla": "NUK", "matiz": 180, "ativo": true}
+  ],
+  "taticas": [
+    {
+      "id": "ancient-01",
+      "mapa": "ancient",
+      "numero": 1,
+      "titulo": "Default com pressão no Mid",
+      "tipos": ["default", "controle"],
+      "alvo": [],
+      "linhas": [
+        "2 jogadores pressionam Mid.",
+        "1 fica preparado para B Main.",
+        "2 trabalham A Main/Donut.",
+        "Objetivo: descobrir onde estão os CTs antes de escolher o bombsite."
+      ]
+    },
+    {
+      "id": "ancient-02",
+      "mapa": "ancient",
+      "numero": 2,
+      "titulo": "Explosão B",
+      "tipos": ["execute"],
+      "alvo": ["B"],
+      "linhas": [
+        "3 jogadores B Main.",
+        "1 segura Mid para impedir avanço/rotação.",
+        "1 fica A fazendo barulho.",
+        "Utilitárias para expulsar posições defensivas.",
+        "Entrada rápida em B."
+      ]
+    },
+    {
+      "id": "ancient-03",
+      "mapa": "ancient",
+      "numero": 3,
+      "titulo": "Split B pelo Mid",
+      "tipos": ["split"],
+      "alvo": ["B"],
+      "linhas": [
+        "2 B Main.",
+        "2 Mid.",
+        "1 fica atrasado para punir avanço CT.",
+        "Quando Mid estiver controlado, os dois grupos entram simultaneamente."
+      ]
+    },
+    {
+      "id": "ancient-04",
+      "mapa": "ancient",
+      "numero": 4,
+      "titulo": "Split A Main + Donut",
+      "tipos": ["split"],
+      "alvo": ["A"],
+      "linhas": [
+        "2 A Main.",
+        "2 Donut/Mid.",
+        "1 lurker em B.",
+        "Ataque sincronizado para impedir que os CTs simplesmente recuem para o site."
+      ]
+    },
+    {
+      "id": "ancient-05",
+      "mapa": "ancient",
+      "numero": 5,
+      "titulo": "Fake B → A",
+      "tipos": ["fake"],
+      "alvo": ["A"],
+      "linhas": [
+        "Faça presença forte em B.",
+        "Utilize granadas e passos para convencer os CTs de uma entrada.",
+        "Recuar parcialmente.",
+        "Rotacionar para A enquanto o lurker mantém pressão."
+      ]
+    },
+    {
+      "id": "ancient-06",
+      "mapa": "ancient",
+      "numero": 6,
+      "titulo": "Fake A → B",
+      "tipos": ["fake"],
+      "alvo": ["B"],
+      "linhas": [
+        "Mostrar jogadores em A Main.",
+        "Utilizar algumas granadas.",
+        "Recuar antes do contato decisivo.",
+        "B explode depois que os CTs começarem a rotacionar."
+      ]
+    },
+    {
+      "id": "ancient-07",
+      "mapa": "ancient",
+      "numero": 7,
+      "titulo": "Controle lento de Mid",
+      "tipos": ["controle", "lento"],
+      "alvo": [],
+      "linhas": [
+        "Não buscar entrada imediata.",
+        "Ganhar espaço aos poucos.",
+        "Forçar os CTs a gastar utilidade.",
+        "Depois decidir entre A e B."
+      ]
+    },
+    {
+      "id": "ancient-08",
+      "mapa": "ancient",
+      "numero": 8,
+      "titulo": "Rush B",
+      "tipos": ["rush"],
+      "alvo": ["B"],
+      "linhas": [
+        "4–5 jogadores B Main.",
+        "Utilidade inicial para reduzir posições defensivas.",
+        "Entrada rápida.",
+        "Excelente para quebrar um adversário que esteja jogando muito recuado."
+      ]
+    },
+    {
+      "id": "ancient-09",
+      "mapa": "ancient",
+      "numero": 9,
+      "titulo": "A com lurker B",
+      "tipos": ["lurk"],
+      "alvo": ["A"],
+      "linhas": [
+        "4 jogadores trabalham A.",
+        "1 permanece B.",
+        "O lurker pode eliminar rotação ou pegar CTs desprevenidos."
+      ]
+    },
+    {
+      "id": "ancient-10",
+      "mapa": "ancient",
+      "numero": 10,
+      "titulo": "Round de punição",
+      "tipos": ["anti"],
+      "alvo": [],
+      "linhas": [
+        "Se o CT estiver sempre agressivo em Mid, prepare uma armadilha.",
+        "Deixe um jogador aparentemente sozinho.",
+        "Quando o CT avançar, dois jogadores fecham o cerco.",
+        "Depois transforme a vantagem num ataque ao site oposto."
+      ]
+    },
+    {
+      "id": "anubis-01",
+      "mapa": "anubis",
+      "numero": 1,
+      "titulo": "Default 2-1-2",
+      "tipos": ["default"],
+      "alvo": [],
+      "linhas": [
+        "2 A.",
+        "1 Mid.",
+        "2 B.",
+        "O jogador Mid decide onde reforçar.",
+        "Evite entregar jogadores gratuitamente no início."
+      ]
+    },
+    {
+      "id": "anubis-02",
+      "mapa": "anubis",
+      "numero": 2,
+      "titulo": "Explosão A",
+      "tipos": ["execute"],
+      "alvo": ["A"],
+      "linhas": [
+        "3–4 jogadores preparados para A.",
+        "1 controla Mid.",
+        "1 lurka B.",
+        "Entrada sincronizada depois da utilização de granadas."
+      ],
+      "revisar": "O PDF indica 3–4 jogadores no grupo principal, mas os outros papéis já completam 5 jogadores com 3. Confirmar o número correto."
+    },
+    {
+      "id": "anubis-03",
+      "mapa": "anubis",
+      "numero": 3,
+      "titulo": "Split A pelo Mid",
+      "tipos": ["split"],
+      "alvo": ["A"],
+      "linhas": [
+        "2 A Main.",
+        "2 Mid.",
+        "1 lurker B.",
+        "Entrada pelos dois lados do bombsite."
+      ]
+    },
+    {
+      "id": "anubis-04",
+      "mapa": "anubis",
+      "numero": 4,
+      "titulo": "Split B",
+      "tipos": ["split"],
+      "alvo": ["B"],
+      "linhas": [
+        "2 B Main.",
+        "2 Mid/Water.",
+        "1 lurker A.",
+        "O objetivo é impedir que os CTs defendam B de apenas uma posição."
+      ]
+    },
+    {
+      "id": "anubis-05",
+      "mapa": "anubis",
+      "numero": 5,
+      "titulo": "Fake A → B",
+      "tipos": ["fake"],
+      "alvo": ["B"],
+      "linhas": [
+        "Faça barulho e use utilidade em A.",
+        "O lurker pode permanecer próximo de A.",
+        "Grupo principal atravessa rapidamente para B."
+      ]
+    },
+    {
+      "id": "anubis-06",
+      "mapa": "anubis",
+      "numero": 6,
+      "titulo": "Fake B → A",
+      "tipos": ["fake"],
+      "alvo": ["A"],
+      "linhas": [
+        "3 jogadores demonstram intenção em B.",
+        "2 permanecem preparados para A.",
+        "Depois da rotação CT, ataque A."
+      ]
+    },
+    {
+      "id": "anubis-07",
+      "mapa": "anubis",
+      "numero": 7,
+      "titulo": "Controle de Water",
+      "tipos": ["controle"],
+      "alvo": ["B"],
+      "linhas": [
+        "2 jogadores buscam Water.",
+        "2 trabalham B Main.",
+        "1 fica Mid.",
+        "Water vira uma terceira direção de ataque."
+      ]
+    },
+    {
+      "id": "anubis-08",
+      "mapa": "anubis",
+      "numero": 8,
+      "titulo": "Rush B",
+      "tipos": ["rush"],
+      "alvo": ["B"],
+      "linhas": [
+        "Entrada com 4–5.",
+        "Evitar ficar parado no choke.",
+        "Primeiro objetivo é eliminar as posições capazes de travar a entrada."
+      ]
+    },
+    {
+      "id": "anubis-09",
+      "mapa": "anubis",
+      "numero": 9,
+      "titulo": "Lurk A enquanto B ataca",
+      "tipos": ["lurk"],
+      "alvo": ["B"],
+      "linhas": [
+        "4 atacam B.",
+        "1 jogador fica A.",
+        "Se os CTs rotacionarem, o lurker pode pegar as costas."
+      ]
+    },
+    {
+      "id": "anubis-10",
+      "mapa": "anubis",
+      "numero": 10,
+      "titulo": "Default de 40 segundos",
+      "tipos": ["default", "lento"],
+      "alvo": [],
+      "linhas": [
+        "Jogar lentamente durante os primeiros 30–40 segundos.",
+        "Buscar informação.",
+        "Fazer os CTs gastarem utilidade.",
+        "Ataque final apenas quando houver informação suficiente."
+      ]
+    },
+    {
+      "id": "cache-01",
+      "mapa": "cache",
+      "numero": 1,
+      "titulo": "Controle de Mid",
+      "tipos": ["controle"],
+      "alvo": [],
+      "linhas": [
+        "2 jogadores Mid.",
+        "1 A Main.",
+        "1 B Main.",
+        "1 lurker.",
+        "O objetivo é conquistar espaço antes do execute."
+      ]
+    },
+    {
+      "id": "cache-02",
+      "mapa": "cache",
+      "numero": 2,
+      "titulo": "Split A",
+      "tipos": ["split"],
+      "alvo": ["A"],
+      "linhas": [
+        "2 A Main.",
+        "2 Mid/Highway.",
+        "1 lurker B.",
+        "Ataque simultâneo."
+      ]
+    },
+    {
+      "id": "cache-03",
+      "mapa": "cache",
+      "numero": 3,
+      "titulo": "Explosão A Main",
+      "tipos": ["execute"],
+      "alvo": ["A"],
+      "linhas": [
+        "4 jogadores A.",
+        "1 segura B.",
+        "Executar rapidamente depois das granadas.",
+        "Não deixar os CTs reorganizarem a defesa."
+      ]
+    },
+    {
+      "id": "cache-04",
+      "mapa": "cache",
+      "numero": 4,
+      "titulo": "Split B",
+      "tipos": ["split"],
+      "alvo": ["B"],
+      "linhas": [
+        "2 B Main.",
+        "2 Mid.",
+        "1 A lurker.",
+        "Mid serve como segunda porta de entrada."
+      ]
+    },
+    {
+      "id": "cache-05",
+      "mapa": "cache",
+      "numero": 5,
+      "titulo": "Fake A → B",
+      "tipos": ["fake"],
+      "alvo": ["B"],
+      "linhas": [
+        "3 jogadores mostram presença A.",
+        "Fazer barulho e gastar algumas granadas.",
+        "Recuar.",
+        "B executa quando a defesa sair da posição."
+      ]
+    },
+    {
+      "id": "cache-06",
+      "mapa": "cache",
+      "numero": 6,
+      "titulo": "Fake B → A",
+      "tipos": ["fake"],
+      "alvo": ["A"],
+      "linhas": [
+        "Pressão inicial B.",
+        "2 jogadores mantêm Mid.",
+        "A entra depois que os CTs começarem a rotacionar."
+      ]
+    },
+    {
+      "id": "cache-07",
+      "mapa": "cache",
+      "numero": 7,
+      "titulo": "Lurk Mid",
+      "tipos": ["lurk"],
+      "alvo": [],
+      "linhas": [
+        "4 jogadores trabalham um site.",
+        "1 fica escondido em Mid.",
+        "O lurker pune rotações."
+      ]
+    },
+    {
+      "id": "cache-08",
+      "mapa": "cache",
+      "numero": 8,
+      "titulo": "Rush B",
+      "tipos": ["rush"],
+      "alvo": ["B"],
+      "linhas": [
+        "Grupo completo B Main.",
+        "Entrada rápida.",
+        "Ideal para rounds anti-eco ou quando a defesa B está previsível."
+      ]
+    },
+    {
+      "id": "cache-09",
+      "mapa": "cache",
+      "numero": 9,
+      "titulo": "Default agressivo",
+      "tipos": ["default"],
+      "alvo": [],
+      "linhas": [
+        "Buscar duelos controlados em Mid.",
+        "Não comprometer todos os jogadores.",
+        "Se conseguir uma kill, acelerar imediatamente."
+      ]
+    },
+    {
+      "id": "cache-10",
+      "mapa": "cache",
+      "numero": 10,
+      "titulo": "Ataque tardio",
+      "tipos": ["lento"],
+      "alvo": [],
+      "linhas": [
+        "Não executar até ~30 segundos.",
+        "Forçar o CT a manter posições durante muito tempo.",
+        "Depois, trocar rapidamente de lado e atacar o site mais fraco."
+      ]
+    },
+    {
+      "id": "dust2-01",
+      "mapa": "dust2",
+      "numero": 1,
+      "titulo": "Controle de Long",
+      "tipos": ["controle"],
+      "alvo": [],
+      "linhas": [
+        "3 jogadores Long.",
+        "1 Short.",
+        "1 Mid/Tunnels.",
+        "Objetivo: conquistar Long e decidir entre A e split."
+      ]
+    },
+    {
+      "id": "dust2-02",
+      "mapa": "dust2",
+      "numero": 2,
+      "titulo": "A Long execute",
+      "tipos": ["execute"],
+      "alvo": ["A"],
+      "linhas": [
+        "3–4 jogadores Long.",
+        "1 Short.",
+        "1 lurker.",
+        "Entrar A depois de retirar posições defensivas."
+      ],
+      "revisar": "O PDF indica 3–4 jogadores no grupo principal, mas os outros papéis já completam 5 jogadores com 3. Confirmar o número correto."
+    },
+    {
+      "id": "dust2-03",
+      "mapa": "dust2",
+      "numero": 3,
+      "titulo": "A split Long + Short",
+      "tipos": ["split"],
+      "alvo": ["A"],
+      "linhas": [
+        "2 Long.",
+        "2 Short.",
+        "1 Mid.",
+        "Ataque simultâneo em A."
+      ]
+    },
+    {
+      "id": "dust2-04",
+      "mapa": "dust2",
+      "numero": 4,
+      "titulo": "Controle de Mid",
+      "tipos": ["controle"],
+      "alvo": [],
+      "linhas": [
+        "2 jogadores Mid.",
+        "Buscar espaço sem entregar kills.",
+        "Depois escolher Short ou B."
+      ]
+    },
+    {
+      "id": "dust2-05",
+      "mapa": "dust2",
+      "numero": 5,
+      "titulo": "Split B Mid + Tunnels",
+      "tipos": ["split"],
+      "alvo": ["B"],
+      "linhas": [
+        "2 Mid.",
+        "3 Tunnels.",
+        "Os grupos entram B por direções diferentes."
+      ]
+    },
+    {
+      "id": "dust2-06",
+      "mapa": "dust2",
+      "numero": 6,
+      "titulo": "Rush B",
+      "tipos": ["rush"],
+      "alvo": ["B"],
+      "linhas": [
+        "4–5 jogadores Tunnels.",
+        "Entrada imediata.",
+        "Excelente para pegar uma defesa sem preparação."
+      ]
+    },
+    {
+      "id": "dust2-07",
+      "mapa": "dust2",
+      "numero": 7,
+      "titulo": "Fake B → A",
+      "tipos": ["fake"],
+      "alvo": ["A"],
+      "linhas": [
+        "Pressão forte em Tunnels.",
+        "Fazer os CTs rotacionarem.",
+        "Grupo A entra posteriormente."
+      ]
+    },
+    {
+      "id": "dust2-08",
+      "mapa": "dust2",
+      "numero": 8,
+      "titulo": "Fake A → B",
+      "tipos": ["fake"],
+      "alvo": ["B"],
+      "linhas": [
+        "Mostrar presença Long/Short.",
+        "Manter 2 jogadores Tunnels.",
+        "Depois atacar B."
+      ]
+    },
+    {
+      "id": "dust2-09",
+      "mapa": "dust2",
+      "numero": 9,
+      "titulo": "Lurk Mid",
+      "tipos": ["lurk"],
+      "alvo": [],
+      "linhas": [
+        "4 jogadores atacam um site.",
+        "1 permanece Mid.",
+        "O lurker pode cortar rotação."
+      ]
+    },
+    {
+      "id": "dust2-10",
+      "mapa": "dust2",
+      "numero": 10,
+      "titulo": "Controle de Long lento",
+      "tipos": ["controle", "lento"],
+      "alvo": [],
+      "linhas": [
+        "Não fazer rush.",
+        "Conquistar Long progressivamente.",
+        "Depois de obter controle, esperar a reação CT antes de executar."
+      ]
+    },
+    {
+      "id": "inferno-01",
+      "mapa": "inferno",
+      "numero": 1,
+      "titulo": "Banana Default",
+      "tipos": ["default"],
+      "alvo": [],
+      "linhas": [
+        "2 Banana.",
+        "2 Apartments.",
+        "1 Mid.",
+        "Objetivo: descobrir a distribuição CT."
+      ]
+    },
+    {
+      "id": "inferno-02",
+      "mapa": "inferno",
+      "numero": 2,
+      "titulo": "Controle completo de Banana",
+      "tipos": ["controle"],
+      "alvo": [],
+      "linhas": [
+        "3 jogadores Banana.",
+        "Forçar os CTs para trás.",
+        "Depois escolher entre B ou retornar para A."
+      ]
+    },
+    {
+      "id": "inferno-03",
+      "mapa": "inferno",
+      "numero": 3,
+      "titulo": "B Execute",
+      "tipos": ["execute"],
+      "alvo": ["B"],
+      "linhas": [
+        "3–4 Banana.",
+        "1 Mid.",
+        "1 lurker Apartments.",
+        "Entrada após gastar a utilidade defensiva."
+      ],
+      "revisar": "O PDF indica 3–4 jogadores no grupo principal, mas os outros papéis já completam 5 jogadores com 3. Confirmar o número correto."
+    },
+    {
+      "id": "inferno-04",
+      "mapa": "inferno",
+      "numero": 4,
+      "titulo": "A Apartments",
+      "tipos": ["execute"],
+      "alvo": ["A"],
+      "linhas": [
+        "3 Apartments.",
+        "1 Mid.",
+        "1 Banana.",
+        "Ataque A pelo Short/Apps."
+      ]
+    },
+    {
+      "id": "inferno-05",
+      "mapa": "inferno",
+      "numero": 5,
+      "titulo": "A Split",
+      "tipos": ["split"],
+      "alvo": ["A"],
+      "linhas": [
+        "2 Apartments.",
+        "2 Mid.",
+        "1 Banana.",
+        "Entradas simultâneas."
+      ]
+    },
+    {
+      "id": "inferno-06",
+      "mapa": "inferno",
+      "numero": 6,
+      "titulo": "Fake B → A",
+      "tipos": ["fake"],
+      "alvo": ["A"],
+      "linhas": [
+        "Gastar utilidade pesada em Banana.",
+        "Simular entrada.",
+        "Recuar.",
+        "A ataca enquanto os CTs ainda estão preocupados com B."
+      ]
+    },
+    {
+      "id": "inferno-07",
+      "mapa": "inferno",
+      "numero": 7,
+      "titulo": "Fake A → B",
+      "tipos": ["fake"],
+      "alvo": ["B"],
+      "linhas": [
+        "Pressão Apartments/Mid.",
+        "CTs podem abandonar B.",
+        "Banana explode depois."
+      ]
+    },
+    {
+      "id": "inferno-08",
+      "mapa": "inferno",
+      "numero": 8,
+      "titulo": "Lurk Banana",
+      "tipos": ["lurk"],
+      "alvo": ["A"],
+      "linhas": [
+        "4 trabalham A.",
+        "1 permanece Banana.",
+        "O lurker pode pegar rotações ou impedir retake."
+      ]
+    },
+    {
+      "id": "inferno-09",
+      "mapa": "inferno",
+      "numero": 9,
+      "titulo": "Anti-agressão",
+      "tipos": ["anti"],
+      "alvo": [],
+      "linhas": [
+        "Deixar um jogador avançado em posição segura.",
+        "Se o CT avançar Banana ou Mid, o segundo jogador fecha o ângulo.",
+        "Transformar a agressividade adversária em vantagem numérica."
+      ]
+    },
+    {
+      "id": "inferno-10",
+      "mapa": "inferno",
+      "numero": 10,
+      "titulo": "Execute tardio",
+      "tipos": ["execute", "lento"],
+      "alvo": [],
+      "linhas": [
+        "Jogar default por 45–50 segundos.",
+        "Forçar CTs a gastar utilidade.",
+        "Ataque A ou B somente quando as principais defesas estiverem sem recursos."
+      ]
+    },
+    {
+      "id": "mirage-01",
+      "mapa": "mirage",
+      "numero": 1,
+      "titulo": "Default Mirage",
+      "tipos": ["default"],
+      "alvo": [],
+      "linhas": [
+        "2 A.",
+        "2 B Apps.",
+        "1 Mid.",
+        "O Mid player coleta informação e decide o lado."
+      ]
+    },
+    {
+      "id": "mirage-02",
+      "mapa": "mirage",
+      "numero": 2,
+      "titulo": "Controle de Mid",
+      "tipos": ["controle"],
+      "alvo": [],
+      "linhas": [
+        "2–3 jogadores Mid.",
+        "Objetivo: controlar Connector e Short.",
+        "Depois escolher A ou B."
+      ]
+    },
+    {
+      "id": "mirage-03",
+      "mapa": "mirage",
+      "numero": 3,
+      "titulo": "A Split",
+      "tipos": ["split"],
+      "alvo": ["A"],
+      "linhas": [
+        "2 A Ramp.",
+        "2 Mid.",
+        "1 Palace.",
+        "Entrada simultânea em A."
+      ]
+    },
+    {
+      "id": "mirage-04",
+      "mapa": "mirage",
+      "numero": 4,
+      "titulo": "A execute clássico",
+      "tipos": ["execute"],
+      "alvo": ["A"],
+      "linhas": [
+        "3 Ramp.",
+        "1 Palace.",
+        "1 Mid.",
+        "Utilidade sincronizada.",
+        "Entrada em conjunto."
+      ]
+    },
+    {
+      "id": "mirage-05",
+      "mapa": "mirage",
+      "numero": 5,
+      "titulo": "Explosão B",
+      "tipos": ["execute"],
+      "alvo": ["B"],
+      "linhas": [
+        "3–4 B Apps.",
+        "1 Mid.",
+        "1 lurker A.",
+        "Entrada rápida em B."
+      ],
+      "revisar": "O PDF indica 3–4 jogadores no grupo principal, mas os outros papéis já completam 5 jogadores com 3. Confirmar o número correto."
+    },
+    {
+      "id": "mirage-06",
+      "mapa": "mirage",
+      "numero": 6,
+      "titulo": "Split B pelo Short",
+      "tipos": ["split"],
+      "alvo": ["B"],
+      "linhas": [
+        "2 Apps.",
+        "2 Mid/Short.",
+        "1 lurker.",
+        "O objetivo é impedir que o B anchor tenha todos os ângulos cobertos."
+      ]
+    },
+    {
+      "id": "mirage-07",
+      "mapa": "mirage",
+      "numero": 7,
+      "titulo": "Fake A → B",
+      "tipos": ["fake"],
+      "alvo": ["B"],
+      "linhas": [
+        "Forte presença em A.",
+        "Fazer barulho.",
+        "Rotacionar rapidamente para B."
+      ]
+    },
+    {
+      "id": "mirage-08",
+      "mapa": "mirage",
+      "numero": 8,
+      "titulo": "Fake B → A",
+      "tipos": ["fake"],
+      "alvo": ["A"],
+      "linhas": [
+        "Pressão Apps.",
+        "CTs podem rotacionar.",
+        "A explode posteriormente."
+      ]
+    },
+    {
+      "id": "mirage-09",
+      "mapa": "mirage",
+      "numero": 9,
+      "titulo": "Palace lurk",
+      "tipos": ["lurk"],
+      "alvo": ["A"],
+      "linhas": [
+        "4 jogadores executam A por outras rotas.",
+        "1 permanece Palace.",
+        "Entrar no momento em que a defesa esteja distraída."
+      ]
+    },
+    {
+      "id": "mirage-10",
+      "mapa": "mirage",
+      "numero": 10,
+      "titulo": "Mid split tardio",
+      "tipos": ["split", "lento"],
+      "alvo": ["A"],
+      "linhas": [
+        "Não revelar Mid imediatamente.",
+        "Default A/B.",
+        "Quando os CTs gastarem utilidade, conquistar Mid.",
+        "Converter o controle em split A."
+      ]
+    },
+    {
+      "id": "nuke-01",
+      "mapa": "nuke",
+      "numero": 1,
+      "titulo": "Outside Default",
+      "tipos": ["default"],
+      "alvo": [],
+      "linhas": [
+        "2 Outside.",
+        "1 Ramp.",
+        "1 Lobby.",
+        "1 Secret/controle de informação.",
+        "Objetivo: descobrir a configuração CT."
+      ]
+    },
+    {
+      "id": "nuke-02",
+      "mapa": "nuke",
+      "numero": 2,
+      "titulo": "Outside → Secret",
+      "tipos": ["controle"],
+      "alvo": ["B"],
+      "linhas": [
+        "2–3 jogadores Outside.",
+        "Conquistar Secret.",
+        "Descer para Lower.",
+        "Pressionar B."
+      ]
+    },
+    {
+      "id": "nuke-03",
+      "mapa": "nuke",
+      "numero": 3,
+      "titulo": "Split B",
+      "tipos": ["split"],
+      "alvo": ["B"],
+      "linhas": [
+        "2 Ramp.",
+        "2 Secret.",
+        "1 Lobby lurker.",
+        "Entrada em Lower por múltiplas direções."
+      ]
+    },
+    {
+      "id": "nuke-04",
+      "mapa": "nuke",
+      "numero": 4,
+      "titulo": "Ramp Execute",
+      "tipos": ["execute"],
+      "alvo": ["B"],
+      "linhas": [
+        "3 jogadores Ramp.",
+        "1 Lobby.",
+        "1 Outside.",
+        "Ataque Lower depois de conquistar Ramp."
+      ]
+    },
+    {
+      "id": "nuke-05",
+      "mapa": "nuke",
+      "numero": 5,
+      "titulo": "A Execute",
+      "tipos": ["execute"],
+      "alvo": ["A"],
+      "linhas": [
+        "3 Lobby.",
+        "1 Outside.",
+        "1 Ramp.",
+        "Pressão rápida em Upper."
+      ]
+    },
+    {
+      "id": "nuke-06",
+      "mapa": "nuke",
+      "numero": 6,
+      "titulo": "Fake Outside → Ramp",
+      "tipos": ["fake"],
+      "alvo": ["B"],
+      "linhas": [
+        "Fazer pressão Outside.",
+        "CTs podem deslocar jogadores.",
+        "Ramp entra posteriormente."
+      ]
+    },
+    {
+      "id": "nuke-07",
+      "mapa": "nuke",
+      "numero": 7,
+      "titulo": "Fake Ramp → A",
+      "tipos": ["fake"],
+      "alvo": ["A"],
+      "linhas": [
+        "Mostrar presença Ramp.",
+        "Fazer os CTs respeitarem Lower.",
+        "Depois atacar Upper."
+      ]
+    },
+    {
+      "id": "nuke-08",
+      "mapa": "nuke",
+      "numero": 8,
+      "titulo": "Rush Ramp",
+      "tipos": ["rush"],
+      "alvo": ["B"],
+      "linhas": [
+        "4 jogadores Ramp.",
+        "1 controla Lobby.",
+        "Entrada rápida no Lower."
+      ]
+    },
+    {
+      "id": "nuke-09",
+      "mapa": "nuke",
+      "numero": 9,
+      "titulo": "Outside lurker",
+      "tipos": ["lurk"],
+      "alvo": [],
+      "linhas": [
+        "4 jogadores trabalham Lobby/Ramp.",
+        "1 permanece Outside.",
+        "Pode cortar rotações e criar uma segunda ameaça."
+      ]
+    },
+    {
+      "id": "nuke-10",
+      "mapa": "nuke",
+      "numero": 10,
+      "titulo": "Default lento",
+      "tipos": ["default", "lento"],
+      "alvo": [],
+      "linhas": [
+        "Não revelar o plano cedo.",
+        "Manter jogadores em diferentes níveis.",
+        "Fazer os CTs tomarem decisões.",
+        "Executar somente depois de identificar a distribuição defensiva."
+      ]
+    }
+  ],
+  "situacoes": [
+    {"id": "cts-agressivos", "situacao": "CTs muito agressivos", "recomendacao": "Default + armadilha anti-agressão", "tipos": ["default", "anti"]},
+    {"id": "cts-recuados", "situacao": "CTs muito recuados", "recomendacao": "Controle de espaço + execute tardio", "tipos": ["controle", "lento"]},
+    {"id": "cts-rotacionam", "situacao": "CTs rotacionam rápido", "recomendacao": "Fake + lurker", "tipos": ["fake", "lurk"]},
+    {"id": "b-fraco", "situacao": "B está fraco", "recomendacao": "Explosão B", "alvo": "B", "tipos": ["execute", "rush"]},
+    {"id": "a-fraco", "situacao": "A está fraco", "recomendacao": "Split A", "alvo": "A", "tipos": ["split"]},
+    {"id": "cts-gastam-utilidade", "situacao": "CTs gastam muita utilidade cedo", "recomendacao": "Ataque tardio", "tipos": ["lento"]},
+    {"id": "time-inimigo-stack", "situacao": "Time inimigo faz stack", "recomendacao": "Fake + troca de bombsite", "tipos": ["fake"]},
+    {"id": "vantagem-numerica", "situacao": "Vocês têm vantagem numérica", "recomendacao": "Não acelerar sem necessidade; jogar pela informação", "tipos": ["default", "controle"]},
+    {"id": "desvantagem-numerica", "situacao": "Vocês estão em desvantagem", "recomendacao": "Criar splits e buscar duelos isolados", "tipos": ["split", "lurk"]},
+    {"id": "anti-eco", "situacao": "Round anti-eco", "recomendacao": "Rush/explosão com controle de espaço", "tipos": ["rush", "execute", "controle"]},
+    {"id": "pouca-utilidade", "situacao": "Pouca utilidade", "recomendacao": "Default simples + execução baseada em picks", "tipos": ["default"]},
+    {"id": "ultimos-20s", "situacao": "Últimos 20 segundos", "recomendacao": "Commitar rapidamente em um site", "tipos": ["rush", "execute"]}
+  ],
+  "calls": [
+    {"termo": "Default", "significado": "Cada jogador ocupa sua posição.", "tipo": "default"},
+    {"termo": "Control", "significado": "Ganhar espaço antes de executar.", "tipo": "controle"},
+    {"termo": "Explode A/B", "significado": "Todos entram juntos.", "tipo": "execute"},
+    {"termo": "Split", "significado": "Duas entradas simultâneas.", "tipo": "split"},
+    {"termo": "Fake", "significado": "Criar pressão sem necessariamente entrar.", "tipo": "fake"},
+    {"termo": "Lurk", "significado": "Um jogador fica atrasado para pegar rotação.", "tipo": "lurk"},
+    {"termo": "Slow", "significado": "Gastar tempo e utilidade antes do ataque.", "tipo": "lento"},
+    {"termo": "Go", "significado": "Execução imediata."},
+    {"termo": "Abort", "significado": "Cancelar o plano."},
+    {"termo": "Save", "significado": "Preservar armas/economia quando o round estiver praticamente perdido."}
+  ]
+}
