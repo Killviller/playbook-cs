@@ -91,6 +91,7 @@ body {
   background: var(--bg);
   color: var(--texto);
   font-family: var(--font);
+  font-size: 1rem;
   line-height: 1.45;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
