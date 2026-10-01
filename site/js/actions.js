@@ -127,6 +127,18 @@ const acoes = {
     rerender();
   },
 
+  fase(el) {
+    const mm = el.closest('.mm');
+    mm.dataset.fase = el.dataset.fase;
+    mm.querySelectorAll('[data-action="fase"]').forEach((b) => b.setAttribute('aria-pressed', String(b === el)));
+  },
+
+  blip(el) {
+    const mm = el.closest('.mm');
+    mm.dataset.sel = el.dataset.id;
+    mm.querySelectorAll('[data-action="blip"]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === el.dataset.id)));
+  },
+
   sugestao(el) {
     const campo = document.getElementById('q');
     if (!campo) return;
@@ -141,6 +153,10 @@ const acoes = {
 
 export function iniciarAcoes(contexto) {
   ctx = contexto;
+  // capa que não carregou: some e o card mostra o gradiente
+  document.addEventListener('error', (ev) => {
+    if (ev.target instanceof Element && ev.target.matches('.tile__capa img')) ev.target.remove();
+  }, true);
   document.addEventListener('click', (ev) => {
     const alvo = ev.target instanceof Element ? ev.target : null;
     if (!alvo) return;

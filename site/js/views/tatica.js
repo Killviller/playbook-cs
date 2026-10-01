@@ -2,6 +2,7 @@ import { html, bool } from '../lib/html.js';
 import { favoritas } from '../store.js';
 import { funcoesDaTatica, vizinhas } from '../data.js';
 import { pad2 } from '../lib/text.js';
+import { minimapa } from '../minimapa.js';
 import { etiquetasTipo, icone, minhaFuncao, selosSite, seletorDeFuncao } from '../ui.js';
 
 /** Blocos opcionais: só aparecem quando a tática tem esses dados no JSON. */
@@ -73,6 +74,8 @@ export function tatica({ index, params }) {
           <h1 class="detalhe__titulo"><span class="detalhe__num">${pad2(t.numero)}</span>${t.titulo}</h1>
           <p class="detalhe__tags">${etiquetasTipo(index, t)}${selosSite(t.alvo)}</p>
         </header>
+
+        ${minimapa(index, mapa, t, minha)}
 
         <div class="ficha">
           ${ficha('Objetivo', t.objetivo, 'ficha__item--objetivo')}
