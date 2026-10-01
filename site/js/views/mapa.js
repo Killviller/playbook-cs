@@ -24,9 +24,13 @@ export function mapa({ index, params, query }) {
     aba: 'taticas',
     acoes: acoesPadrao(),
     corpo: html`
+      <div class="hero" style="--h:${m.matiz ?? 210}">
+        ${m.capa ? html`<img src="${m.capa}" alt="" loading="lazy">` : ''}
+        <div class="hero__texto"><span class="hero__nome">${m.nome}</span><span class="hero__info">${contagem} · lado T</span></div>
+      </div>
       ${chipsDeMapas(index, m.id, 'link')}
       <div class="cabecalho-lista">
-        <p class="cabecalho-lista__info">${contagem}</p>
+        <p class="cabecalho-lista__info"></p>
         <a class="link" href="#/mapas">Trocar mapa</a>
       </div>
       ${m.descricao

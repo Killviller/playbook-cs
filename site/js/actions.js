@@ -155,7 +155,7 @@ export function iniciarAcoes(contexto) {
   ctx = contexto;
   // capa que não carregou: some e o card mostra o gradiente
   document.addEventListener('error', (ev) => {
-    if (ev.target instanceof Element && ev.target.matches('.tile__capa img')) ev.target.remove();
+    if (ev.target instanceof Element && ev.target.matches('.tile__capa img, .hero img')) ev.target.remove();
   }, true);
   document.addEventListener('click', (ev) => {
     const alvo = ev.target instanceof Element ? ev.target : null;
