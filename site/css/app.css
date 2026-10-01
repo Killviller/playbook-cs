@@ -313,7 +313,7 @@ main {
     radial-gradient(circle at 72% 28%, hsl(var(--h) 58% 34% / 0.95), transparent 62%),
     repeating-linear-gradient(0deg, rgba(255,255,255,.055) 0 1px, transparent 1px 12px),
     repeating-linear-gradient(90deg, rgba(255,255,255,.055) 0 1px, transparent 1px 12px),
-    #10151a;
+    #0b0b0b;
 }
 .tile:first-child .tile__capa { height: 8.2rem; }
 .tile__capa img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -336,8 +336,8 @@ main {
   font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--texto-2); }
 .mm__cab strong { color: var(--destaque-texto); font-weight: 500; }
 .mm__mapa {
-  position: relative; aspect-ratio: 1; overflow: hidden; background: #0d1216;
-  background-image: linear-gradient(#1a2229 1px, transparent 1px), linear-gradient(90deg, #1a2229 1px, transparent 1px);
+  position: relative; aspect-ratio: 1; overflow: hidden; background: #050505;
+  background-image: linear-gradient(#1b1b1b 1px, transparent 1px), linear-gradient(90deg, #1b1b1b 1px, transparent 1px);
   background-size: 12.5% 12.5%;
 }
 .mm__mapa > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -353,11 +353,11 @@ main {
 .mm[data-fase="3"] .mm__blip { left: var(--x3); top: var(--y3); }
 .mm__ponto {
   position: relative; display: grid; place-items: center; width: 1.7rem; height: 1.7rem; border-radius: 50%;
-  background: var(--c); color: #10151a; font-family: var(--mono); font-size: 0.72rem; font-weight: 700;
-  box-shadow: 0 0 0 2px #0d1216; transition: transform 0.2s;
+  background: var(--c); color: #0b0b0b; font-family: var(--mono); font-size: 0.72rem; font-weight: 700;
+  box-shadow: 0 0 0 2px #000; transition: transform 0.2s;
 }
 .mm__blip[aria-pressed="true"] { z-index: 4; }
-.mm__blip[aria-pressed="true"] .mm__ponto { transform: scale(1.18); box-shadow: 0 0 0 2px #0d1216, 0 0 0 4px #fff; }
+.mm__blip[aria-pressed="true"] .mm__ponto { transform: scale(1.18); box-shadow: 0 0 0 2px #000, 0 0 0 4px #fff; }
 .mm__blip[aria-pressed="true"] .mm__ponto::after {
   content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--c); animation: mm-pulso 1.8s ease-out infinite;
 }
