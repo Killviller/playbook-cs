@@ -64,7 +64,7 @@ export function centralizarChips() {
 let timer = null;
 let aoAcionar = null;
 
-export function aviso(mensagem, { acao = null, aoAcionar: cb = null, fixo = false } = {}) {
+export function aviso(mensagem, { acao = null, aoAcionar: cb = null, fixo = false, duracao = 3200 } = {}) {
   const el = $('toast');
   aoAcionar = cb;
   el.innerHTML = String(html`<span class="toast__msg">${mensagem}</span>${
@@ -72,7 +72,7 @@ export function aviso(mensagem, { acao = null, aoAcionar: cb = null, fixo = fals
   }`);
   el.classList.add('is-on');
   clearTimeout(timer);
-  if (!fixo) timer = setTimeout(esconderAviso, 3200);
+  if (!fixo) timer = setTimeout(esconderAviso, duracao);
 }
 
 export function esconderAviso() {

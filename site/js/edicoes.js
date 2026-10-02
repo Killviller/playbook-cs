@@ -10,6 +10,8 @@ import {
 // Chaves "pb.edic*": o botão "Apagar dados" dos Ajustes não mexe nelas (ver store.limpar).
 const SALVAS = 'edicoes';
 const RASCUNHOS = 'edicao-rascunho';
+const PUBLICADAS = 'edicao-publicadas'; // o que já foi enviado ao GitHub e espera o site novo chegar (o deploy leva uns 2 minutos)
+const JANELA_PUBLICANDO = 20 * 60 * 1000; // passou disso sem o site confirmar: volta a valer como "só neste aparelho"
 
 let site = {}; // id → edição publicada em data/edicoes.json
 let originais = {}; // id → tática como está no playbook.json (o texto do PDF)
@@ -65,12 +67,33 @@ export const rascunhos = {
 
 export const doSite = (id) => site[id] ?? null;
 
+const assinatura = (e) => JSON.stringify(sanearEdicao(e));
+
+/** Guarda que esta edição foi enviada ao GitHub: até o site novo chegar, ela aparece como "publicando" e não como "só neste aparelho". */
+export function marcarPublicada(id, edicao) {
+  gravar(PUBLICADAS, id, { assinatura: assinatura(edicao), em: Date.now() });
+}
+
+function emPublicacao(id, edicao) {
+  const m = lerMapa(PUBLICADAS)[id];
+  return !!m && Date.now() - m.em < JANELA_PUBLICANDO && m.assinatura === assinatura(edicao);
+}
+
+/** Táticas com texto editado salvo neste aparelho que o GitHub ainda não tem (nem está recebendo). */
+export function idsPendentes() {
+  return salvas.ids().filter((id) => {
+    const local = salvas.obter(id);
+    const publicado = site[id];
+    return (publicado ? !mesmaEdicao(local, publicado) : temEdicao(local)) && !emPublicacao(id, local);
+  });
+}
+
 /** Edição que vale para a tática e de onde veio; null se a tática está como no playbook.json. */
 export function edicaoDaTatica(id) {
   if (salvas.tem(id)) {
     const e = salvas.obter(id);
     if (!temEdicao(e)) return null;
-    return { edicao: e, origem: site[id] && mesmaEdicao(e, site[id]) ? 'site' : 'aparelho' };
+    return { edicao: e, origem: site[id] && mesmaEdicao(e, site[id]) ? 'site' : emPublicacao(id, e) ? 'publicando' : 'aparelho' };
   }
   return temEdicao(site[id]) ? { edicao: site[id], origem: 'site' } : null;
 }
@@ -102,7 +125,10 @@ function limparRedundantes() {
   for (const id of salvas.ids()) {
     const local = salvas.obter(id);
     const publicado = site[id];
-    if (publicado ? mesmaEdicao(local, publicado) : !temEdicao(local)) salvas.remover(id);
+    if (publicado ? mesmaEdicao(local, publicado) : !temEdicao(local)) {
+      salvas.remover(id);
+      gravar(PUBLICADAS, id, null); // o site já confirmou: some o "publicando"
+    }
   }
 }
 
@@ -186,5 +212,6 @@ export function importarArquivo(cru) {
 export function contagem() {
   const { edicoes } = efetivas();
   const ids = Object.keys(edicoes);
-  return { total: ids.length, soNoAparelho: ids.filter((id) => !(site[id] && mesmaEdicao(site[id], edicoes[id]))).length };
+  const soNoAparelho = ids.filter((id) => !(site[id] && mesmaEdicao(site[id], edicoes[id])) && !emPublicacao(id, edicoes[id]));
+  return { total: ids.length, soNoAparelho: soNoAparelho.length };
 }

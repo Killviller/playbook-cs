@@ -28,6 +28,7 @@ function cabecalho(mapa, { titulo = 'Minimapa', origem = null, editarId = null }
   return html`<div class="mm__cab"><strong>${titulo}</strong>
     <span class="mm__cab-dir">
       ${origem === 'aparelho' ? html`<span class="tag" title="Ainda não foi publicado para o time">Só neste aparelho</span>` : ''}
+      ${origem === 'publicando' ? html`<span class="tag" title="Já foi enviado: chega a todos os aparelhos em cerca de 2 minutos">Publicando para todos</span>` : ''}
       ${editarId ? html`<a class="mm__editar" href="#/editor/${editarId}">${icone('edit', 'ic--inline')}Editar</a>` : ''}
       <span>${mapa.nome}</span>
     </span></div>`;
@@ -36,7 +37,7 @@ function cabecalho(mapa, { titulo = 'Minimapa', origem = null, editarId = null }
 /**
  * @param {object} opcoes
  * @param {{titulo: string, nota: string, itens: object[]}[]|null} [opcoes.etapas] radar feito no editor: extras e notas por fase
- * @param {'aparelho'|'site'|null} [opcoes.origem] de onde veio esse radar ('aparelho' = ainda não publicado)
+ * @param {'aparelho'|'publicando'|'site'|null} [opcoes.origem] de onde veio esse radar ('aparelho' = ainda não publicado, 'publicando' = já enviado e a caminho)
  * @param {boolean} [opcoes.atalho] mostra os atalhos "Editar" / "Criar o radar" (Ajustes → Atalho de edição)
  */
 export function minimapa(index, mapa, t, minha, { etapas = null, origem = null, atalho = false } = {}) {

@@ -8,6 +8,7 @@ Importado do *Playbook TR — CS2* (32 páginas): 7 mapas × 10 táticas. Cada t
 - **Para o IGL no jogo:** abre direto no mapa da partida, texto grande, tema escuro, 1 toque até a tática, "Chamar" por tipo de round e opção de manter a tela acesa.
 - **Para cada jogador:** escolha a sua função (P1 a P5) e o app destaca o que você faz em cada tática e mostra o seu papel nas listas.
 - **Para estudar:** filtros por tipo, busca sem acento (também no texto das funções), favoritas e link direto para cada tática.
+- **Edita para todos:** conectando o GitHub uma vez, cada **Salvar** de radar ou de texto já publica para todos os aparelhos (veja [Publicar para todos ao salvar](#publicar-para-todos-ao-salvar)).
 - **Tática que melhora com o tempo:** dá para reescrever o texto de uma tática no próprio app (o PDF original fica guardado e dá para voltar a ele). Veja [Editar o texto das táticas](#editar-o-texto-das-táticas).
 - **Radar visual:** o IGL monta o minimapa de cada tática arrastando os jogadores e desenhando as rotas com o dedo, sem digitar coordenadas (veja [Radar das táticas](#radar-das-táticas-editor-visual)).
 - Sem servidor, sem conta, sem dependências. É um site estático.
@@ -28,6 +29,43 @@ Importado do *Playbook TR — CS2* (32 páginas): 7 mapas × 10 táticas. Cada t
 **Minha função:** em *Ajustes*, no *Guia* ou dentro de qualquer tática, escolha P1 a P5. Na tela da tática o seu cartão sobe para o topo
 com a marca "Você"; nas listas aparece um trecho do que você faz em cada tática. A escolha fica só neste aparelho.
 
+## Publicar para todos ao salvar
+
+Por padrão, o que você salva no editor (radar ou texto) fica **só neste aparelho**. Conectando o GitHub **uma vez**, cada **Salvar** passa a
+publicar para **todos os aparelhos**: o app grava `radares.json` / `edicoes.json` direto no repositório, o site é refeito sozinho e o time
+recebe a mudança em cerca de **2 minutos** (quem já tem o app vê *Nova versão disponível · Atualizar*).
+
+**Conectar (1 minuto, uma vez por aparelho que edita):** em *Editor*, no cartão **Publicar para todos ao salvar**:
+1. Abra [github.com/settings/personal-access-tokens/new](https://github.com/settings/personal-access-tokens/new).
+2. *Token name:* `Playbook editor`. *Expiration:* 90 dias (ou o que preferir).
+3. *Repository access:* **Only select repositories** → marque só o **playbook-cs**.
+4. *Repository permissions → **Contents**:* **Read and write**. Toque em *Generate token* e copie.
+5. Cole no cartão e toque em **Conectar**. A publicação automática já nasce **ligada**.
+
+Quem só **lê** o playbook (o time) não precisa de nada disso. Só quem edita conecta.
+
+**Como funciona**
+- Ao salvar, o app lê o arquivo que está no GitHub **naquele momento**, troca só a tática que você mexeu e grava (um commit, com mensagem
+  como `Radar: ancient-03 (editor do app)`). Se outra pessoa publicou outra tática no meio-tempo, ela **não** é apagada.
+- Até o site novo chegar, a tática aparece como **Publicando…** (e não *Só neste aparelho*); depois vira **Publicado**.
+- Se a publicação falhar (sem internet, token vencido, sem permissão), a mensagem diz o motivo, o que você salvou **continua no aparelho** e dá
+  para **Tentar de novo** ou usar **Publicar agora** no cartão (envia tudo o que ficou pendente).
+- **Ligado / Desligado:** desligando, o Salvar volta a guardar só no aparelho até você tocar em **Publicar agora**.
+- Imagens de radar escolhidas à mão (*Usar outra imagem*) **não** sobem sozinhas: esse caso continua sendo manual (veja abaixo).
+
+**Segurança do token**
+- O token fica **só neste aparelho** (chave `pb.github` do navegador). Nunca vai para o repositório, nem para os arquivos exportados, nem
+  para outro endereço além de `api.github.com`. **Desconectar** e **Apagar dados** (Ajustes) apagam o token do aparelho.
+- Quem tem o token pode **alterar este repositório**, inclusive o código que o time executa. Trate como senha: crie um token **só deste
+  repositório**, só com *Contents*, com validade, e desconecte aparelhos que não usa mais. Se suspeitar de vazamento, revogue em
+  [github.com/settings/personal-access-tokens](https://github.com/settings/personal-access-tokens).
+- No GitHub Pages, todos os sites do mesmo usuário (`usuario.github.io/...`) compartilham o armazenamento do navegador. Se você hospeda
+  **outros sites** nesse mesmo endereço, não conecte o token por aqui.
+- A página tem uma *Content-Security-Policy* (no `<meta>` de `site/index.html`): só roda código do próprio site (sem script embutido, sem
+  `eval`) e só conversa com o próprio site e com `api.github.com`. Isso reduz o estrago se algum texto malicioso um dia escapasse do
+  escape de HTML. Por isso o tema inicial fica em `js/tema-inicial.js` (e não num `<script>` no HTML) e **não dá para carregar fontes,
+  scripts ou imagens de outros endereços** sem ampliar essa política. Os testes (`tests/build.test.mjs`) travam essas regras.
+
 ## Editar o texto das táticas
 
 Tática melhora com o tempo. Em vez de mexer no `playbook.json`, o texto novo vale **por cima** dele: o texto importado do PDF
@@ -40,16 +78,16 @@ continua guardado, dá para ver o **Antes** de cada campo e voltar a ele quando 
    (A, B, os dois ou nenhum), o **objetivo**, a **economia**, o que **cada função faz (P1–P5)**, o **pós-plant** e o **plano B**.
 2. Cada campo que difere do que o time vê hoje ganha uma moldura e mostra o **Antes**, com o botão **Restaurar** só daquele campo.
 3. **Salvar** confere os campos (objetivo, título e as 5 funções não podem ficar vazios; o título não começa com número) e guarda
-   neste aparelho. A tática já aparece com o texto novo, com o selo **Atualizada em dd/mm/aaaa · só neste aparelho**, e a busca enxerga o texto novo.
+   neste aparelho (e, com o GitHub conectado, [publica para todos](#publicar-para-todos-ao-salvar)). A tática já aparece com o texto novo, com o selo **Atualizada em dd/mm/aaaa · só neste aparelho**, e a busca enxerga o texto novo.
    O que ainda não foi salvo vira **rascunho automático**: se você sair sem querer, ele volta quando abrir a edição de novo.
 4. Em *Mais opções*: **Desfazer alterações não salvas**, **Voltar à versão publicada** (descarta o que você salvou aqui) e
    **Voltar ao texto original do PDF** (preenche o formulário com o texto do PDF; vale quando você tocar em Salvar).
 
 No computador, `Ctrl+S` salva.
 
-### Publicar o texto para o time
+### Publicar o texto à mão (sem conectar o GitHub)
 
-O que você salva fica só no seu aparelho. Para o time ver, o arquivo `site/data/edicoes.json` precisa ir para o repositório, igual aos radares:
+Sem a [publicação automática](#publicar-para-todos-ao-salvar), o que você salva fica só no seu aparelho. Para o time ver, o arquivo `site/data/edicoes.json` precisa ir para o repositório, igual aos radares:
 no editor, em **Publicar para o time**, toque em **Baixar edicoes.json** (ou **Copiar**), abra `site/data/edicoes.json` no GitHub, toque no
 lápis (*Edit*), apague tudo, cole e confirme em **Commit changes**. Em cerca de 2 minutos o time recebe o aviso *Nova versão disponível*,
 e quem abrir a tática vê **Atualizada em…**. O arquivo já junta o que está no site e o que você salvou. *Importar arquivo* (na mesma tela)
@@ -111,9 +149,9 @@ Dois dedos (ou a roda do mouse) fazem zoom. *Mais opções → Começar a partir
 No computador: `Ctrl+Z` / `Ctrl+Y` desfazem e refazem, `Ctrl+S` salva, `Delete` apaga, as setas movem o item selecionado (`Shift` anda
 mais) e `Esc` desliga a ferramenta.
 
-### Publicar os radares para o time
+### Publicar os radares à mão (sem conectar o GitHub)
 
-O que você salva fica só no seu aparelho. Para o time ver, o arquivo `site/data/radares.json` precisa ir para o repositório:
+Sem a [publicação automática](#publicar-para-todos-ao-salvar), o que você salva fica só no seu aparelho. Para o time ver, o arquivo `site/data/radares.json` precisa ir para o repositório:
 
 1. No editor, em **Publicar para o time**, toque em **Baixar radares.json** (ou **Copiar**). O arquivo já junta o que está no site e o que você salvou.
 2. No GitHub, abra `site/data/radares.json`, toque no lápis (*Edit*), apague tudo, cole o conteúdo e confirme em **Commit changes**.

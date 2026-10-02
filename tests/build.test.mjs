@@ -156,3 +156,42 @@ test('o edicoes.json em branco que vai no repositório é válido', async () => 
   const real = JSON.parse(await readFile(join(siteReal, 'data/playbook.json'), 'utf8'));
   assert.deepEqual(await validarEdicoesDoSite(real, { siteDir: siteReal }), { erros: [], avisos: [] });
 });
+
+// ------------------------------------------------------------ segurança da página
+test('o index.html tem Content-Security-Policy: sem script inline e só fala com o site e com api.github.com', async () => {
+  const html = await readFile(join(siteReal, 'index.html'), 'utf8');
+  const csp = /<meta http-equiv="Content-Security-Policy" content="([^"]+)">/.exec(html)?.[1];
+  assert.ok(csp, 'faltou a meta Content-Security-Policy no index.html');
+  const regra = (nome) => csp.split(';').map((r) => r.trim()).find((r) => r.startsWith(`${nome} `));
+  assert.equal(regra('script-src'), "script-src 'self'", 'script só de arquivos do próprio site (sem inline, sem eval)');
+  assert.equal(regra('connect-src'), "connect-src 'self' https://api.github.com", 'conexões só para o site e para o GitHub');
+  assert.equal(regra('object-src'), "object-src 'none'");
+  assert.ok(!/unsafe-eval/.test(csp) && !/script-src[^;]*unsafe-inline/.test(csp));
+
+  // nada que a política bloquearia: <script> sem src, manipuladores inline (onclick=…) e links externos carregados como recurso
+  assert.ok(![...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>/gi)].length, 'o index.html não pode ter <script> inline (ponha em js/)');
+  assert.ok(!/\son[a-z]+\s*=\s*["']/i.test(html), 'sem manipuladores de evento inline');
+  for (const url of html.matchAll(/(?:src|href)="(https?:\/\/[^"]+)"/g)) assert.fail(`o index.html carrega recurso externo: ${url[1]}`);
+
+  const tema = await readFile(join(siteReal, 'js/tema-inicial.js'), 'utf8');
+  assert.match(html, /<script src="js\/tema-inicial\.js"><\/script>/);
+  assert.match(tema, /pb\.tema/);
+});
+
+test('nenhum arquivo de js/ usa eval, new Function nem manipulador inline (a CSP bloquearia)', async () => {
+  const { readdir } = await import('node:fs/promises');
+  const arquivos = [];
+  const andar = async (dir) => {
+    for (const e of await readdir(dir, { withFileTypes: true })) {
+      if (e.isDirectory()) await andar(join(dir, e.name));
+      else if (e.name.endsWith('.js')) arquivos.push(join(dir, e.name));
+    }
+  };
+  await andar(join(siteReal, 'js'));
+  assert.ok(arquivos.length > 20);
+  for (const arq of arquivos) {
+    const codigo = await readFile(arq, 'utf8');
+    assert.ok(!/\beval\s*\(|new Function\s*\(/.test(codigo), `${arq} usa eval/new Function`);
+    assert.ok(!/\son(click|change|input|submit|load|error)=["']/.test(codigo), `${arq} gera manipulador de evento inline`);
+  }
+});

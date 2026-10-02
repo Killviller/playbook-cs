@@ -2,6 +2,10 @@
 <html lang="pt-BR" data-tema="escuro" data-texto="normal">
 <head>
   <meta charset="utf-8">
+  <!-- Content-Security-Policy: o app só carrega código e dados do próprio site e só fala com o próprio site e com api.github.com
+       (usado para publicar radares e textos). Assim, mesmo que algum script estranho rodasse aqui, o token do GitHub guardado
+       no aparelho não teria para onde ser enviado. Script inline não é permitido: scripts ficam em arquivos (js/). -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; connect-src 'self' https://api.github.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Playbook T</title>
   <meta name="description" content="Playbook de táticas do lado T para CS2: consulta rápida para o IGL e estudo do time.">
@@ -17,18 +21,7 @@
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="stylesheet" href="css/app.css">
   <link rel="stylesheet" href="css/glass.css">
-  <script>
-    /* aplica tema e tamanho do texto antes da primeira pintura (evita piscar) */
-    (function () {
-      try {
-        var raiz = document.documentElement;
-        var tema = JSON.parse(localStorage.getItem('pb.tema'));
-        var texto = JSON.parse(localStorage.getItem('pb.texto'));
-        if (tema === 'claro' || tema === 'sistema') raiz.setAttribute('data-tema', tema);
-        if (texto === 'grande' || texto === 'extra') raiz.setAttribute('data-texto', texto);
-      } catch (e) { /* sem armazenamento: segue com o padrão */ }
-    })();
-  </script>
+  <script src="js/tema-inicial.js"></script>
 </head>
 <body>
   <header class="appbar" id="appbar"></header>

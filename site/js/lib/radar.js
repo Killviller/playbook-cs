@@ -368,6 +368,30 @@ export function lerArquivo(cru) {
   return { imagens, radares };
 }
 
+/**
+ * Põe as mudanças (por tática) no conteúdo do radares.json que está no repositório e devolve o texto novo.
+ * Parte do arquivo atual, não do que este aparelho carregou: assim não apaga o que outra pessoa publicou nesse meio-tempo.
+ * @param {string|null} texto conteúdo atual do arquivo (null se ainda não existe)
+ * @param {Record<string, object|null>} mudancas diagrama novo por tática; sem conteúdo (ou null) tira o radar do arquivo
+ * @param {string[]} funcoes ids na ordem do playbook (P1…P5)
+ */
+export function aplicarMudancasRadares(texto, mudancas, funcoes = []) {
+  let cru = {};
+  if (texto) {
+    try {
+      cru = JSON.parse(texto);
+    } catch {
+      throw new Error('O radares.json que está no GitHub tem erro de JSON. Corrija lá antes de publicar.');
+    }
+  }
+  const { imagens, radares } = lerArquivo(cru);
+  for (const [id, diagrama] of Object.entries(mudancas)) {
+    if (diagrama && temConteudo(diagrama)) radares[id] = sanearDiagrama(diagrama);
+    else delete radares[id];
+  }
+  return formatarArquivo({ imagens, radares, funcoes });
+}
+
 export const caminhoRelativo = (c) => typeof c === 'string' && c.trim() !== '' && !/^(?:[a-z][a-z0-9+.-]*:|\/|\\)/i.test(c) && !c.split('/').includes('..');
 
 // -------------------------------------------------------------------- validação

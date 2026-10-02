@@ -1,5 +1,6 @@
 import { html, raw, bool } from '../lib/html.js';
 import { dataBr } from '../lib/text.js';
+import { conexao } from '../github.js';
 import { store } from '../store.js';
 import { cartaoInstalar, icone, minhaFuncao, seletorDeFuncao } from '../ui.js';
 import { info, pwa, telaAcesa } from '../pwa.js';
@@ -96,6 +97,11 @@ export function ajustes({ index }) {
             <span class="switch__trilho" aria-hidden="true"></span>
           </span>
         </label>
+        <p class="muted">${(() => {
+          const c = conexao.obter();
+          if (!c) return 'Publicação para todos: não conectada (o que você salva fica só neste aparelho). Conecte em Editar → cartão "Publicar para todos ao salvar".';
+          return c.auto ? 'Publicação para todos: ligada. Cada Salvar já vale para todos os aparelhos.' : 'Publicação para todos: conectada, mas desligada.';
+        })()}</p>
         <div class="botoes">
           <a class="btn" href="#/editor?modo=texto">${icone('edit')} Editar o texto das táticas</a>
           <a class="btn" href="#/editor">${icone('radar')} Editar os radares</a>

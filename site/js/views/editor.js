@@ -4,6 +4,9 @@ import { html, raw } from '../lib/html.js';
 import { dataBr, pad2 } from '../lib/text.js';
 import { baixar, copiarTexto, lerImagem, nomeDoArquivo, prepararImagem, removerImagem, salvarImagem } from '../imagens.js';
 import * as textos from '../edicoes.js';
+import { conectar, conexao } from '../github.js';
+import { repoDaPagina } from '../lib/github.js';
+import { pendentes, publicarPendentes } from '../publicar.js';
 import {
   contagem, exportarArquivo, imagemDoMapa, importarArquivo, imagensParaEnviar, rascunhos, salvos, situacao,
 } from '../radares.js';
@@ -12,7 +15,7 @@ import { icone, mapaAtual } from '../ui.js';
 
 const redesenhar = () => document.dispatchEvent(new Event('pb:redesenhar'));
 
-const ORIGENS = { aparelho: 'Só neste aparelho', site: 'Publicado', playbook: 'Posições do playbook.json' };
+const ORIGENS = { aparelho: 'Só neste aparelho', publicando: 'Publicando…', site: 'Publicado', playbook: 'Posições do playbook.json' };
 
 function selo(s) {
   if (!s.etapas) return html`<span class="tag">Sem radar</span>`;
@@ -34,7 +37,7 @@ function linhaEditor(t) {
 
 function linhaTexto(t) {
   const s = textos.situacao(t.id);
-  const origem = s.origem === 'aparelho' ? 'Só neste aparelho' : 'Publicada';
+  const origem = { aparelho: 'Só neste aparelho', publicando: 'Publicando…' }[s.origem] ?? 'Publicada';
   return html`<li><a class="row" href="#/tatica/${t.id}/editar">
     <span class="row__num" aria-hidden="true">${pad2(t.numero)}</span>
     <span class="row__main">
@@ -59,6 +62,57 @@ function resumoDe(r, { um, varios }) {
     : '. Tudo já está publicado.'}`;
 }
 
+/** Cartão "Publicar para todos ao salvar": conecta o GitHub uma vez e cada Salvar passa a publicar para todos os aparelhos. */
+function cartaoPublicacao() {
+  const c = conexao.obter();
+  if (!c) {
+    return html`<section class="cartao" data-r="publicacao" aria-labelledby="conexao-titulo">
+      <h2 class="cartao__titulo" id="conexao-titulo">Publicar para todos ao salvar</h2>
+      <p>Hoje o que você salva fica <strong>só neste aparelho</strong>. Conecte o GitHub uma vez aqui e cada <strong>Salvar</strong> passa a publicar
+        para todos os aparelhos do time (chega em cerca de 2 minutos).</p>
+      <details class="sobre">
+        <summary>Como criar o token (1 minuto)</summary>
+        <ol class="passos">
+          <li>Abra este link: <a class="link" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">criar token no GitHub</a></li>
+          <li><strong>Token name:</strong> Playbook editor. <strong>Expiration:</strong> 90 dias (ou o que preferir).</li>
+          <li><strong>Repository access:</strong> <em>Only select repositories</em> e marque só o <strong>playbook-cs</strong>.</li>
+          <li><strong>Repository permissions → Contents:</strong> <em>Read and write</em>. Toque em <em>Generate token</em> e copie o token.</li>
+          <li>Cole abaixo e toque em <strong>Conectar</strong>.</li>
+        </ol>
+      </details>
+      <label class="campo"><span class="campo__rotulo">Repositório</span>
+        <input class="campo__input" data-r="repo" value="${repoDaPagina(globalThis.location) ?? 'killviller/playbook-cs'}" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+      <label class="campo"><span class="campo__rotulo">Token do GitHub</span>
+        <input class="campo__input" type="password" data-r="token" placeholder="github_pat_…" autocomplete="new-password" autocapitalize="off" spellcheck="false"></label>
+      <p class="campo__erro" data-r="erro-conexao" role="alert" hidden></p>
+      <div class="botoes"><button type="button" class="btn btn--primario" data-ed="conectar">Conectar</button></div>
+      <p class="muted">O token fica só neste aparelho. Quem tem o token pode alterar este repositório: use um token só dele, com validade, e
+        toque em <em>Desconectar</em> quando não precisar mais.</p>
+    </section>`;
+  }
+
+  const p = pendentes();
+  return html`<section class="cartao" data-r="publicacao" aria-labelledby="conexao-titulo">
+    <h2 class="cartao__titulo" id="conexao-titulo">Publicar para todos ao salvar</h2>
+    <p class="ok">${icone('check', 'ic--inline')}Conectado a ${c.repo}</p>
+    <div class="seg" role="radiogroup" aria-label="Publicar para todos ao salvar">
+      <button type="button" role="radio" class="seg__op" data-ed="auto" data-valor="1" aria-checked="${c.auto ? 'true' : 'false'}">Ligado</button>
+      <button type="button" role="radio" class="seg__op" data-ed="auto" data-valor="0" aria-checked="${c.auto ? 'false' : 'true'}">Desligado</button>
+    </div>
+    <p class="muted">${c.auto
+      ? 'Cada Salvar de radar ou de texto já publica para todos os aparelhos.'
+      : 'Desligado: o que você salva fica só neste aparelho até tocar em Publicar agora.'}</p>
+    ${p.total
+      ? html`<p><strong>${p.radares.length ? plural(p.radares.length, 'radar', 'radares') : ''}${p.radares.length && p.textos.length ? ' e ' : ''}${p.textos.length ? plural(p.textos.length, 'texto', 'textos') : ''}</strong>
+          só neste aparelho, ainda não publicado.</p>`
+      : html`<p class="muted">Tudo o que você salvou já foi publicado.</p>`}
+    <div class="botoes">
+      ${p.total ? html`<button type="button" class="btn btn--primario" data-ed="publicar-agora">${icone('upload')} Publicar agora</button>` : ''}
+      <button type="button" class="btn btn--perigo" data-ed="desconectar">Desconectar</button>
+    </div>
+  </section>`;
+}
+
 export function editor({ index, query }) {
   const pedido = query.get('mapa');
   const mapaId = index.mapasById.has(pedido) ? pedido : mapaAtual(index);
@@ -81,9 +135,11 @@ export function editor({ index, query }) {
 
         ${modoTexto
           ? html`<p class="intro">Tática melhora com o tempo: reescreva o objetivo, o que cada um faz, o pós-plant… O texto original do PDF fica guardado
-              e cada campo alterado mostra o <strong>Antes</strong>. O que você salva fica neste aparelho; para o time ver, publique (no fim desta tela).</p>`
+              e cada campo alterado mostra o <strong>Antes</strong>. Com o GitHub conectado (cartão abaixo), cada Salvar publica para todos os aparelhos.</p>`
           : html`<p class="intro">Marque as posições de cada tática no radar (as fases do minimapa) arrastando os jogadores e desenhando as rotas com o dedo, sem digitar coordenadas.
-              O que você salva fica neste aparelho. Para o time ver, publique (no fim desta tela).</p>`}
+              Com o GitHub conectado (cartão abaixo), cada Salvar publica para todos os aparelhos.</p>`}
+
+        ${cartaoPublicacao()}
 
         <div class="chips" role="group" aria-label="Mapa">${index.mapas.map(
           (m) => html`<a class="chip chip--mapa" href="#/editor?${modoTexto ? 'modo=texto&' : ''}mapa=${m.id}" data-replace ${m.id === mapaId ? raw('aria-current="page"') : ''}>${m.nome}</a>`,
@@ -100,7 +156,8 @@ export function editor({ index, query }) {
         <ul class="rows">${taticas.map(modoTexto ? linhaTexto : linhaEditor)}</ul>
 
         <section class="cartao editor-publicar" aria-labelledby="pub-titulo">
-          <h2 class="cartao__titulo" id="pub-titulo">Publicar para o time</h2>
+          <h2 class="cartao__titulo" id="pub-titulo">Publicar à mão</h2>
+          <p class="muted">Alternativa, se não quiser conectar o GitHub: baixe o arquivo e cole no repositório.</p>
           <p>${resumoDe(radares, { um: 'tem radar', varios: 'têm radar' })}</p>
           <p>${resumoDe(edicoes, { um: 'tem texto editado', varios: 'têm texto editado' })}</p>
           <ol class="passos">
@@ -172,6 +229,10 @@ function montar(main, { mapa, ordem }) {
       : '';
   }
 
+  function desenharPublicacao() {
+    q('publicacao').outerHTML = String(cartaoPublicacao());
+  }
+
   // O texto do arquivo fica pronto antes do toque: o Safari só deixa copiar logo depois do gesto, sem esperar nada.
   let textoPronto = '';
   const preparar = async () => {
@@ -222,6 +283,47 @@ function montar(main, { mapa, ordem }) {
 
     async 'copiar-edicoes'() {
       aviso((await copiarTexto(textos.exportarArquivo())) ? 'edicoes.json copiado. Agora cole no GitHub.' : 'O navegador não deixou copiar: use Baixar');
+    },
+
+    async conectar() {
+      const erro = q('erro-conexao');
+      erro.hidden = true;
+      aviso('Conectando ao GitHub…', { fixo: true });
+      try {
+        await conectar({ token: q('token').value, repo: q('repo').value });
+        aviso('Conectado. Agora cada Salvar publica para todos.', { duracao: 6000 });
+        desenharPublicacao();
+      } catch (e) {
+        aviso('Não conectou.', { duracao: 1800 });
+        erro.textContent = e.message;
+        erro.hidden = false;
+      }
+    },
+
+    desconectar() {
+      if (!confirm('Desconectar o GitHub deste aparelho? O token é apagado daqui. O que já foi publicado continua no site.')) return;
+      conexao.remover();
+      aviso('GitHub desconectado deste aparelho');
+      desenharPublicacao();
+    },
+
+    auto(b) {
+      const c = conexao.obter();
+      if (!c) return;
+      conexao.salvar({ ...c, auto: b.dataset.valor === '1' });
+      desenharPublicacao();
+    },
+
+    async 'publicar-agora'() {
+      aviso('Publicando para todos…', { fixo: true });
+      try {
+        await publicarPendentes(ordem);
+        document.dispatchEvent(new Event('pb:indice')); // as táticas passam de "só neste aparelho" para "publicando"
+        aviso('Publicado para todos. Chega a todos os aparelhos em cerca de 2 minutos.', { duracao: 6000 });
+        redesenhar();
+      } catch (e) {
+        aviso(`Não publicou: ${e.message}`, { acao: 'Tentar de novo', aoAcionar: () => acoes['publicar-agora'](), duracao: 12000 });
+      }
     },
 
     importar: () => q('arquivo-json').click(),

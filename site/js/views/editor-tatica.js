@@ -15,7 +15,7 @@ import { corDaFuncao, desenharCamada, desenharSvg, glifoGranada, viewBox } from 
 import { doPlaybook, imagemDoMapa, imagemDoSite, pontoDePartida, radarDaTatica, rascunhos, salvos } from '../radares.js';
 import { prepararImagem, salvarImagem } from '../imagens.js';
 import { aviso } from '../shell.js';
-import * as roteador from '../router.js';
+import { aposSalvar } from '../publicacao-ui.js';
 import { icone } from '../ui.js';
 
 const ZOOM_MIN = 0.25;
@@ -382,9 +382,13 @@ function iniciar(raiz, { index, t }) {
     recuperado = false;
     atualizarBarra();
     desenharAlerta();
-    aviso(temConteudo(limpo) ? 'Radar salvo neste aparelho' : 'Radar vazio salvo', {
-      acao: 'Publicar',
-      aoAcionar: () => roteador.ir(`/editor?mapa=${t.mapa}`),
+    const vazio = !temConteudo(limpo);
+    return aposSalvar({
+      tipo: 'radar',
+      id: t.id,
+      ordem: funcoes.map((f) => f.id),
+      textoSalvo: vazio ? 'Radar vazio salvo só neste aparelho.' : 'Radar salvo só neste aparelho.',
+      textoPublicado: vazio ? 'Radar apagado para todos.' : 'Radar publicado para todos.',
     });
   }
 

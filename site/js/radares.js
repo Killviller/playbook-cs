@@ -8,6 +8,8 @@ import { extensao, lerImagem, mapasComImagemLocal, urlDaImagemLocal } from './im
 // Chaves "pb.radar*": o botão "Apagar dados" dos Ajustes não mexe nelas (ver store.limpar).
 const SALVOS = 'radares';
 const RASCUNHOS = 'radar-rascunho';
+const PUBLICADOS = 'radar-publicados'; // o que já foi enviado ao GitHub e espera o site novo chegar (o deploy leva uns 2 minutos)
+const JANELA_PUBLICANDO = 20 * 60 * 1000; // passou disso sem o site confirmar: volta a valer como "só neste aparelho"
 
 let site = { imagens: {}, radares: {} };
 
@@ -35,7 +37,10 @@ function limparRedundantes() {
   for (const id of salvos.ids()) {
     const local = salvos.obter(id);
     const publicado = site.radares[id];
-    if (publicado ? mesmo(local, publicado) : !temConteudo(local)) salvos.remover(id);
+    if (publicado ? mesmo(local, publicado) : !temConteudo(local)) {
+      salvos.remover(id);
+      gravar(PUBLICADOS, id, null); // o site já confirmou: some o "publicando"
+    }
   }
 }
 
@@ -72,12 +77,34 @@ export const rascunhos = {
 
 export const doSite = (id) => site.radares[id] ?? null;
 
+const assinatura = (d) => JSON.stringify(canonico(d));
+
+/** Guarda que este diagrama foi enviado ao GitHub: até o site novo chegar, ele aparece como "publicando" e não como "só neste aparelho". */
+export function marcarPublicado(id, diagrama) {
+  gravar(PUBLICADOS, id, { assinatura: assinatura(diagrama), em: Date.now() });
+}
+
+function emPublicacao(id, diagrama) {
+  const m = lerMapa(PUBLICADOS)[id];
+  return !!m && Date.now() - m.em < JANELA_PUBLICANDO && m.assinatura === assinatura(diagrama);
+}
+
+/** Táticas com radar salvo neste aparelho que o GitHub ainda não tem (nem está recebendo). */
+export function idsPendentes() {
+  return salvos.ids().filter((id) => {
+    const local = salvos.obter(id);
+    const publicado = site.radares[id];
+    return (publicado ? !mesmo(local, publicado) : temConteudo(local)) && !emPublicacao(id, local);
+  });
+}
+
 /** Diagrama que vale para a tática e de onde veio; null se não houver nada para mostrar. */
 export function radarDaTatica(id) {
   if (salvos.tem(id)) {
     const d = salvos.obter(id);
     if (!temConteudo(d)) return null;
-    return { diagrama: d, origem: doSite(id) && mesmo(d, doSite(id)) ? 'site' : 'aparelho' };
+    const origem = doSite(id) && mesmo(d, doSite(id)) ? 'site' : emPublicacao(id, d) ? 'publicando' : 'aparelho';
+    return { diagrama: d, origem };
   }
   const d = doSite(id);
   return d && temConteudo(d) ? { diagrama: d, origem: 'site' } : null;
@@ -156,5 +183,6 @@ export function importarArquivo(cru) {
 export function contagem() {
   const todos = mesclarRadares(site.radares, lerMapa(SALVOS));
   const ids = Object.keys(todos).filter((id) => temConteudo(sanearDiagrama(todos[id])));
-  return { total: ids.length, soNoAparelho: ids.filter((id) => !(doSite(id) && JSON.stringify(canonico(doSite(id))) === JSON.stringify(canonico(todos[id])))).length };
+  const soNoAparelho = ids.filter((id) => !(doSite(id) && mesmo(doSite(id), todos[id])) && !emPublicacao(id, todos[id]));
+  return { total: ids.length, soNoAparelho: soNoAparelho.length };
 }

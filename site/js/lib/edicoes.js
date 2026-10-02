@@ -189,6 +189,30 @@ export function lerArquivo(cru) {
   return edicoes;
 }
 
+/**
+ * Põe as mudanças (por tática) no conteúdo do edicoes.json que está no repositório e devolve o texto novo.
+ * Parte do arquivo atual, não do que este aparelho carregou: assim não apaga o que outra pessoa publicou nesse meio-tempo.
+ * @param {string|null} texto conteúdo atual do arquivo (null se ainda não existe)
+ * @param {Record<string, object|null>} mudancas edição nova por tática; vazia (ou null) tira a edição do arquivo
+ */
+export function aplicarMudancasEdicoes(texto, mudancas) {
+  let cru = {};
+  if (texto) {
+    try {
+      cru = JSON.parse(texto);
+    } catch {
+      throw new Error('O edicoes.json que está no GitHub tem erro de JSON. Corrija lá antes de publicar.');
+    }
+  }
+  const edicoes = lerArquivo(cru);
+  for (const [id, edicao] of Object.entries(mudancas)) {
+    const limpa = sanearEdicao(edicao);
+    if (temEdicao(limpa)) edicoes[id] = limpa;
+    else delete edicoes[id];
+  }
+  return formatarArquivo(edicoes);
+}
+
 // ----------------------------------------------------------------- validação
 /**
  * Confere o conteúdo do edicoes.json (build, testes e `npm run validar`).

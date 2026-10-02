@@ -7,7 +7,7 @@ import {
   pontoDePartida, rascunhos, salvas, salvarValores, valoresOriginais, valoresPublicados, voltarAoPublicado,
 } from '../edicoes.js';
 import { aviso } from '../shell.js';
-import * as roteador from '../router.js';
+import { aposSalvar } from '../publicacao-ui.js';
 import { icone } from '../ui.js';
 
 const clonar = (v) => JSON.parse(JSON.stringify(v));
@@ -247,9 +247,11 @@ function iniciar(raiz, { index, t }) {
     raiz.querySelectorAll('textarea').forEach(ajustar);
     desenharTipos();
     aoMudar();
-    aviso(mudou ? 'Tática salva neste aparelho' : 'Voltou ao texto original', {
-      acao: 'Publicar',
-      aoAcionar: () => roteador.ir(`/editor?modo=texto&mapa=${t.mapa}`),
+    return aposSalvar({
+      tipo: 'texto',
+      id,
+      textoSalvo: mudou ? 'Texto salvo só neste aparelho.' : 'Volta ao texto original salva só neste aparelho.',
+      textoPublicado: mudou ? 'Texto publicado para todos.' : 'Texto original restaurado para todos.',
     });
   }
 

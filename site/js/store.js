@@ -30,7 +30,18 @@ export const store = {
     }
   },
 
-  /** Apaga favoritas e preferências. Radares e textos editados (chaves "pb.radar*" e "pb.edic*") ficam: são trabalho feito à mão. */
+  remover(chave) {
+    const k = PREFIXO + chave;
+    memoria.delete(k);
+    try {
+      localStorage.removeItem(k);
+    } catch {
+      /* nada a fazer */
+    }
+  },
+
+  /** Apaga favoritas e preferências. Radares e textos editados (chaves "pb.radar*" e "pb.edic*") ficam: são trabalho feito à mão.
+   * A conexão com o GitHub (token) também sai: é uma credencial, não deve sobrar num aparelho "limpo". */
   limpar() {
     for (const k of [...memoria.keys()]) if (!protegida(k)) memoria.delete(k);
     try {

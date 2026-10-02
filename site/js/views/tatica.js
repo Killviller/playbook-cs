@@ -37,7 +37,7 @@ function extras(t) {
 function seloEdicao(t) {
   if (!t.edicao) return '';
   const data = t.edicao.atualizadoEm ? `Atualizada em ${dataBr(t.edicao.atualizadoEm)}` : 'Texto atualizado';
-  const aparelho = t.edicao.origem === 'aparelho' ? ' · só neste aparelho' : '';
+  const aparelho = t.edicao.origem === 'aparelho' ? ' · só neste aparelho' : t.edicao.origem === 'publicando' ? ' · publicando para todos' : '';
   return html`<span class="tag tag--aviso" title="Texto melhorado depois do PDF">${data}${aparelho}</span>`;
 }
 
